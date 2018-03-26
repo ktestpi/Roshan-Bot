@@ -1,0 +1,61 @@
+{
+  "setup" : {
+    "prefix" : "r!",
+    "extensions" : {"watchers" : true},
+    "helpMessage" : ":information_source: __**Ayuda de Roshan**__",
+    "helpDM" : true
+  },
+  "logger" : {
+    "memberout" : {"icon" : "📤", "color" : "magenta"},
+    "memberin" : {"icon" : "📥", "color" : "magenta"},
+    "bot" : {"icon" : "🤖", "color" : "magenta"},
+    "accountnew" : {"icon" : "🤖📥", "color" : "magenta"},
+    "accountmodify" : {"icon" : "🤖📝", "color" : "magenta"},
+    "accountremove" : {"icon" : "🤖📤", "color" : "magenta"},
+    "guildnew" : {"icon" : "👥📥", "color" : "magenta"},
+    "guildremove" : {"icon" : "👥📤", "color" : "magenta"},
+    "oderror" : {"icon" : "🎮❌", "color" : "error"},
+    "feed" : {"icon" : "📰", "color" : "magenta"},
+    "notifications" : {"icon" : "🔔", "color" : "magenta"},
+    "shout" : {"icon" : "📢", "color" : "magenta"},
+    "game" : {"icon" : "🎮", "color" : "magenta"}
+  },
+  "update" : "21/03/2018",
+  "server" : "https://discord.gg/SxsYkgX",
+  "color" : "#2BC6CC",
+  "colors" : {"account" : {"register" : "#41ad49", "modify" : "#800080", "delete" : "#ff4723"}, "nextLvl" : "#ffbf00", "sendMsg" : {"owner" : "#003333", "server" : "#915300"}},
+  "playing" : "r!help",
+  "invite" : "https://discordapp.com/oauth2/authorize?client_id=324833828302749697&scope=bot&permissions=519232",
+  "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan"},
+  "switches" : {"welcome" : true, "wrongCmd" : true, "msgGuilds" : false, "feeds" : false, "leaderboardUpdate" : false, "backupdb" : false},
+  "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10},
+  "links" : {
+    "profile" : {
+      "dotabuff" : "https://www.dotabuff.com/players/",
+      "steamProfiles" : "http://steamcommunity.com/profiles/",
+      "steamID" : "http://steamcommunity.com/id/",
+      "twitter" : "https://twitter.com/",
+      "twitch" : "https://www.twitch.tv/"
+    },
+    "leaderboard" : "https://desvelao.github.io/roshan-leaderboard/",
+    "patreon" : "https://www.patreon.com/desvelao"
+  },
+  "emojis" : {
+    "default" : {
+      "accept" : "✅", "error" : "❌", "pin" : "📌", "notification" : "🔔", "loudspeaker" : "📢",
+      "upvote" : "⬆", "star" : "⭐", "exclamation" : "❗", "envelopeIncoming" : "📨", "noentry" : "🚫",
+      "feeds" : "📰",
+      "Dnotification" : ":bell:", "Drobot" : ":robot: ", "Dfix" : ":tools: "
+    },
+    "bot" : {}
+  },
+  "guild" : {"id" : "327603106257043456", "changelog": "327603215325462539", "feeds" : "342031271679098880", "biblioteca" : "335100706975514635", "sendmessages" : "330646027965300736", "botadmin": "338316246686892032", "accounts" : "330949705389441024", "notifications" : "331547028826095617", "bugs" : "327605187663364098", "alphatest" : "327603261085581312", "backup" : "398485131003822080"},
+  "webhooks" : {"feedsNotification" : "342031720155054080"},
+  "guildID" : "327603106257043456",
+  "communityTips" : {
+    "template" : "**__Categoría:__**(.*)\\n**__Título:__**(.*)\\n**__Consejo:__**(.*)",
+    "waitTimeError" : 300,
+    "delayDeleteMsg" : 5
+  },
+  "images" : {"reddit" : "https://icon-icons.com/icons2/1195/PNG/512/1490889653-reddit_82537.png", "redditdota2" : "https://b.thumbs.redditmedia.com/F82n9T2HtoYxNmxbe1CL0RKxBdeUEw-HVyd-F-Lb91o.png"}
+}

@@ -1,0 +1,75 @@
+{
+  "roshan" : {
+    "title" : "Roshan", "description" : "Bot de **Dota 2** creado por **Desvelao^^** con mucho :heart: ", "thumbnail" : "https://cdn.discordapp.com/avatars/321382693688442880/0085078d8a44788fe27d7c61c3d62e93.jpg?size=128",
+    "footer" : {"text" : "", "icon" : ""},
+    "fields" : [
+      {"name" : "Invita a Roshan a tu servidor", "inline" : true,
+        "links" : [
+          {"name" : "Invitación", "hide" : true, "link" : "https://discordapp.com/oauth2/authorize?client_id=324833828302749697&scope=bot&permissions=519232"}
+        ]},
+        {"name" : "Servidor de Roshan", "inline" : true,
+          "links" : [
+            {"name" : "Servidor de Roshan", "hide" : false, "link" : "https://discord.gg/SxsYkgX"}
+          ]}
+        ]},
+  "dota" : {
+    "title" : "Dota 2", "description" : "", "thumbnail" : "https://pbs.twimg.com/profile_images/808475349671493632/nvi7WJf4_400x400.jpg",
+    "footer" : {"text" : "", "icon" : ""},
+    "fields" : [
+      {"name" : "General", "inline" : true,
+        "links" : [
+          {"name" : "Reddit r/Dota2", "hide" : false, "link" : "https://www.reddit.com/r/DotA2/"},
+          {"name" : "Dota 2 Gamepedia", "hide" : false, "link" : "http://dota2.gamepedia.com/Dota_2_Wiki"},
+          {"name" : "Dotabuff", "hide" : false, "link" : "https://www.dotabuff.com"},
+          {"name" : "Liquipedia", "hide" : false, "link" : "http://wiki.teamliquid.net/dota2/Main_Page"},
+          {"name" : "Trackdota", "hide" : false, "link" : "http://www.trackdota.com"}
+        ]},
+        {"name" : "VODs", "inline" : true,
+          "links" : [
+            {"name" : "Eventvods", "hide" : false, "link" : "https://eventvods.com"}
+          ]}]},
+  "fed" : {
+    "title" : "FED Dota 2", "description" : "Federación Española de Dota 2", "thumbnail" : "https://pbs.twimg.com/profile_images/814270207732645888/5Fyy29mA_400x400.jpg",
+    "footer" : { "text" : "", "icon" : ""},
+    "fields" : [
+      {"name" : "Social", "inline" : true,
+        "links" : [
+          {"name" : "Twitter", "hide" : false, "link" : "https://twitter.com/fedota2"},
+          {"name" : "Discord", "hide" : false, "link" : "https://discord.gg/K5krgBg"},
+          {"name" : "Web", "hide" : false, "link" : "http://www.fedota2.es"}
+        ]},
+        {"name" : "LIE", "inline" : false,
+          "links" : [
+            {"name" : "Información", "hide" : false, "link" : "http://www.fedota2.es/competicion/4/lie/"},
+            {"name" : "Clasificación", "hide" : false, "link" : "http://lieserver-aethere.rhcloud.com/#/"}
+          ]}]},
+  "dotaesp" : {
+    "title" : "Dota ESP", "description" : "", "thumbnail" : "http://dev.dota2.com/image.php?u=75077&dateline=1369923403",
+    "footer" : { "text" : "", "icon" : ""},
+    "fields" : [
+      {"name" : "Casteos", "inline" : true,
+        "links" : [
+          {"name" : "Viciuslab", "hide" : false, "link" : "http://www.twitch.tv/viciuslab"},
+          {"name" : "Multicasters", "hide" : false, "link" : "https://www.twitch.tv/multicastersdota"},
+          {"name" : "Gaming Time", "hide" : false, "link" : "https://www.twitch.tv/gamingtimed"},
+          {"name" : "Blue", "hide" : false, "link" : "https://www.twitch.tv/bluesky1888"}
+        ]},
+        {"name" : "Pros", "inline" : true,
+          "links" : [
+            {"name" : "RoD", "hide" : false, "link" : "https://go.twitch.tv/rodrunordie"}
+          ]},
+          {"name" : "Discord", "inline" : true,
+            "links" : [
+              {"name" : "FED", "hide" : false, "link" : "https://discord.gg/K5krgBg"}
+            ]}
+        ]},
+  "autodota" : {
+    "title" : "AutoDota", "description" : ":robot: Bot que muestra el resumen en imágenes de las últimas partidas competitivas creado por **RoyZergoff**", "thumbnail" : "https://pbs.twimg.com/profile_images/913083652606763008/YqCnydWu_400x400.jpg",
+    "footer" : { "text" : "", "icon" : ""},
+    "fields" : [
+      {"name" : "Enlaces", "inline" : true,
+        "links" : [
+          {"name" : "Twitter", "hide" : false, "link" : "https://twitter.com/AutoDota"},
+          {"name" : "Telegram", "hide" : false, "link" : "http://t.me/AutoDota"}
+        ]}]}
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Roshan",
+  "version": "0.2.2",
+  "description": "Discord bot about Dota 2 written in eris using Drow command client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "./node_modules/.bin/eslint index.js"
+  },
+  "keywords": [
+    "Drow",
+    "Eris",
+    "Discord",
+    "Bot"
+  ],
+  "author": "Desvelao^^ <iamdesvelao@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "drow": "github:desvelao/drow#dev",
+    "eris": "^0.8.5",
+    "erisjs-utils": "github:desvelao/erisjs-utils#dev",
+    "firebase-admin": "^5.11.0",
+    "glob": "^7.1.2",
+    "require-reload": "^0.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.9.0"
+  }
+}
