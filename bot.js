@@ -23,7 +23,7 @@ try{
   firebaseConfig.client_email = process.env.CLIENT_EMAIL;
   ENVPROD = true
 }catch(err){
-  const env = require('./.env');
+  const env = require('./env.json');
   TOKEN = env.BOT_TOKEN;
   firebaseConfig.private_key = env.PRIVATE_KEY.replace(/\\n/g, '\n');
   firebaseConfig.client_email = env.CLIENT_EMAIL
