@@ -51,5 +51,5 @@ function func(msg,args,profile,bot){
         color : bot.config.color
       }
     })
-  })
+  }).catch(e => {opendota.error(bot,msg,lang.errorOpendotaRequest,e)})
 }

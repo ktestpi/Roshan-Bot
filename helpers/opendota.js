@@ -3,7 +3,7 @@ const unknown = require('../lang.json').unknown
 const basic = require('./basic.js')
 
 const request = (urls,id) => {
-  console.log(urls);
+  // console.log(urls);
   return util.request.getJSONMulti(urls.map(url => replace(url,'<id>',id)))}
 const replace = (text,match,repl) => text.replace(match,repl)
 
@@ -46,7 +46,7 @@ opendota.request = function(mode,id){
 }
 
 opendota.titlePlayer = function(results,title,replace){
-  console.log(replace);console.log('*********************');
+  // console.log(replace);console.log('*********************');
   return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : opendota.util.getMedal(results[0],'emoji',replace)},true)
   : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : opendota.util.getMedal(results[0],'emoji',replace)},false)
 }
@@ -54,7 +54,7 @@ opendota.titlePlayer = function(results,title,replace){
 opendota.odcall = function(bot,msg,args,callback){
   var profile = basic.getAccountID(msg,args,bot);
   if(profile.isCached){
-    console.log('Launch form cached',profile);
+    // console.log('Launch form cached',profile);
     callback(msg,args,profile);
   }else{
     if(profile.isDiscordID){
@@ -69,6 +69,7 @@ opendota.odcall = function(bot,msg,args,callback){
         callback(msg,args,profile);
       }else{
         basic.getProPlayerDotaID(profile.account_id).then((player) => {
+          // console.log('PLAYER',player);
           profile.id.dota = player.account_id;
           profile.id.steam = player.steamid;
           callback(msg,args,profile);
@@ -94,6 +95,11 @@ opendota.getProPlayersDotaName = function(query){ //Promise
       if(pros){resolve(pros)}else{reject("getProPlayersDotaName not found")};
     }).catch(err => console.log(err))
   })
+}
+
+opendota.error = function(bot,msg,message,error){
+  bot.logger.add('oderror',`Ocurrió un error con Opendota:\n<< ${error} >>\nUser: ${msg.author.username} (${msg.author.id})`,true)
+  msg.author.getDMChannel().then(channel => channel.createMessage(message))
 }
 
 opendota.urls = OPENDOTA_URLS

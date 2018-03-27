@@ -15,7 +15,8 @@ module.exports.getAccountID = function(msg,args,bot){
     profile.account_id = msg.author.id;
   };
   const cachePlayerID = bot.cache.profiles.find(p => p._id === profile.account_id);
-  console.log('CACHEPLAYERID',cachePlayerID,bot.cache.profiles.getid(profile.account_id));
+  // console.log('CACHEPLAYERID',cachePlayerID,bot.cache.profiles.getid(profile.account_id));
+  console.log(profile);
   if(cachePlayerID){profile.id = bot.cache.profiles.data(profile.account_id);profile.isCached = true; profile.isDiscordID = false}
   return profile
 }

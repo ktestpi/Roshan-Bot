@@ -3,7 +3,8 @@
     "prefix" : "r!",
     "extensions" : {"watchers" : true},
     "helpMessage" : ":information_source: __**Ayuda de Roshan**__",
-    "helpDM" : true
+    "helpDM" : true,
+    "helpMessageAferCategories" : "**Nota**: Usa `r!help <categoría>` para los comandos de esa categoría.\n\n:information_source: Cualquier duda o problema puedes pasarte por el **servidor de Roshan**: https://discord.gg/SxsYkgX"
   },
   "logger" : {
     "memberout" : {"icon" : "📤", "color" : "magenta"},
@@ -20,7 +21,7 @@
     "shout" : {"icon" : "📢", "color" : "magenta"},
     "game" : {"icon" : "🎮", "color" : "magenta"}
   },
-  "update" : "21/03/2018",
+  "update" : "27/03/2018",
   "server" : "https://discord.gg/SxsYkgX",
   "color" : "#2BC6CC",
   "colors" : {"account" : {"register" : "#41ad49", "modify" : "#800080", "delete" : "#ff4723"}, "nextLvl" : "#ffbf00", "sendMsg" : {"owner" : "#003333", "server" : "#915300"}},

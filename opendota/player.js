@@ -34,6 +34,6 @@ module.exports = new Command('player',{
           footer : {text : lang.noteData, icon_url : self.user.avatarURL},
           color : self.config.color
         }})
-      }).catch(e => console.log(e))
+      }).catch(e => {opendota.error(self,msg,lang.errorOpendotaRequest,e)})
     }) //.bind(this)
   })

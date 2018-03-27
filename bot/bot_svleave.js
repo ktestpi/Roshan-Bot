@@ -14,5 +14,5 @@ module.exports = new Command('svleave',{subcommandFrom : 'bot',
     if(!guild){return}
     this.leaveGuild(sv)
     msg.addReaction(config.emojis.default.accept)
-    //TODO Logger
+    this.logger.add('svleave',`Guild abandonado: ${guild.id}`)
   })

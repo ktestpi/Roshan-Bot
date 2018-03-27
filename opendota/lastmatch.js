@@ -12,12 +12,12 @@ module.exports = new Command('lastmatch',{
       opendota.request('player_lastmatch',profile.id.dota).then(results => {
         const cmd = self.commands.find(c => c.name == 'match')
         if(!cmd){return}
-        console.log(cmd);
+        // console.log(cmd);
         msg.content = self.defaultPrefix + cmd.name + ' ' + results[0][0].match_id;
-        console.log('MATCH MSG CONTENT',msg.content);
+        // console.log('MATCH MSG CONTENT',msg.content);
         args[0] = cmd.name;
         args[1] = results[0][0].match_id
         cmd.process.call(self,msg,args,command)
-      }).catch(e => console.log(e))
-    }) //.bind(this)
+      }).catch(e => {opendota.error(self,msg,lang.errorOpendotaRequest,e)})
+    })
   })
