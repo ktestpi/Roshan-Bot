@@ -1,6 +1,6 @@
 const Aghanim = require('aghanim')
 const path = require('path')
-const util = require('../erisjs-utils')
+const util = require('erisjs-utils')
 const lang = require('./lang.json')
 const firebase = require('firebase-admin');
 const FirebaseCache = require('./helpers/cache.js')
