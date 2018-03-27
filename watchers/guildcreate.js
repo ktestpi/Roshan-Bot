@@ -1,10 +1,10 @@
-const { Watcher } = require('drow')
+const { Watcher } = require('aghanim')
 const util = require('erisjs-utils')
 const lang = require('../lang.json')
 const { resetServerConfig } = require('../helpers/basic.js')
 
 module.exports = new Watcher('','guildCreate',{}, function(guild){
-  console.log('Watcher active',emoji,userID,this.config.emojis.default);
+  // console.log('Watcher active',emoji,userID,this.config.emojis.default);
   // bot.createMessage(guild.id,{
   //   embed: {
   //     title : lang.guildCreateEmbedTitle,

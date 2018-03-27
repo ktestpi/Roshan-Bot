@@ -1,4 +1,4 @@
-const { Watcher } = require('drow')
+const { Watcher } = require('aghanim')
 const util = require('erisjs-utils')
 // const lang = require('../lang.json')
 

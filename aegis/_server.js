@@ -1,4 +1,4 @@
-const { Command } = require('drow')
+const { Command } = require('aghanim')
 
 module.exports = new Command('server',{
   category : 'Aegis', help : 'Elimina los últimos <mensajes>', args : '<mensajes>',

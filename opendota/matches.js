@@ -1,4 +1,4 @@
-const { Command } = require('drow')
+const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const util = require('erisjs-utils')

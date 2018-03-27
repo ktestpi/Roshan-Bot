@@ -1,4 +1,4 @@
-const { Watcher } = require('drow')
+const { Watcher } = require('aghanim')
 const util = require('erisjs-utils')
 
 module.exports = new Watcher('','messageReactionAdd',{}, function(msg,emoji,userID){

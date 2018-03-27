@@ -1,6 +1,6 @@
-const Drow = require('drow')
+const Aghanim = require('aghanim')
 const path = require('path')
-const util = require('erisjs-utils')
+const util = require('../erisjs-utils')
 const lang = require('./lang.json')
 const firebase = require('firebase-admin');
 const FirebaseCache = require('./helpers/cache.js')
@@ -43,7 +43,7 @@ firebase.initializeApp({
   databaseURL: "https://roshan-bot.firebaseio.com"
 });
 
-const bot = new Drow(Object.assign({token : TOKEN},CONFIG.setup))
+const bot = new Aghanim(Object.assign({token : TOKEN},CONFIG.setup))
 bot.config = CONFIG
 bot.config.colors.palette = {default : CONFIG.color}
 bot.envprod = ENVPROD
@@ -129,6 +129,11 @@ bot.on('postready',() => {
       bot.config.switches.backupdb = true;
       console.log('DEV - DB active');
     }
+    if(!bot.envprod && process.argv[2] === '--dbu'){
+      bot.config.switches.backupdb = true;
+      bot.config.switches.leaderboardUpdate = true;
+      console.log('DEV - DB active - UPDATE Leaderboard');
+    }
     bot.config.playing = snap.playing;
     bot.emit('afterload')
   }).catch(err => {console.log('FAIL to load bot',err);bot.emit('afterload')})
@@ -145,6 +150,7 @@ bot.on('afterload', function(){
       bot.cache.servers = new FirebaseCache(bot.db.child('servers'),snap.servers);
       // console.log('CACHE DONE');
       // bot.cache.servers.modify('327603106257043456',{feeds : {enable : false}}).then((el) => console.log('MODIFIED',el))
+      console.log('leaderboard',bot.config.switches.leaderboardUpdate);
       if(bot.config.switches.leaderboardUpdate){updateLeaderboard(bot,snap.profiles)};
       // return;
       bot.cache.profiles = new FirebaseCache(bot.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile].profile]),'profile');
@@ -187,7 +193,10 @@ updateLeaderboard = function(bot,snap){
     players[i].username = member ? member.username : false;
     players[i].avatar = member ? member.avatarURL : false;
   }
-  players.forEach(player => urls.push('https://api.opendota.com/api/players/' + player.dota_id))
+  players.forEach(player => {
+    if(!player.dota_id){console.log('THIS PROFILE',player.discord_id);}
+    urls.push('https://api.opendota.com/api/players/' + player.dota_id)
+  })
   util.request.getJSONMulti(urls).then((results) => {
     let update = {updated : util.date(),ranking : {}};
     for (let i = 0; i < results.length; i++) {
