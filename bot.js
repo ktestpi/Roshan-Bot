@@ -150,7 +150,7 @@ bot.on('afterload', function(){
       bot.cache.servers = new FirebaseCache(bot.db.child('servers'),snap.servers);
       // console.log('CACHE DONE');
       // bot.cache.servers.modify('327603106257043456',{feeds : {enable : false}}).then((el) => console.log('MODIFIED',el))
-      console.log('leaderboard',bot.config.switches.leaderboardUpdate);
+      // console.log('leaderboard',bot.config.switches.leaderboardUpdate);
       if(bot.config.switches.leaderboardUpdate){updateLeaderboard(bot,snap.profiles)};
       // return;
       bot.cache.profiles = new FirebaseCache(bot.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile].profile]),'profile');

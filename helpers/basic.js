@@ -1,5 +1,6 @@
 const util = require('erisjs-utils')
 const lang = require('../lang.json')
+
 // const proplayersURL = require('./opendota.js').urls['proplayers']
 let self = module.exports
 
@@ -16,7 +17,7 @@ module.exports.getAccountID = function(msg,args,bot){
   };
   const cachePlayerID = bot.cache.profiles.find(p => p._id === profile.account_id);
   // console.log('CACHEPLAYERID',cachePlayerID,bot.cache.profiles.getid(profile.account_id));
-  console.log(profile);
+  // console.log(profile);
   if(cachePlayerID){profile.id = bot.cache.profiles.data(profile.account_id);profile.isCached = true; profile.isDiscordID = false}
   return profile
 }
@@ -103,9 +104,9 @@ module.exports.getProPlayerDotaID = function(name){ //Promise
   })
 }
 
-module.exports.socialLinks = function(links,mode){
+module.exports.socialLinks = function(links,mode,urls){
   // console.log(links);
-  const profile = Object.keys(links).filter(link => links[link]).map(link => ({type : link, link : module.exports.createProfileLink(links[link],link)}))
+  const profile = Object.keys(links).filter(link => links[link]).map(link => ({type : link, link : module.exports.createProfileLink(links[link],link,urls)}))
   // console.log(profile);
   if(mode == 'inline'){
     return profile.map(link => util.md.link(link.link,util.string.capitalize(link.type))).join(' / ')
