@@ -106,5 +106,14 @@
   "errorOpendotaRequest" : ":x: Ha ocurrido un error con el servidor de información del juego",
   "errorRedditNoSpicifiedPost" : ":x: Debes especificar una id del post",
   "errorRedditPostRequest" : ":x: El post especificado no existe o ha ocurrido un error",
-  "reportTitle" : "Reporte"
+  "reportTitle" : "Reporte",
+  "region" : "Región",
+  "position" : "Posición",
+  "search" : "Búsqueda",
+  "worldboard" : "Clasificación mundial",
+  "pos" : "Pos",
+  "divisions" : "Divisiones",
+  "errorWorldBoardSearchPlayer" : ":x: No se ha podido encontrar en la clasificación mundial: <query>",
+  "errorWorldBoardSearchPlayerQuery" : ":x: Es necesario añadir el término de búsqueda",
+  "worldboardSeachPlayer" : "Búsqueda jugador en clasificación mundial"
 }

@@ -20,7 +20,7 @@
     "shout" : {"icon" : "📢", "color" : "magenta"},
     "game" : {"icon" : "🎮", "color" : "magenta"}
   },
-  "update" : "27/03/2018",
+  "update" : "12/04/2018",
   "server" : "https://discord.gg/SxsYkgX",
   "color" : "#2BC6CC",
   "colors" : {"account" : {"register" : "#41ad49", "modify" : "#800080", "delete" : "#ff4723"}, "nextLvl" : "#ffbf00", "sendMsg" : {"owner" : "#003333", "server" : "#915300"}},
@@ -28,7 +28,7 @@
   "invite" : "https://discordapp.com/oauth2/authorize?client_id=324833828302749697&scope=bot&permissions=519232",
   "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan"},
   "switches" : {"welcome" : true, "wrongCmd" : true, "msgGuilds" : false, "feeds" : false, "leaderboardUpdate" : false, "backupdb" : false},
-  "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10},
+  "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10, "worldBoardTop" : 10},
   "links" : {
     "profile" : {
       "dotabuff" : "https://www.dotabuff.com/players/",
@@ -57,5 +57,5 @@
     "waitTimeError" : 300,
     "delayDeleteMsg" : 5
   },
-  "images" : {"reddit" : "https://icon-icons.com/icons2/1195/PNG/512/1490889653-reddit_82537.png", "redditdota2" : "https://b.thumbs.redditmedia.com/F82n9T2HtoYxNmxbe1CL0RKxBdeUEw-HVyd-F-Lb91o.png"}
+  "images" : {"reddit" : "https://icon-icons.com/icons2/1195/PNG/512/1490889653-reddit_82537.png", "redditdota2" : "https://b.thumbs.redditmedia.com/F82n9T2HtoYxNmxbe1CL0RKxBdeUEw-HVyd-F-Lb91o.png", "dota2" : "https://seeklogo.com/images/D/dota-2-logo-A8CAC9B4C9-seeklogo.com.png"}
 }
