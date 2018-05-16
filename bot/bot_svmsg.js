@@ -5,7 +5,7 @@ const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 
 module.exports = new Command('svmsg',{subcommandFrom : 'bot',
-  category : 'Owner', help : 'Mensaje a servidor', args : '<id> [mensaje]',
+  category : 'Owner', help : 'Mensaje a servidor', args : '<id> <mensaje>',
   ownerOnly : true},
   function(msg, args, command){
     let self = this

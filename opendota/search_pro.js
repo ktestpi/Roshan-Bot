@@ -9,7 +9,7 @@ module.exports = new Command('pro',{subcommandFrom : 'search',
   function(msg, args, command){
     let self = this
     const query = args.slice(2).join(' ')
-    if(query.length < 3){return}
+    if(query.length < 2){return msg.reply(lang.errorSearchMinChars)}
     opendota.getProPlayersDotaName(query).then((players) => {
       const text = players.map((player) => `**${basic.parseText(opendota.util.nameOrNick(player),'nf')}** ${util.md.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${util.md.link(player.profileurl,'S')}`).join(', ');
       msg.reply({embed : {

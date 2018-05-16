@@ -5,7 +5,7 @@ const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 
 module.exports = new Command('logs',{subcommandFrom : 'bot',
-  category : 'Owner', help : 'Actualiza el mensaje de `r!patch`', args : '<mensaje del parche>',
+  category : 'Owner', help : 'Ve el registro de eventos del bol', args : '',
   ownerOnly : true},
   function(msg, args, command){
     // let self = this

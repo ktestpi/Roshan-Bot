@@ -9,7 +9,7 @@ module.exports = new Command('player',{subcommandFrom : 'search',
   function(msg, args, command){
     let self = this
     const query = args.slice(2).join(' ')
-    if(query.length < 3){return}
+    if(query.length < 2){return msg.reply(lang.errorSearchMinChars)}
     opendota.getPlayersDotaName(query).then((players) => {
       if(players.length < 1){return};
       const playersTotal = players.length;

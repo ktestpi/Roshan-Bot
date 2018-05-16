@@ -38,19 +38,23 @@
       "twitch" : "https://www.twitch.tv/"
     },
     "leaderboard" : "https://desvelao.github.io/roshan-leaderboard/",
-    "patreon" : "https://www.patreon.com/desvelao"
+    "patreon" : "https://www.patreon.com/desvelao",
+    "web" : "https://desvelao.github.io/roshanapp/#/",
+    "web_leaderboard" : "https://desvelao.github.io/roshanapp/#/leaderboard",
+    "web_addtourney" : "https://desvelao.github.io/roshanapp/#/addtourney",
+    "web_feeds" : "https://desvelao.github.io/roshanapp/#/feeds"
   },
   "emojis" : {
     "default" : {
       "accept" : "✅", "error" : "❌", "pin" : "📌", "notification" : "🔔", "loudspeaker" : "📢",
       "upvote" : "⬆", "star" : "⭐", "exclamation" : "❗", "envelopeIncoming" : "📨", "noentry" : "🚫",
-      "feeds" : "📰",
+      "feeds" : "📰", "trophy" : "🏆",
       "Dnotification" : ":bell:", "Drobot" : ":robot: ", "Dfix" : ":tools: "
     },
     "bot" : {}
   },
-  "guild" : {"id" : "327603106257043456", "changelog": "327603215325462539", "feeds" : "342031271679098880", "biblioteca" : "335100706975514635", "sendmessages" : "330646027965300736", "botadmin": "338316246686892032", "accounts" : "330949705389441024", "notifications" : "331547028826095617", "bugs" : "327605187663364098", "alphatest" : "327603261085581312", "backup" : "398485131003822080"},
-  "webhooks" : {"feedsNotification" : "342031720155054080"},
+  "guild" : {"id" : "327603106257043456", "changelog": "327603215325462539", "feeds" : "342031271679098880", "biblioteca" : "335100706975514635", "sendmessages" : "330646027965300736", "botadmin": "338316246686892032", "accounts" : "330949705389441024", "notifications" : "331547028826095617", "bugs" : "327605187663364098", "alphatest" : "327603261085581312", "backup" : "398485131003822080", "generated" : "441307771510456331"},
+  "webhooks" : {"feedsNotification" : "342031720155054080", "feeds" : "342055276536659969", "feedsfromapp" : "446306133984935937", "fromapp" : "446303544245747732"},
   "guildID" : "327603106257043456",
   "communityTips" : {
     "template" : "**__Categoría:__**(.*)\\n**__Título:__**(.*)\\n**__Consejo:__**(.*)",

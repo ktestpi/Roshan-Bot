@@ -119,7 +119,8 @@ module.exports.createProfileLink = function(content,mode,urls){
     if(mode === 'dota'){
       return util.dota.idToUrl(content,'dotabuff')
     }else if(mode === 'steam'){
-      return util.steam.idToUrl(content,mode)
+      return content
+      //util.steam.idToUrl(content,mode)
     }else if(mode === 'twitch'){
       return urls.twitch + content
     }else if(mode === 'twitter'){
@@ -218,6 +219,48 @@ module.exports.resetServerConfig = function(bot,guild){
     reset.feeds.channel = defaultChannel;
     bot.cache.servers.save(guild.id,reset).then(() => resolve())
   })
+}
+
+module.exports.sortTourneys = (a,b) => {
+  if(a.start && b.start){
+    return b.start - a.start
+  }else if(a.start){
+    return -1
+  }else if(b.start){
+    return 1
+  }else{
+    if(a.until && b.until){
+      return b.until - a.until
+    }else if(a.until){
+      return -1
+    }else if(b.until){
+      return 1
+    }else{
+      return module.exports.sortBy('alpha','d','_d')(a,b);
+    }
+  }
+}
+module.exports.sortBy = (by = 'alpha', mode = 'd',param='_id') => {
+  switch (by) {
+    case 'alpha':
+      return sortAlpha(v => v[param].toLowerCase(),mode)
+    case 'number':
+      return sortAlpha(v => parseInt(v[param]),mode)
+    default:
+  }
+}
+
+function sortAlpha(callback,mode){
+  mode = mode === 'd' ? 'd' : 'a'
+  return function(a,b){
+    a = callback(a)
+    b = callback(b)
+    if(mode === 'a'){
+      if(a < b){return -1}else if(a > b){return 1}else{return 0}
+    }else{
+      if(a < b){return 1}else if(a > b){return -1}else{return 0}
+    }
+  }
 }
 
 module.exports = self

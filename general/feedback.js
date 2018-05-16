@@ -4,7 +4,7 @@ const opendota = require('../helpers/opendota')
 // const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 
-module.exports = new Command('report',{
+module.exports = new Command('feedback',{
   category : 'General', help : 'Reporta un error o sugerencia', args : '<mensaje>'},
   function(msg, args, command){
     // let self = this

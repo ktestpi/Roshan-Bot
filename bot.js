@@ -4,8 +4,10 @@ const util = require('erisjs-utils')
 const lang = require('./lang.json')
 const firebase = require('firebase-admin');
 const FirebaseCache = require('./helpers/cache.js')
+const FireListenCache = require('./helpers/firelistencache.js')
 const package = require('./package.json')
 const opendota = require('./helpers/opendota')
+const { sortTourneys } = require('./helpers/basic')
 
 let TOKEN;
 const firebaseConfig = {
@@ -48,6 +50,7 @@ bot.config = CONFIG
 bot.config.colors.palette = {default : CONFIG.color}
 bot.envprod = ENVPROD
 bot.cache = {}
+// console.log('CONFIG',bot.config);
 // bot.helpers = require('./helpers/account.js')
 // bot.helpers = {}
 // for (var h in bot.helpers) {
@@ -102,9 +105,9 @@ bot.on('postready',() => {
     // role_admin : config.roles.admin,
     // role_pin : config.roles.pin,
     // role_aegis : config.roles.aegis,
-    // channel_bugs : "<#" + config.guild.bugs + ">",
-    // channel_biblioteca : "<#" + config.guild.biblioteca + ">",
-    // channel_foso : "<#" + config.guild.id + ">",
+    channel_bugs : "<#" + bot.config.guild.bugs + ">",
+    channel_biblioteca : "<#" + bot.config.guild.biblioteca + ">",
+    channel_foso : "<#" + bot.config.guild.id + ">",
     server : bot.config.server,
     version : package.version,
     update : bot.config.update
@@ -144,17 +147,18 @@ bot.on('afterload', function(){
   bot.editStatus("online", {name : bot.config.playing, type : 0});
   // console.log('CONFIG',bot.config);
   // console.log(bot.config.switches);
+
   if(bot.config.switches.backupdb){ //config.switches.backupdb
     util.firebase.backupDBfile(bot.db,bot,bot.config.guild.backup,{filenameprefix : 'roshan_db_', messageprefix : '**Roshan Backup DB**'}).then(snap => {
-      // console.log('DB',bot.db);
       bot.cache.servers = new FirebaseCache(bot.db.child('servers'),snap.servers);
       // console.log('CACHE DONE');
       // bot.cache.servers.modify('327603106257043456',{feeds : {enable : false}}).then((el) => console.log('MODIFIED',el))
       // console.log('leaderboard',bot.config.switches.leaderboardUpdate);
       if(bot.config.switches.leaderboardUpdate){updateLeaderboard(bot,snap.profiles)};
+      const data_public = {discord_invite : bot.config.invite, discord_server : bot.config.server, users : Object.keys(snap.profiles).length, version : package.version}
+      bot.db.child('public').update(data_public).then(() => console.log('Update public Info'))
       // return;
       bot.cache.profiles = new FirebaseCache(bot.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile].profile]),'profile');
-
       // bot.cache.profiles.modify('189996884322942976',{test : 'test'})
       bot.cache.profiles.getid = function(id){
         const {dota,steam,twitch,twitter} = this.get(id);
@@ -162,6 +166,27 @@ bot.on('afterload', function(){
             return {dota,steam,twitch,twitter}
         }
         return undefined};
+        bot.cache.feeds = new FireListenCache(bot.db.child('feeds'))
+        bot.cache.feeds.order = function(){
+          return this.bucket.sort(function(a,b){
+            a = parseInt(a._id)
+            b = parseInt(b._id)
+            return b-a
+          })
+        }
+        bot.cache.tourneys = new FireListenCache(bot.db.child('tourneys'))
+        bot.cache.tourneys.order = function(){
+          const now = util.date()
+          return this.bucket.sort(sortTourneys)
+        }
+        bot.cache.tourneys.getPlaying = function(){
+          const now = util.date()
+          return this.bucket.filter(t => t.start < now && now < t.finish)
+        }
+        bot.cache.tourneys.getNext = function(){
+          const now = util.date()
+          return this.bucket.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
+        }
       console.log('CACHE LOADED');
     })
   }
