@@ -9,8 +9,9 @@ module.exports = new Command('patch',{subcommandFrom : 'bot',
   ownerOnly : true},
   function(msg, args, command){
     // let self = this
-    const patch = args.from('scmd')
-    this.db.child('bot').update({patch : patch}).then(() => {msg.addReaction(this.config.emojis.default.accept)
-    this.logger.add('game',`Patch: **${patch}**`,true)
+    const patch = args.from(2)
+    this.db.child('bot').update({patch : patch}).then(() => {
+      msg.addReaction(this.config.emojis.default.accept)
+      this.logger.add('game',`Patch: **${patch}**`,true)
     })
   })

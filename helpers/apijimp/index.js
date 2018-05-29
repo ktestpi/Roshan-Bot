@@ -72,7 +72,7 @@ module.exports.match = function(data_info){
           if(data[i][j] instanceof jimp){data[0].composite(data[i][j],x,y)}
           else if(['string','number'].includes(typeof(data[i][j]))){
             let sx = POSITION.TABLE.X+HERO_WIDTH + POSITION.STATS[j-7]
-            let texter = new Texter(data[i][j]+'',sx,y)
+            let texter = new Texter(data[i][j]+'',sx,y).alignVPic()
             if(j === 7){text = texter.slice()}
             if(j > 7){text = texter.centerX()}
             // console.log(data[i][j]);

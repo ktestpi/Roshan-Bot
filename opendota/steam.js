@@ -5,15 +5,15 @@ const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 
 module.exports = new Command('steam',{
-  category : 'Dota 2', help : '', args : '[mención/dotaID/pro]'},
+  category : 'Dota 2', help : 'Url de steam de un jugador', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     let self = this
-    console.log('CACHE',this.cache);
+    // console.log('CACHE',this.cache);
     // console.log('SELF',self);
     const profile = basic.getAccountID(msg,args,this);
-    console.log('PROFILE',profile);
+    // console.log('PROFILE',profile);
     if(profile.isCached){
-      console.log('Launch form cached');
+      // console.log('Launch form cached');
       func(msg,args,profile,this);
     }else{
       if(profile.isDiscordID){

@@ -3,7 +3,7 @@
     "prefix" : "r!",
     "helpMessage" : ":information_source: __**Ayuda de Roshan**__",
     "helpDM" : true,
-    "helpMessageAferCategories" : "**Nota**: Usa `r!help <categoría>` para los comandos de esa categoría.\n\n:information_source: Cualquier duda o problema puedes pasarte por el **servidor de Roshan**: https://discord.gg/SxsYkgX"
+    "helpMessageAfterCategories" : "**Nota**: Usa `r!help <categoría>` para los comandos de esa categoría.\n\n:information_source: Cualquier duda o problema puedes pasarte por el **servidor de Roshan**: https://discord.gg/SxsYkgX"
   },
   "logger" : {
     "memberout" : {"icon" : "📤", "color" : "magenta"},

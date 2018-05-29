@@ -6,7 +6,7 @@ const util = require('erisjs-utils')
 const api = require('../helpers/worldranking-api')
 
 module.exports = new Command('worldranking',{
-  category : 'Dota 2', help : 'Búsqueda de jugador en Clasificación mundial', args : '<división>'},
+  category : 'Dota 2', help : 'Clasificación mundial según zona', args : '<división>'},
   function(msg, args, command){
     // let self = this
     const div = args[1] ? args[1].toLowerCase() : api.defaultDivision

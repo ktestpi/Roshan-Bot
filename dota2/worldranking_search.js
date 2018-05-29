@@ -7,7 +7,7 @@ const api = require('../helpers/worldranking-api')
 
 module.exports = new Command('search',{
   subcommandFrom : 'worldranking',
-  category : 'Dota 2', help : 'Clasificación mundial', args : '<zona>'},
+  category : 'Dota 2', help : 'Busca a un jugador por nombre en la clasificación mundial', args : '<búsqueda>'},
   function(msg, args, command){
     // let self = this
     if(!args[2]){return msg.reply(lang.errorWorldBoardSearchPlayerQuery)}
