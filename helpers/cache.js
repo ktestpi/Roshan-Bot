@@ -12,8 +12,10 @@ class FirebaseCache extends util.type.Collection{
       this.mutate(id,(element) => {
         // console.log(this);
         const newElement = Object.assign({},mergeObject(element,data))
-        this.db.child(id+this.path).update(newElement).then(() => resolve(newElement))
-        return newElement
+        delete newElement._id
+        this.db.child(id+this.path).update(newElement).then(() => resolve(newElement)).catch(err => console.log('ERROR',err))
+        const result = Object.assign({},newElement,{_id : id})
+        return result
       })
     })
   }
@@ -50,7 +52,7 @@ function mergeObject(base,merge){
       if(typeof merge[el] === 'object'){mergeObject(base[el],merge[el])}
       else{base[el] = merge[el]}
     }
-    delete base['_id']
+    // delete base['_id']
     return Object.assign({},base)
 }
 

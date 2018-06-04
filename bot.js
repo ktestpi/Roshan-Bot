@@ -222,15 +222,24 @@ updateLeaderboard = function(bot,snap){
     if(!player.dota_id){console.log('THIS PROFILE',player.discord_id);}
     urls.push('https://api.opendota.com/api/players/' + player.dota_id)
   })
-  util.request.getJSONMulti(urls).then((results) => {
-    let update = {updated : util.date(),ranking : {}};
+  util.request.multipleJSON(urls,null,1,(results) => {
+    let update = {updated : util.date(), ranking : {}}
     for (let i = 0; i < results.length; i++) {
       if(!results){continue}
       const rank = opendota.util.getMedal(results[i],'raw',bot.replace);
       update.ranking[players[i].discord_id] = {username : players[i].username || results[i].profile.personaname, nick : results[i].profile.personaname || '', avatar : players[i].avatar || results[i].profile.avatarmedium, rank : rank.rank, leaderboard : rank.leaderboard};
     }
-    bot.db.child('leaderboard').set(update)
-  }).catch(err => console.log(err))
+    bot.db.child('leaderboard').set(update).then(() => console.log('Ranking Updated'))
+  })
+  // util.request.getJSONMulti(urls).then((results) => {
+  //   let update = {updated : util.date(),ranking : {}};
+  //   for (let i = 0; i < results.length; i++) {
+  //     if(!results){continue}
+  //     const rank = opendota.util.getMedal(results[i],'raw',bot.replace);
+  //     update.ranking[players[i].discord_id] = {username : players[i].username || results[i].profile.personaname, nick : results[i].profile.personaname || '', avatar : players[i].avatar || results[i].profile.avatarmedium, rank : rank.rank, leaderboard : rank.leaderboard};
+  //   }
+  //   bot.db.child('leaderboard').set(update)
+  // }).catch(err => console.log(err))
 }
 
 bot.connect();

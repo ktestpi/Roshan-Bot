@@ -38,11 +38,11 @@
           {"name" : "Discord", "hide" : false, "link" : "https://discord.gg/K5krgBg"},
           {"name" : "Web", "hide" : false, "link" : "http://www.fedota2.es"}
         ]},
-        {"name" : "LIE", "inline" : false,
-          "links" : [
-            {"name" : "Información", "hide" : false, "link" : "http://www.fedota2.es/competicion/4/lie/"},
-            {"name" : "Clasificación", "hide" : false, "link" : "http://lieserver-aethere.rhcloud.com/#/"}
-          ]}]},
+      {"name" : "LIE", "inline" : false,
+        "links" : [
+          {"name" : "Información", "hide" : false, "link" : "http://www.fedota2.es/competicion/4/lie/"},
+          {"name" : "Clasificación", "hide" : false, "link" : "http://lieserver-aethere.rhcloud.com/#/"}
+        ]}]},
   "dotaesp" : {
     "title" : "Dota ESP", "description" : "", "thumbnail" : "http://dev.dota2.com/image.php?u=75077&dateline=1369923403",
     "footer" : { "text" : "", "icon" : ""},
@@ -50,19 +50,22 @@
       {"name" : "Casteos", "inline" : true,
         "links" : [
           {"name" : "Viciuslab", "hide" : false, "link" : "http://www.twitch.tv/viciuslab"},
-          {"name" : "Multicasters", "hide" : false, "link" : "https://www.twitch.tv/multicastersdota"},
+          {"name" : "Fedcast", "hide" : false, "link" : "https://www.twitch.tv/fedcast"},
           {"name" : "Gaming Time", "hide" : false, "link" : "https://www.twitch.tv/gamingtimed"},
           {"name" : "Blue", "hide" : false, "link" : "https://www.twitch.tv/bluesky1888"}
         ]},
-        {"name" : "Pros", "inline" : true,
-          "links" : [
-            {"name" : "RoD", "hide" : false, "link" : "https://go.twitch.tv/rodrunordie"}
-          ]},
-          {"name" : "Discord", "inline" : true,
-            "links" : [
-              {"name" : "FED", "hide" : false, "link" : "https://discord.gg/K5krgBg"}
-            ]}
+      {"name" : "Pros", "inline" : true,
+        "links" : [
+          {"name" : "RoD", "hide" : false, "link" : "https://www.twitch.tv/rodrunordie"}
         ]},
+      {"name" : "Discord", "inline" : true,
+        "links" : [
+          {"name" : "FED", "hide" : false, "link" : "https://discord.gg/K5krgBg"},
+          {"name" : "Viciuslab", "hide" : false, "link" : "https://discordapp.com/invite/ZHFHNuQ"},
+          {"name" : "TerritorioDota2", "hide" : false, "link" : "https://discord.gg/w4s96y"},
+          {"name" : "Foso de Roshan", "hide" : false, "link" : "https://discord.gg/RccRKJV"}
+        ]}
+      ]},
   "autodota" : {
     "title" : "AutoDota", "description" : ":robot: Bot que muestra el resumen en imágenes de las últimas partidas competitivas creado por **RoyZergoff**", "thumbnail" : "https://pbs.twimg.com/profile_images/913083652606763008/YqCnydWu_400x400.jpg",
     "footer" : { "text" : "", "icon" : ""},
