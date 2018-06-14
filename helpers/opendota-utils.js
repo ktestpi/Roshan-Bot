@@ -60,22 +60,24 @@ module.exports.getMedal = function(rank,mode,replace){
   let rank_tier = rank.rank_tier, leaderboard = rank.leaderboard_rank || null;
   let medal_tier = rank.rank_tier ? parseInt(rank_tier.toString()[0]) : 0, medal_range = rank.rank_tier ? parseInt(rank_tier.toString()[1]) : 0;
   let medal,medal_raw = {rank : null,leaderboard : null};
-  const medals = ["norank","herald", "guardian", "crusader", "archon", "legend", "ancient", "divine"];
-  const topmedals = ['top1000','top100','top10'];
-  if(!leaderboard){
+  const medals = ["norank","herald", "guardian", "crusader", "archon", "legend", "ancient", "divine","immortal"];
+  const topmedals = ['top1000','top100','top10','top1'];
+  if(rank_tier < 80){
     if(rank_tier){
-      medal = replace.do("<medal_" + medals[medal_tier] + "> " + medal_range)
-    }else{medal = replace.do("<medal_" + medals[medal_tier]) + ">"}
+      medal = "<medal_" + medals[medal_tier] + "> " + medal_range
+    }else{medal = "<medal_" + medals[medal_tier] + ">"}
   }else{
     medal_raw = medal_tier + "" + medal_range + "-" + leaderboard
-    if(leaderboard > 1000){
-      medal = replace.do("<medal_" + medals[7] + "> " + medal_range + " (#" + leaderboard + ")")
+    if(leaderboard > 1000 || !leaderboard){
+      medal = "<medal_" + medals[8] + "> " + (leaderboard ? " (#" + leaderboard + ")" : "")
     }else if(leaderboard <= 1000 && leaderboard > 100){
-      medal = replace.do("<medal_" + topmedals[0] + "> " + medal_range + " (#" + leaderboard + ")")
+      medal = "<medal_" + medals[8] + "> " + " (#" + leaderboard + ")"
     }else if(leaderboard <= 100 && leaderboard > 10){
-      medal = replace.do("<medal_" + topmedals[1] + "> " + medal_range + " (#" + leaderboard + ")")
+      medal = "<medal_" + medals[8] + "> " + " (#" + leaderboard + ")"
     }else if(leaderboard <= 10){
-      medal = replace.do("<medal_" + topmedals[2] + "> " + medal_range + " (#" + leaderboard + ")")
+      medal = "<medal_" + topmedals[2] + "> " + " (#" + leaderboard + ")"
+    }else if(leaderboard === 1){
+      medal = "<medal_" + topmedals[2] + "> " + " (#" + leaderboard + ")"
     }
   }
   if(mode === 'emoji'){
