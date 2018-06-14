@@ -138,13 +138,35 @@ bot.on('postready',() => {
       console.log('DEV - DB active - UPDATE Leaderboard');
     }
     bot.config.playing = snap.playing;
+    bot.config.status = snap.status;
+    bot.config.status_act = snap.status_act;
+    bot.config.status_url = snap.status_url
+    bot.config.status_msg = snap.status_msg
     bot.emit('afterload')
   }).catch(err => {console.log('FAIL to load bot',err);bot.emit('afterload')})
   // console.log(bot.replace);
 })
 
+bot.setStatus = function(type,status,msg,url,update){
+  let self = this
+  return new Promise((resolve,reject) => {
+    // 0 => playing
+    // 1 => streaming
+    self.config.status = status !== null ? status : self.config.status
+    self.config.status_act = type !== null ? type : self.config.status_act
+    self.config.status_msg = msg !== null ? msg : self.config.status_msg
+    self.config.status_url = url !== null ? url : self.config.status_url
+    let promises = []
+    if(update){
+      promises.push(bot.db.child('bot').update({status : self.config.status, status_act : self.config.status_act, status_msg : self.config.status_msg, status_url : self.config.status_url}))
+    }
+    promises.push(self.editStatus(self.config.status, {name : self.config.status_msg, type : self.config.status_act, url : self.config.status_url}))
+    Promise.all(promises).then(resolve).catch(reject)
+  })
+}
 bot.on('afterload', function(){
-  bot.editStatus("online", {name : bot.config.playing, type : 0});
+  // bot.editStatus("online", {name : bot.config.playing, type : 0});
+  bot.setStatus(bot.config.status_act,bot.config.status,bot.config.status_msg,bot.config.status_url,false).then(() => console.log('DONE StATuS'))
   // console.log('CONFIG',bot.config);
   // console.log(bot.config.switches);
 

@@ -8,20 +8,11 @@ module.exports = new Command('playing',{subcommandFrom : 'bot',
   category : 'Owner', help : 'Establece el mensaje de Jugando a', args : '<mensaje>',
   ownerOnly : true},
   function(msg, args, command){
-    let self = this
     if(args.length < 3){
-      this.db.child('bot').once('value').then(snap => {
-        const playing = snap.val() ? snap.val().playing : this.config.playing
-        this.editStatus("online", {name : playing, type : 0})
-        this.logger.add('bot', `Playing: **${playing}**`,true)
-      });
+      this.setStatus(0,null,this.config.playing,null,true).then(() => this.logger.add('bot', `Playing to default **${this.config.playing}**`,true)).catch(err => msg.reply(err))
     }else{
-      const playing = args.slice(2).join(' ')
+      const playing = args.from(2)
       if(!playing){return};
-      this.db.child('bot').update({playing : playing}).then(() => {
-      this.editStatus("online", {name : playing, type : 0})
-        msg.addReaction(this.config.emojis.default.accept)
-        this.logger.add('bot', `Playing: **${playing}**`,true)
-      }).catch(err => this.editStatus("online", {name : playing, type : 0}))
+      this.setStatus(0,null,playing,null,true).then(() => this.logger.add('bot', `Playing: **${playing}**`,true)).catch(err => msg.reply(':x: Error Ocurred!'))
     }
   })

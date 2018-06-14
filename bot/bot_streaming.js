@@ -12,6 +12,7 @@ module.exports = new Command('streaming',{subcommandFrom : 'bot',
     if(!args[2] || !args[2].startsWith('https://www.twitch.tv/')){return};
     let name;
     if(args.length === 3){name = args[2].match(new RegExp('https://www.twitch.tv/(.*)'))[1]}else{name = args.slice(3).join(' ')}
-    this.editStatus("online", {name : name,type : 1, url : command[2]});
-    this.logger.add('bot', `Streaming: **${name}**`,true)
+    // this.editStatus("online", {name : name,type : 1, url : command[2]});
+    this.setStatus(1,this.config.status,name,args[2],true).then(() => this.logger.add('bot', `Streaming: **${name}**`,true))
+
   })
