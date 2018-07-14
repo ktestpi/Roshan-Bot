@@ -10,11 +10,10 @@ module.exports = new Command('cardhelp',{
     msg.replyDM({
       embed : {
         title: 'Card - Ayuda',
-        description : 'Comando: r!cardset <argumentos>',
+        description : 'Comando: r!cardconfig <argumentos>',
         fields : [
           {name : 'Héroes (.)' , value : '`am,axe,kotl...`', inline : false},
           {name : 'Posición (-)' , value : `\`${enumPlayerPos.array.map(k => k._id).join(',')}\``, inline : false},
-          {name : 'Nombre ("...")' , value : '"Nombre del jugador"', inline : false},
           {name : 'Ejemplos' , value : '`r!cardset .am .lina .invoker -sup`', inline : false}
         ],
         color : this.config.color

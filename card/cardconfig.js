@@ -13,7 +13,6 @@ module.exports = new Command('cardconfig',{
     const profile = this.cache.profiles.get(msg.author.id)
     if(!profile){return} //needregister
     let heroes = profile.card.heroes.split(',')
-    console.log(args.length);
     if(args.length > 1){
       let _heroes = [], _pos = []
       for (var i = 1; i < args.length; i++) {

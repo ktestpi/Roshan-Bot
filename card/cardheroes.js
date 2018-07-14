@@ -18,7 +18,7 @@ module.exports = new Command('cardheroes',{
     msg.replyDM({
       embed : {
         title: 'Card - Ayuda héroes',
-        description : `Comando: \`r!cardset <argumentos>\`\nPrefijo: \`.\`\n\n${_heroes}`,
+        description : `Comando: \`r!cardconfig <argumentos>\`\nPrefijo: \`.\`\n\n${_heroes}`,
         color : this.config.color
       }
     })
