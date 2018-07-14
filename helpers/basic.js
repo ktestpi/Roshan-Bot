@@ -3,22 +3,28 @@ const lang = require('../lang.json')
 
 // const proplayersURL = require('./opendota.js').urls['proplayers']
 let self = module.exports
-
+// color = "#2BC6CC"
 module.exports.getAccountID = function(msg,args,bot){
   // console.log(args);
-  var profile = {account_id : "", isCached : false, isDiscordID : true, id : {dota : "", steam : "", twitch : "", twitter : ""}};
+  var base = {account_id : "", isCached : false, isDiscordID : true};
   if(msg.mentions.length > 0){
-    profile.account_id = msg.mentions[0].id;
+    base.account_id = msg.mentions[0].id;
   }else if(args.length > 1){
-    profile.account_id = args[1];
-    profile.isDiscordID = false;
+    base.account_id = args[1];
+    base.isDiscordID = false;
   }else{
-    profile.account_id = msg.author.id;
+    base.account_id = msg.author.id;
   };
-  const cachePlayerID = bot.cache.profiles.find(p => p._id === profile.account_id);
+  const cachePlayerID = bot.cache.profiles.get(base.account_id);
   // console.log('CACHEPLAYERID',cachePlayerID,bot.cache.profiles.getid(profile.account_id));
   // console.log(profile);
-  if(cachePlayerID){profile.id = bot.cache.profiles.data(profile.account_id);profile.isCached = true; profile.isDiscordID = false}
+  let profile
+  if(cachePlayerID){
+    base.isCached = true; base.isDiscordID = false;
+    profile = Object.assign({},base,bot.cache.profiles.data(base.account_id))
+  }else{
+    profile = Object.assign({},base,module.exports.accountSchema())
+  }
   return profile
 }
 
@@ -107,7 +113,6 @@ module.exports.getProPlayerDotaID = function(name){ //Promise
 module.exports.socialLinks = function(links,mode,urls){
   // console.log(links);
   const profile = Object.keys(links).filter(link => links[link]).map(link => ({type : link, link : module.exports.createProfileLink(links[link],link,urls)}))
-  // console.log(profile);
   if(mode == 'inline'){
     return profile.map(link => util.md.link(link.link,util.string.capitalize(link.type))).join(' / ')
   }else if(mode == 'vertical'){
@@ -119,8 +124,8 @@ module.exports.createProfileLink = function(content,mode,urls){
     if(mode === 'dota'){
       return util.dota.idToUrl(content,'dotabuff')
     }else if(mode === 'steam'){
-      return content
-      //util.steam.idToUrl(content,mode)
+      return content.startsWith('http') ? content : util.steam.idToUrl(content,mode)
+      // return content
     }else if(mode === 'twitch'){
       return urls.twitch + content
     }else if(mode === 'twitter'){
@@ -219,6 +224,55 @@ module.exports.resetServerConfig = function(bot,guild){
     reset.feeds.channel = defaultChannel;
     bot.cache.servers.save(guild.id,reset).then(() => resolve())
   })
+}
+
+module.exports.newAccount = function(data){
+  return {
+    // medal : data.medal || false,
+    // leaderboard : data.leaderboard || false,
+    card : {
+      bg : '0',
+      pos : 'all', //1-5,sup,core,off,mid,carry,all
+      heroes : ''
+    },
+    profile : data.profile,
+  }
+}
+
+module.exports.accountSchema = function(){
+  return {
+    card : {
+      bg : '',
+      heroes : '',
+      pos : ''
+    },
+    profile : {
+      dota : '',
+      steam : '',
+      twitter : '',
+      twitch : ''
+    }
+  }
+}
+
+module.exports.updateAccountSchema = function(data,strict){
+  const schema = module.exports.accountSchema()
+  let result
+  if(strict){
+    result = module.exports.mergeObject(schema,data)
+  }else{
+    result = Object.assign({},schema,data)
+  }
+  return result
+}
+
+module.exports.mergeObject = function(base,merge){
+    for (var el in merge) {
+      if(typeof merge[el] === 'object'){module.exports.mergeObject(base[el],merge[el])}
+      else{base[el] = merge[el]}
+    }
+    // delete base['_id']
+    return Object.assign({},base)
 }
 
 module.exports.sortTourneys = (a,b) => {

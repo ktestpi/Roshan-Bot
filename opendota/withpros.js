@@ -10,8 +10,8 @@ module.exports = new Command('withpros',{
     let self = this
     opendota.odcall(this,msg,args,function(msg,args,profile){
       msg.channel.sendTyping();
-      opendota.request('player_pros',profile.id.dota).then(results => {
-        profile.id.steam = basic.parseProfileURL(results[0].profile.profileurl,'steam');
+      opendota.request('player_pros',profile.profile.dota).then(results => {
+        profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl,'steam');
         const resultsTotal = results[1].length;
         results[1].sort(function(){return .5 - Math.random()});
         var resultsShow = 0;

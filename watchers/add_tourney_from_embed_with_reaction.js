@@ -9,7 +9,7 @@ module.exports = new Watcher('','messageReactionAdd',{}, function(msg,emoji,user
       // console.log('ADD TOURNEY INNER',m);
       // console.log(m.author.id === this.user.id,m.embeds[0] ? true : false,m.embeds[0].title === 'Nuevo torneo');
       if(m.author.id === this.config.webhooks.fromapp && m.embeds[0] && m.embeds[0].title === 'Nuevo torneo'){
-        console.log('ADD TOURNEY CHECKED',msg);
+        // console.log('ADD TOURNEY CHECKED',msg);
         const embed = m.embeds[0]
         const data = {
           [embed.fields[0].value] : {

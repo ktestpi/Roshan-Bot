@@ -1,6 +1,7 @@
 const util = require('erisjs-utils')
 const unknown = require('../lang.json').unknown
 const basic = require('./basic.js')
+const enumMedal = require('../helpers/enums/medals')
 
 const request = (urls,id) => {
   // console.log(urls);
@@ -12,7 +13,7 @@ const OPENDOTA_URLS = {
    player_wl : 'https://api.opendota.com/api/players/<id>/wl',
    player_heroes : 'https://api.opendota.com/api/players/<id>/heroes',
    player_totals : 'https://api.opendota.com/api/players/<id>/totals',
-   player_matches : 'https://api.opendota.com/api/players/<id>/matches',
+   player_matches : 'https://api.opendota.com/api/players/<id>/matches?significant=0',
    player_pros : 'https://api.opendota.com/api/players/<id>/pros',
    player_friends : 'https://api.opendota.com/api/players/<id>/peers?date=30',
    match : 'https://api.opendota.com/api/matches/<id>',
@@ -29,6 +30,8 @@ opendota.enum = require('./opendota-enums.js')
 
 opendota.request = function(mode,id){
   const urls = {
+    card : [OPENDOTA_URLS.player],
+    card_heroes : [OPENDOTA_URLS.player,OPENDOTA_URLS.player_heroes],
     player : [OPENDOTA_URLS.player,OPENDOTA_URLS.player_wl,OPENDOTA_URLS.player_heroes,OPENDOTA_URLS.player_totals],
     player_matches : [OPENDOTA_URLS.player,OPENDOTA_URLS.player_matches],
     player_lastmatch : [OPENDOTA_URLS.player_matches],
@@ -47,8 +50,12 @@ opendota.request = function(mode,id){
 
 opendota.titlePlayer = function(results,title,replace){
   // console.log(replace);console.log('*********************');
-  return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : opendota.util.getMedal(results[0],'emoji',replace)},true)
-  : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : opendota.util.getMedal(results[0],'emoji',replace)},false)
+  const medal = enumMedal({rank : results[0].rank_tier, leaderboard : results[0].leaderboard_rank})
+  console.log(medal);
+  return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : replace.do(medal.emoji)},true)
+  : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : replace.do(medal.emoji)},false)
+  // return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : opendota.util.getMedal(results[0],'emoji',replace)},true)
+  // : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : opendota.util.getMedal(results[0],'emoji',replace)},false)
 }
 
 opendota.odcall = function(bot,msg,args,callback){
@@ -65,13 +72,13 @@ opendota.odcall = function(bot,msg,args,callback){
       })
     }else{
       if(!isNaN(profile.account_id)){
-        profile.id.dota = profile.account_id;
+        profile.profile.dota = profile.account_id;
         callback(msg,args,profile);
       }else{
         basic.getProPlayerDotaID(profile.account_id).then((player) => {
           // console.log('PLAYER',player);
-          profile.id.dota = player.account_id;
-          profile.id.steam = player.steamid;
+          profile.profile.dota = player.account_id;
+          profile.profile.steam = player.steamid;
           callback(msg,args,profile);
         })
       }

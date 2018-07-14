@@ -9,7 +9,7 @@ module.exports = new Command('lastmatch',{
     let self = this
     opendota.odcall(this,msg,args,function(msg,args,profile){
       msg.channel.sendTyping();
-      opendota.request('player_lastmatch',profile.id.dota).then(results => {
+      opendota.request('player_lastmatch',profile.profile.dota).then(results => {
         const cmd = self.commands.find(c => c.name == 'match')
         if(!cmd){return}
         // console.log(cmd);

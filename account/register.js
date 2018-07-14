@@ -17,13 +17,13 @@ module.exports = new Command('register',{
       const guildName = msg.channel.guild ? msg.channel.guild.name : 'DM';
       const guildID = msg.channel.guild ? msg.channel.guild.id : msg.channel.id;
       let msgServer = {}, msgChannel, color;
-      if(self.cache.profiles.get(msg.author.id)){return}
+      if(self.cache.profiles.get(msg.author.id)){return} //TODO ya registrado
       for(i in account){
         if(account[i] == '-' && i != 'dota'){account[i] = ''};
         account[i] = basic.parseProfileURL(account[i],i);
       }
       util.request.getJSON('https://api.opendota.com/api/players/' + account.dota).then((result) => {
-        if(!result.profile){msg.addReaction(self.config.emojis.default.error);return};
+        if(!result.profile){return msg.addReaction(self.config.emojis.default.error)};
         this.createMessage(server.accounts,{
           embed : {
             title : 'Registro de cuenta' + ' - ' + msg.author.id,
@@ -39,7 +39,8 @@ module.exports = new Command('register',{
           msg.author.getDMChannel().then(channel => {
             // TODO: add profile to cache
             // config._.profiles.add(msg.author.id,update[msg.author.id].profile);
-            this.cache.profiles.save(msg.author.id,account).then(() => {
+            const newAccount = basic.newAccount({profile : account})
+            this.cache.profiles.save(msg.author.id,newAccount).then(() => {
               channel.createMessage({
                 embed : {
                   title : self.replace.do('¡Bienvenido a Roshan <roshan>'),
@@ -47,7 +48,7 @@ module.exports = new Command('register',{
                   description : self.replace.do('Información sobre <dota> **Dota 2 para Discord**!') || "",
                   fields : [{
                     name : 'Datos de tu registro',
-                    value : self.replace.do('<dota> <dotaID>\n<steam> <steamID>\n<twitch> <twitchID>\n<twitter> <twitterID>\n',{dotaID : account.dota, steamID : account.steam, twitchID : account.twitch, twitterID: account.twitter},true),
+                    value : self.replace.do('<dota> <dotaID>\n<steam> <steamID>\n<twitch> <twitchID>\n<twitter> <twitterID>\n',{dotaID : newAccount.profile.dota, steamID : newAccount.profile.steam, twitchID : newAccount.profile.twitch, twitterID: newAccount.profile.twitter},true),
                     inline : false
                   },{
                     name : '¡Muchas gracias por tu registro :grin: !',

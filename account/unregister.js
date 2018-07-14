@@ -24,7 +24,7 @@ module.exports = new Command('unregister',{
       msg.addReaction(this.config.emojis.default.envelopeIncoming);
       this.logger.add('accountremove',msg.author.username,true);
       this.cache.profiles.erase(msg.author.id).then(() => {
-        msg.channel.createMessage(this.replace.do('<roshan> **¡Tu cuenta ha sido eliminada!** :white_check_mark: <aegis>\n\n**<bot_name>** está triste. :sweat: ¡Esperámos que vuelvas pronto! :wink:')).then(() => m.addReaction(this.config.emojis.default.accept))
+        msg.channel.createMessage(this.replace.do('<roshan> **¡Tu cuenta ha sido eliminada!** :white_check_mark: <aegis>')).then(() => m.addReaction(this.config.emojis.default.accept))
       })
     })
   })

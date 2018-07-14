@@ -19,18 +19,18 @@ module.exports = new Command('steam',{
       if(profile.isDiscordID){
         this.db.child('profiles/' + profile.account_id).once('value').then((snap) => {
           if(!snap.exists()){basic.needRegister(msg,id,this.config.emojis.default.error);return};
-          profile.id = snap.val().profile;
+          profile.profile = snap.val().profile;
           profile.user = msg.channel.guild.members.get(profile.account_id);
           func(msg,args,profile,this);
         })
       }else{
         if(!isNaN(profile.account_id)){
-          profile.id.dota = profile.account_id;
+          profile.profile.dota = profile.account_id;
           func(msg,config,profile,this);
         }else{
           opendota.getProPlayerDotaID(profile.account_id).then((player) => {
-            profile.id.dota = player.account_id;
-            profile.id.steam = player.steamid;
+            profile.profile.dota = player.account_id;
+            profile.profile.steam = player.steamid;
             func(msg,args,profile,this);
           })
         }
@@ -40,7 +40,7 @@ module.exports = new Command('steam',{
 
 function func(msg,args,profile,bot){
   console.log('DOTABUFF ID', profile);
-  opendota.request('player_steam',profile.id.dota).then(results => {
+  opendota.request('player_steam',profile.profile.dota).then(results => {
     if(!results[0].profile){return};
     msg.reply({
       embed: {

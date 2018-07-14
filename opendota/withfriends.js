@@ -4,14 +4,14 @@ const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 
-module.exports = new Command('withfriends',{
+module.exports = new Command(['withfriends','friends'],{
   category : 'Dota 2', help : 'Estadísticas de partidas jugadas con amig@s', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     let self = this
     opendota.odcall(this,msg,args,function(msg,args,profile){
       msg.channel.sendTyping();
-      opendota.request('player_friends',profile.id.dota).then(results => {
-        profile.id.steam = basic.parseProfileURL(results[0].profile.profileurl,'steam');
+      opendota.request('player_friends',profile.profile.dota).then(results => {
+        profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl,'steam');
         results[1] = results[1].filter(friend => friend.with_games > 0);
         const spacesBoard = ['25','3c','6c'];
         let table = util.table.row([basic.parseText(lang.player,'nf'),lang.games.slice(0,1),lang.gamesWR], spacesBoard);

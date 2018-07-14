@@ -55,7 +55,7 @@ function parseText(text,mode){
 
 module.exports.parseText = parseText
 
-module.exports.getMedal = function(rank,mode,replace){
+module.exports.getMedal = function(rank,mode,replace){ //DEPRECATED
   if(!rank){return ""};
   let rank_tier = rank.rank_tier, leaderboard = rank.leaderboard_rank || null;
   let medal_tier = rank.rank_tier ? parseInt(rank_tier.toString()[0]) : 0, medal_range = rank.rank_tier ? parseInt(rank_tier.toString()[1]) : 0;

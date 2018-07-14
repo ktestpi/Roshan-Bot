@@ -1,4 +1,4 @@
-{
+const ITEMS = {
   "1": "blink_dagger",
   "2": "blades_of_attack",
   "3": "broadsword",
@@ -270,3 +270,11 @@
   "1026": "river_painter6",
   "1027": "river_painter7"
 }
+
+
+module.exports = function(id){
+  const item = ITEMS[id] || null
+  return !item.includes('recipe') ? ITEMS[id] : null
+}
+
+module.exports.items = ITEMS

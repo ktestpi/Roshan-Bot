@@ -29,7 +29,7 @@ function func(msg,args,profile,bot){
       title : bot.replace.do(lang.userInfoTitle,{username : user.username},true),
       fields : [
         {name : lang.userInfoIDTitle,
-        value : basic.socialLinks(profile.id,'vertical',bot.config.links.profile),//socialLinks(config.links.profile,snap.val().profile,'verticalIDMinL'),
+        value : basic.socialLinks(profile.profile,'vertical',bot.config.links.profile),//socialLinks(config.links.profile,snap.val().profile,'verticalIDMinL'),
         inline : true}],
       thumbnail : {url : user.avatarURL, height : 40, width : 40},
       color : bot.config.color

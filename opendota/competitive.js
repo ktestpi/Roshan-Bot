@@ -4,7 +4,7 @@ const basic = require('../helpers/basic')
 const util = require('erisjs-utils')
 const lang = require('../lang.json')
 
-module.exports = new Command('competitive',{
+module.exports = new Command(['competitive','comp'],{
   category : 'Dota 2', help : 'Últimos resultados de partidas competitivas', args : ''},
   function(msg, args, command){
     let self = this

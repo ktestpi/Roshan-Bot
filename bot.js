@@ -1,13 +1,26 @@
 const Aghanim = require('aghanim')
+const Eris = require('eris')
 const path = require('path')
 const util = require('erisjs-utils')
 const lang = require('./lang.json')
 const firebase = require('firebase-admin');
-const FirebaseCache = require('./helpers/cache.js')
-const FireListenCache = require('./helpers/firelistencache.js')
+const FirebaseCache = require('./helpers/class/cache.js')
+const FireListenCache = require('./helpers/class/firelistencache.js')
+const FireSetCache = require('./helpers/class/firesetcache')
 const package = require('./package.json')
 const opendota = require('./helpers/opendota')
-const { sortTourneys } = require('./helpers/basic')
+const { sortTourneys, updateAccountSchema } = require('./helpers/basic')
+
+Eris.Guild.prototype.membersWithRole = function(roleName){
+  const role = this.roles.find(r => r.name === roleName)
+  return role ? this.members.filter(m => m.roles.includes(role.id)) : []
+}
+
+// Eris.Message.prototype.replyDM = function(content,file){
+//   return new Promise((resolve,reject) => {
+//     this.author.getDMChannel().then(channel => channel.createMessage(content,file)).then(m => resolve(m)).catch(err => reject(err))
+//   })
+// }
 
 let TOKEN;
 const firebaseConfig = {
@@ -50,12 +63,7 @@ bot.config = CONFIG
 bot.config.colors.palette = {default : CONFIG.color}
 bot.envprod = ENVPROD
 bot.cache = {}
-// console.log('CONFIG',bot.config);
-// bot.helpers = require('./helpers/account.js')
-// bot.helpers = {}
-// for (var h in bot.helpers) {
-//   bot.helpers[h] = bot.helpers[h].bind(bot)
-// }
+
 bot.defineCategories([{name : 'General', help : 'Ayuda de general'},
 {name : 'Dota 2', help : 'Ayuda de Dota 2'},
 {name : 'Cuenta', help : 'Ayuda para la gestión de la cuenta en Roshan'},
@@ -71,9 +79,9 @@ bot.addCommandDir(path.join(__dirname,'general'))
 bot.addCommandDir(path.join(__dirname,'fun'))
 bot.addCommandDir(path.join(__dirname,'bot'))
 bot.addCommandDir(path.join(__dirname,'dota2'))
+bot.addCommandDir(path.join(__dirname,'card'))
 
 bot.addWatcherDir(path.join(__dirname,'watchers'))
-// bot.addCommandDir(path.join(__dirname, 'subcommands'))
 
 bot.messageAllGuilds = function(msg,all,mode){
   if(!this.config.switches.msgGuilds){return}
@@ -93,8 +101,14 @@ bot.messageAllGuilds = function(msg,all,mode){
   // if(!notAll){config.logger.add(mode,message,true)}else{config.logger.add('shout',message,true);}
 }
 
+process.on('unhandledRejection', (reason, p) => {
+  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  // application specific logging, throwing an error, or other logic here
+});
+
 bot.on('postready',() => {
   bot.beam = {}
+  bot.server = bot.guilds.find(g => g.id === bot.config.guild.id)
   bot.config.emojis.bot = util.guild.loadEmojis(bot.guilds.get(bot.config.guild.id));
   // console.log(bot.owner);
   bot.replace = new util.string.ReplaceWithDictionaryAndLang([{
@@ -131,11 +145,15 @@ bot.on('postready',() => {
     if(!bot.envprod && process.argv[2] === '--db'){
       bot.config.switches.backupdb = true;
       console.log('DEV - DB active');
-    }
-    if(!bot.envprod && process.argv[2] === '--dbu'){
+    }else if(!bot.envprod && process.argv[2] === '--dbu'){
       bot.config.switches.backupdb = true;
       bot.config.switches.leaderboardUpdate = true;
       console.log('DEV - DB active - UPDATE Leaderboard');
+    }else if(!bot.envprod){
+      console.log('FAKE DB');
+      bot.cache.profiles = new FirebaseCache(bot.db.child('profiles'),{"189996884322942976" : {card : {bg : '0', pos : 'all', heroes : '1,2,3'}, profile : {dota : '112840925', steam : '76561198073106653', twitch : '', twitter : ''}}});
+      bot.cache.betatesters = new FireSetCache(bot.db.child('betatesters'),[bot.owner.id,...bot.server.membersWithRole(bot.config.roles.betatester).map(m => m.id)])
+      bot.cache.supporters = new FireSetCache(bot.db.child('supporters'),[...bot.server.membersWithRole(bot.config.roles.supporter).map(m => m.id)])
     }
     bot.config.playing = snap.playing;
     bot.config.status = snap.status;
@@ -144,7 +162,6 @@ bot.on('postready',() => {
     bot.config.status_msg = snap.status_msg
     bot.emit('afterload')
   }).catch(err => {console.log('FAIL to load bot',err);bot.emit('afterload')})
-  // console.log(bot.replace);
 })
 
 bot.setStatus = function(type,status,msg,url,update){
@@ -164,58 +181,64 @@ bot.setStatus = function(type,status,msg,url,update){
     Promise.all(promises).then(resolve).catch(reject)
   })
 }
+
 bot.on('afterload', function(){
-  // bot.editStatus("online", {name : bot.config.playing, type : 0});
   bot.setStatus(bot.config.status_act,bot.config.status,bot.config.status_msg,bot.config.status_url,false).then(() => console.log('DONE StATuS'))
-  // console.log('CONFIG',bot.config);
-  // console.log(bot.config.switches);
 
   if(bot.config.switches.backupdb){ //config.switches.backupdb
     util.firebase.backupDBfile(bot.db,bot,bot.config.guild.backup,{filenameprefix : 'roshan_db_', messageprefix : '**Roshan Backup DB**'}).then(snap => {
+      console.log(snap.profiles['189996884322942976']);
+      bot.cache.profiles = new FirebaseCache(bot.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile]]));
       bot.cache.servers = new FirebaseCache(bot.db.child('servers'),snap.servers);
-      // console.log('CACHE DONE');
-      // bot.cache.servers.modify('327603106257043456',{feeds : {enable : false}}).then((el) => console.log('MODIFIED',el))
-      // console.log('leaderboard',bot.config.switches.leaderboardUpdate);
       if(bot.config.switches.leaderboardUpdate){updateLeaderboard(bot,snap.profiles)};
+
       const data_public = {discord_invite : bot.config.invite, discord_server : bot.config.server, users : Object.keys(snap.profiles).length, version : package.version}
       bot.db.child('public').update(data_public).then(() => console.log('Update public Info'))
-      // return;
-      bot.cache.profiles = new FirebaseCache(bot.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile].profile]),'profile');
-      // bot.cache.profiles.modify('189996884322942976',{test : 'test'})
+
+      // Update accounts schema
+      // Object.keys(snap.profiles).map(p => ({_id : p, data : snap.profiles[p]})).forEach(p => {
+      //   p.data.card.pos = 'all'
+      //   p.data.card.bg = '0'
+      //   bot.db.child('profiles/'+p._id).update(updateAccountSchema(p.data))
+      // })
       bot.cache.profiles.getid = function(id){
         const {dota,steam,twitch,twitter} = this.get(id);
         if(![dota,steam,twitch,twitter].some(el => el === undefined)){
             return {dota,steam,twitch,twitter}
         }
-        return undefined};
-        bot.cache.feeds = new FireListenCache(bot.db.child('feeds'))
-        bot.cache.feeds.order = function(){
-          return this.bucket.sort(function(a,b){
-            a = parseInt(a._id)
-            b = parseInt(b._id)
-            return b-a
-          })
-        }
-        bot.cache.tourneys = new FireListenCache(bot.db.child('tourneys'))
-        bot.cache.tourneys.order = function(){
-          const now = util.date()
-          return this.bucket.sort(sortTourneys)
-        }
-        bot.cache.tourneys.getPlaying = function(){
-          const now = util.date()
-          return this.bucket.filter(t => t.start < now && now < t.finish)
-        }
-        bot.cache.tourneys.getNext = function(){
-          const now = util.date()
-          return this.bucket.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
-        }
+        return undefined
+      }
+
+      bot.cache.betatesters = new FireSetCache(bot.db.child('betatesters'),[bot.owner.id,...bot.server.membersWithRole(bot.config.roles.betatester).map(m => m.id),...snap.betatesters ? Object.keys(snap.betatesters).filter(b => snap.betatesters[b]) : []])
+      bot.cache.supporters = new FireSetCache(bot.db.child('supporters'),[...bot.server.membersWithRole(bot.config.roles.supporter).map(m => m.id),...snap.supporters ? Object.keys(snap.supporters).filter(b => snap.betatesters[b]) : []])
+
+      bot.cache.feeds = new FireListenCache(bot.db.child('feeds'))
+      bot.cache.feeds.order = function(){
+        return this.bucket.sort(function(a,b){
+          a = parseInt(a._id)
+          b = parseInt(b._id)
+          return b-a
+        })
+      }
+
+      bot.cache.tourneys = new FireListenCache(bot.db.child('tourneys'))
+      bot.cache.tourneys.order = function(){
+        const now = util.date()
+        return this.bucket.sort(sortTourneys)
+      }
+      bot.cache.tourneys.getPlaying = function(){
+        const now = util.date()
+        return this.bucket.filter(t => t.start < now && now < t.finish)
+      }
+      bot.cache.tourneys.getNext = function(){
+        const now = util.date()
+        return this.bucket.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
+      }
       console.log('CACHE LOADED');
     })
   }
 })
-// console.log(bot.commands);
 
-// var profiles = firebase.database().ref('profiles');
 bot.firebase = firebase;
 bot.db = firebase.database().ref();
 

@@ -1,3 +1,5 @@
+//DEPRECATED
+
 module.exports.heroNamebyID = function(id){
   const heroIDName = []
   heroIDName[1] = 'Anti-Mage';
@@ -148,6 +150,7 @@ module.exports.gameModebyID = function(id){
   gameMode[20] = 'All Random Death Match';
   gameMode[21] = 'Solo Mid 1 vs 1';
   gameMode[22] = 'Ranked All Pick';
+  gameMode[23] = 'Turbo';
   return gameMode[parseInt(id)]
 }
 
