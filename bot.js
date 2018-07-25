@@ -1,5 +1,5 @@
 const Aghanim = require('aghanim')
-const Eris = require('aghanim/node_modules/eris')
+const Eris = require('eris')
 const path = require('path')
 const util = require('erisjs-utils')
 const lang = require('./lang.json')
