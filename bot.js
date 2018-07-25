@@ -1,28 +1,34 @@
 const Aghanim = require('aghanim')
-const Eris = require('eris')
+const Eris = require('aghanim/node_modules/eris')
 const path = require('path')
 const util = require('erisjs-utils')
 const lang = require('./lang.json')
 const firebase = require('firebase-admin');
-const FirebaseCache = require('./helpers/class/cache.js')
-const FireListenCache = require('./helpers/class/firelistencache.js')
-const FireSetCache = require('./helpers/class/firesetcache')
+const FirebaseCache = require('./helpers/classes/firebasecache.js')
+const FireListenCache = require('./helpers/classes/firelistencache.js')
+const FireSetCache = require('./helpers/classes/firesetcache')
+const DiscordLogger = require('./helpers/classes/logger')
 const package = require('./package.json')
 const opendota = require('./helpers/opendota')
 const { sortTourneys, updateAccountSchema } = require('./helpers/basic')
 
+//Extends Eris Guild Structure
 Eris.Guild.prototype.membersWithRole = function(roleName){
   const role = this.roles.find(r => r.name === roleName)
   return role ? this.members.filter(m => m.roles.includes(role.id)) : []
 }
 
-// Eris.Message.prototype.replyDM = function(content,file){
-//   return new Promise((resolve,reject) => {
-//     this.author.getDMChannel().then(channel => channel.createMessage(content,file)).then(m => resolve(m)).catch(err => reject(err))
-//   })
-// }
+//Extends String prototype
+String.prototype.replaceKey = function(dictionary){
+  let text = this.toString()
+  for (let key in dictionary) {
+    text = text.replace(new RegExp(`<${key}>`,'g'),dictionary[key])
+  }
+  return text
+}
 
-let TOKEN;
+//Load Token and Firebase Config
+let TOKEN, ENVPROD = false;
 const firebaseConfig = {
   "type": "service_account",
   // "private_key": process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
@@ -31,7 +37,6 @@ const firebaseConfig = {
   "token_uri": "https://accounts.google.com/o/oauth2/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
 };
-let ENVPROD = false;
 try{
   TOKEN = process.env.BOT_TOKEN;
   firebaseConfig.private_key = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
@@ -53,17 +58,27 @@ for(cat in CONFIG.colors){
   }
 }
 
+//Initialize Firebase
 firebase.initializeApp({
   credential: firebase.credential.cert(firebaseConfig),
   databaseURL: "https://roshan-bot.firebaseio.com"
 });
 
+//Initialize Bot with Aghanim Command Client
 const bot = new Aghanim(TOKEN,CONFIG.setup)
+
+//Add keys to bot
 bot.config = CONFIG
 bot.config.colors.palette = {default : CONFIG.color}
 bot.envprod = ENVPROD
+
+//Create a key to cache specific data from database in Firebase
 bot.cache = {}
 
+//Create a scripts container
+bot.scripts = {}
+
+//Define categories for commands
 bot.defineCategories([{name : 'General', help : 'Ayuda de general'},
 {name : 'Dota 2', help : 'Ayuda de Dota 2'},
 {name : 'Cuenta', help : 'Ayuda para la gestión de la cuenta en Roshan'},
@@ -72,6 +87,7 @@ bot.defineCategories([{name : 'General', help : 'Ayuda de general'},
 {name : 'Fun', help : 'Ayuda los comandos de emojis y memes'}
 ])
 
+//Load commands
 bot.addCommandDir(path.join(__dirname,'opendota'))
 bot.addCommandDir(path.join(__dirname,'account'))
 bot.addCommandDir(path.join(__dirname,'aegis'))
@@ -81,8 +97,10 @@ bot.addCommandDir(path.join(__dirname,'bot'))
 bot.addCommandDir(path.join(__dirname,'dota2'))
 bot.addCommandDir(path.join(__dirname,'card'))
 
+//Load watchers (not neccesary activate through command)
 bot.addWatcherDir(path.join(__dirname,'watchers'))
 
+//Create special functions
 bot.messageAllGuilds = function(msg,all,mode){
   if(!this.config.switches.msgGuilds){return}
   const message = mode !== 'feeds' ? msg.content : `${this.config.emojis.default.feeds} **${msg.author.username}**:\n${msg.content}`;
@@ -101,17 +119,35 @@ bot.messageAllGuilds = function(msg,all,mode){
   // if(!notAll){config.logger.add(mode,message,true)}else{config.logger.add('shout',message,true);}
 }
 
+bot.setStatus = function(type,status,msg,url,update){
+  // let self = this
+  return new Promise((resolve,reject) => {
+    // 0 => playing
+    // 1 => streaming
+    this.config.status = status !== null ? status : this.config.status
+    this.config.status_act = type !== null ? type : this.config.status_act
+    this.config.status_msg = msg !== null ? msg : this.config.status_msg
+    this.config.status_url = url !== null ? url : this.config.status_url
+    let promises = []
+    if(update){
+      promises.push(bot.db.child('bot').update({status : this.config.status, status_act : this.config.status_act, status_msg : this.config.status_msg, status_url : this.config.status_url}))
+    }
+    promises.push(this.editStatus(this.config.status, {name : this.config.status_msg, type : this.config.status_act, url : this.config.status_url}))
+    Promise.all(promises).then(resolve).catch(reject)
+  })
+}
+
+//Manage unhandledRejections
 process.on('unhandledRejection', (reason, p) => {
-  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+  bot.discordLog.send('error','Unhandled Rejection at: '+p, null ,reason);
   // application specific logging, throwing an error, or other logic here
 });
 
+//Event emited after Eris's 'ready' event
 bot.on('postready',() => {
-  bot.beam = {}
   bot.server = bot.guilds.find(g => g.id === bot.config.guild.id)
   bot.config.emojis.bot = util.guild.loadEmojis(bot.guilds.get(bot.config.guild.id));
-  // console.log(bot.owner);
-  bot.replace = new util.string.ReplaceWithDictionaryAndLang([{
+  bot.replace = new util.string.ReplaceWithDictionaryAndLang([{ //Create a replacer with bot info + emojis + lang
     bot_name : bot.user.username,
     bot_icon : bot.user.avatarURL,
     author_name : bot.owner.username,
@@ -127,73 +163,55 @@ bot.on('postready',() => {
     update : bot.config.update
   },bot.config.emojis.bot],true,lang);
 
-  bot.logger = new util.helper.Logger(
-    bot.guilds.get(bot.config.guild.id).channels.get(bot.config.guild.notifications),
-    Object.assign({},{name : 'Roshan', title : 'Notificaciones', color : bot.config.color},{events : CONFIG.logger}), 10);
-  // bot.logger.log('memberin','Hi')
-  // bot.logger.log('oderror','Bye')
-  // bot.logger.log('oderror','Bye')
-  // bot.logger.log('memberin','Hi')
+  bot.discordLog = new DiscordLogger(bot.guilds.get(bot.config.guild.id).channels.get(bot.config.guild.notifications),bot.config.logger)
+
   bot.db.child('bot').once('value').then(snap => {
     if(!snap.exists()){return}else{snap = snap.val()}
     bot.config.switches = snap.switches
     if(!bot.envprod){
+      bot.discordLog.log('info','Creating a fake DB...');
       bot.config.switches.leaderboardUpdate = false;
       bot.config.switches.backupdb = false;
-    }
-    // console.log('ENV',bot.envprod,process.argv[2]);
-    if(!bot.envprod && process.argv[2] === '--db'){
-      bot.config.switches.backupdb = true;
-      console.log('DEV - DB active');
-    }else if(!bot.envprod && process.argv[2] === '--dbu'){
-      bot.config.switches.backupdb = true;
-      bot.config.switches.leaderboardUpdate = true;
-      console.log('DEV - DB active - UPDATE Leaderboard');
-    }else if(!bot.envprod){
-      console.log('FAKE DB');
       bot.cache.profiles = new FirebaseCache(bot.db.child('profiles'),{"189996884322942976" : {card : {bg : '0', pos : 'all', heroes : '1,2,3'}, profile : {dota : '112840925', steam : '76561198073106653', twitch : '', twitter : ''}}});
       bot.cache.betatesters = new FireSetCache(bot.db.child('betatesters'),[bot.owner.id,...bot.server.membersWithRole(bot.config.roles.betatester).map(m => m.id)])
       bot.cache.supporters = new FireSetCache(bot.db.child('supporters'),[...bot.server.membersWithRole(bot.config.roles.supporter).map(m => m.id)])
+    }
+
+    //flags DEVMODE
+    if(!bot.envprod && process.argv[2] === '--db'){
+      bot.config.switches.backupdb = true;
+      bot.discordLog.log('info','DEV - DB active')
+    }else if(!bot.envprod && process.argv[2] === '--dbu'){
+      bot.config.switches.backupdb = true;
+      bot.config.switches.leaderboardUpdate = true;
+      bot.discordLog.log('info','DEV - DB active - UPDATE Leaderboard')
     }
     bot.config.playing = snap.playing;
     bot.config.status = snap.status;
     bot.config.status_act = snap.status_act;
     bot.config.status_url = snap.status_url
     bot.config.status_msg = snap.status_msg
+    bot.scriptsUpdate()
     bot.emit('afterload')
-  }).catch(err => {console.log('FAIL to load bot',err);bot.emit('afterload')})
+  }).catch(err => {bot.discordLog.log('error','FAIL to load bot\n' + err);bot.emit('afterload')})
 })
 
-bot.setStatus = function(type,status,msg,url,update){
-  let self = this
-  return new Promise((resolve,reject) => {
-    // 0 => playing
-    // 1 => streaming
-    self.config.status = status !== null ? status : self.config.status
-    self.config.status_act = type !== null ? type : self.config.status_act
-    self.config.status_msg = msg !== null ? msg : self.config.status_msg
-    self.config.status_url = url !== null ? url : self.config.status_url
-    let promises = []
-    if(update){
-      promises.push(bot.db.child('bot').update({status : self.config.status, status_act : self.config.status_act, status_msg : self.config.status_msg, status_url : self.config.status_url}))
-    }
-    promises.push(self.editStatus(self.config.status, {name : self.config.status_msg, type : self.config.status_act, url : self.config.status_url}))
-    Promise.all(promises).then(resolve).catch(reject)
-  })
-}
-
 bot.on('afterload', function(){
-  bot.setStatus(bot.config.status_act,bot.config.status,bot.config.status_msg,bot.config.status_url,false).then(() => console.log('DONE StATuS'))
+  bot.setStatus(bot.config.status_act,bot.config.status,bot.config.status_msg,bot.config.status_url,false).then(() => bot.discordLog.log('info','Status setted'))
 
   if(bot.config.switches.backupdb){ //config.switches.backupdb
     util.firebase.backupDBfile(bot.db,bot,bot.config.guild.backup,{filenameprefix : 'roshan_db_', messageprefix : '**Roshan Backup DB**'}).then(snap => {
-      console.log(snap.profiles['189996884322942976']);
+      //Create cache maps for Profiles and Servers (Firebase)
+      bot.discordLog.log('info','Backup done!')
       bot.cache.profiles = new FirebaseCache(bot.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile]]));
       bot.cache.servers = new FirebaseCache(bot.db.child('servers'),snap.servers);
+
+      //Update leaderboard (Firebase)
       if(bot.config.switches.leaderboardUpdate){updateLeaderboard(bot,snap.profiles)};
 
+      //Update public (Firebase)
       const data_public = {discord_invite : bot.config.invite, discord_server : bot.config.server, users : Object.keys(snap.profiles).length, version : package.version}
-      bot.db.child('public').update(data_public).then(() => console.log('Update public Info'))
+      bot.db.child('public').update(data_public).then(() => bot.discordLog.log('info','Update public Info'))
 
       // Update accounts schema
       // Object.keys(snap.profiles).map(p => ({_id : p, data : snap.profiles[p]})).forEach(p => {
@@ -201,13 +219,6 @@ bot.on('afterload', function(){
       //   p.data.card.bg = '0'
       //   bot.db.child('profiles/'+p._id).update(updateAccountSchema(p.data))
       // })
-      bot.cache.profiles.getid = function(id){
-        const {dota,steam,twitch,twitter} = this.get(id);
-        if(![dota,steam,twitch,twitter].some(el => el === undefined)){
-            return {dota,steam,twitch,twitter}
-        }
-        return undefined
-      }
 
       bot.cache.betatesters = new FireSetCache(bot.db.child('betatesters'),[bot.owner.id,...bot.server.membersWithRole(bot.config.roles.betatester).map(m => m.id),...snap.betatesters ? Object.keys(snap.betatesters).filter(b => snap.betatesters[b]) : []])
       bot.cache.supporters = new FireSetCache(bot.db.child('supporters'),[...bot.server.membersWithRole(bot.config.roles.supporter).map(m => m.id),...snap.supporters ? Object.keys(snap.supporters).filter(b => snap.betatesters[b]) : []])
@@ -234,9 +245,10 @@ bot.on('afterload', function(){
         const now = util.date()
         return this.bucket.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
       }
-      console.log('CACHE LOADED');
+      bot.discordLog.log('info','Cache loaded');
     })
   }
+
 })
 
 bot.firebase = firebase;
@@ -274,7 +286,7 @@ updateLeaderboard = function(bot,snap){
       const rank = opendota.util.getMedal(results[i],'raw',bot.replace);
       update.ranking[players[i].discord_id] = {username : players[i].username || results[i].profile.personaname, nick : results[i].profile.personaname || '', avatar : players[i].avatar || results[i].profile.avatarmedium, rank : rank.rank, leaderboard : rank.leaderboard};
     }
-    bot.db.child('leaderboard').set(update).then(() => console.log('Ranking Updated'))
+    bot.db.child('leaderboard').set(update).then(() => bot.discordLog.log('info','Ranking Updated'))
   })
   // util.request.getJSONMulti(urls).then((results) => {
   //   let update = {updated : util.date(),ranking : {}};
@@ -285,6 +297,29 @@ updateLeaderboard = function(bot,snap){
   //   }
   //   bot.db.child('leaderboard').set(update)
   // }).catch(err => console.log(err))
+}
+
+bot.scriptsUpdate = function(){
+  return new Promise((resolve, reject) => {
+    this.scripts = {};
+    this.getMessages('470189277544841226').then(messages => {messages
+      .filter(m => m.content.startsWith('🇫'))
+      .map(m => ({tag: m.content.match(/\*\*(\w+)\*\*/)[1], src : m.content.match(/\`\`\`js[\n]?(.+)[\n]?\`\`\`/)[1]}))
+      .forEach(c => {try{this.scripts[c.tag] = eval(`${c.src}`)}catch(err){return this.discordLog.log('error','Error loading scripts',null,err)}})
+      this.discordLog.log('info','Scripts loaded')
+      resolve()
+    })
+  })
+}
+
+bot.cacheReload = function(){
+  return this.db.once('value').then(snap => {
+    if(!snap.exists()){this.discordLog.controlMessage('error','Error al recargar','')}else{snap = snap.val()}
+    this.cache.profiles = new FirebaseCache(this.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile]]));
+    this.cache.servers = new FirebaseCache(this.db.child('servers'),snap.servers);
+    this.cache.betatesters = new FireSetCache(this.db.child('betatesters'),[this.owner.id,...this.server.membersWithRole(this.config.roles.betatester).map(m => m.id),...snap.betatesters ? Object.keys(snap.betatesters).filter(b => snap.betatesters[b]) : []])
+    this.cache.supporters = new FireSetCache(this.db.child('supporters'),[...this.server.membersWithRole(this.config.roles.supporter).map(m => m.id),...snap.supporters ? Object.keys(snap.supporters).filter(b => snap.betatesters[b]) : []])
+  })
 }
 
 bot.connect();

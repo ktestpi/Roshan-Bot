@@ -10,12 +10,13 @@ module.exports = new Command(['player','p'],{
     let self = this
     opendota.odcall(this,msg,args,function(msg,args,profile){
       msg.channel.sendTyping();
-      console.log(profile);
       opendota.request('player',profile.profile.dota).then(results => {
+        console.log(profile.profile.steam,results[0].profile.profileurl);
         profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl,'steam');
+        console.log(profile.profile.steam);
         let top5Heroes = ''
         for (var i = 0; i < 5; i++) {
-          top5Heroes += self.replace.do(lang.top5Heroes,{hero : enumHeroes(results[2][i].hero_id).name, wr : opendota.util.winratio(results[2][i].win,results[2][i].games-results[2][i].win), games : results[2][i].games},true) + '\n'
+          top5Heroes += self.replace.do(lang.top5Heroes,{hero : enumHeroes.getValue(results[2][i].hero_id).name, wr : opendota.util.winratio(results[2][i].win,results[2][i].games-results[2][i].win), games : results[2][i].games},true) + '\n'
         };
         const kda = opendota.util.kda(results[3][0].sum,results[3][1].sum,results[3][2].sum)
         msg.reply({embed : {
@@ -36,6 +37,6 @@ module.exports = new Command(['player','p'],{
           footer : {text : lang.noteData, icon_url : self.user.avatarURL},
           color : self.config.color
         }})
-      }).catch(e => {opendota.error(self,msg,lang.errorOpendotaRequest,e)})
+      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     }) //.bind(this)
   })

@@ -21,7 +21,8 @@ module.exports.getAccountID = function(msg,args,bot){
   let profile
   if(cachePlayerID){
     base.isCached = true; base.isDiscordID = false;
-    profile = Object.assign({},base,bot.cache.profiles.data(base.account_id))
+    // profile = Object.assign({},base,bot.cache.profiles.data(base.account_id))
+    profile = Object.assign({},base,cachePlayerID)
   }else{
     profile = Object.assign({},base,module.exports.accountSchema())
   }
@@ -145,8 +146,10 @@ module.exports.parseProfileURL = function(url,mode){
     if(dotabuff.length != data.length){data = false};
   }else if(mode == 'steam'){
     if(url.startsWith('http://steamcommunity.com/profiles/')){
+      console.log('hello');
       data = url.match(new RegExp('http://steamcommunity.com/profiles/([a-zA-Z0-9_\-]+)'))[1] //http://steamcommunity.com/profiles/(\\w*)
     }else if(url.startsWith('http://steamcommunity.com/id/')){
+      console.log('hi');
       data = url.match(new RegExp('http://steamcommunity.com/id/([a-zA-Z0-9_\-]+)'))[1]
     }
   }else if(mode == 'twitch'){
@@ -169,7 +172,7 @@ module.exports.durationTime = function(time){
 }
 
 module.exports.dotabuffError = function(msg){
-  msg.reply(':x: **Tu DotabuffID tiene algún error.** Comprueba que lo has escrito correctamente y en el formatdo adecuado')
+  msg.reply(':x: **Tu DotabuffID tiene algún error.** Comprueba que lo has escrito correctamente y en el formato adecuado')
 }
 
 module.exports.sendImageStructure = function(msg,query,links,cmd){

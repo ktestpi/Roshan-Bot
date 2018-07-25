@@ -5,12 +5,11 @@ const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 const os = require('os')
 
-module.exports = new Command('usage',{subcommandFrom : 'bot',
+module.exports = new Command('usage',{
   category : 'Owner', help : 'Uso del bot', args : '',
   ownerOnly : true},
   function(msg, args, command){
-    let self = this
-    util.os.getCPUUsage(function(cpuusage){
+    util.os.getCPUUsage(cpuusage => {
       msg.reply({embed : {
         title : `Rendimiento - ${os.platform()}`,
         fields : [
@@ -18,8 +17,8 @@ module.exports = new Command('usage',{subcommandFrom : 'bot',
           {name : 'RAM', value : `${util.os.bytesConvert(os.totalmem()-os.freemem(),'MB')} / ${util.os.bytesConvert(os.totalmem(),'MB')} MB`, inline : true}
           // {name : , value : , inline : true}
         ],
-        footer : {text : `Despierto ${basic.secondsTohms(Math.floor(process.uptime()))}`, icon_url : self.user.avatarURL},
-        color : self.config.color
+        footer : {text : `Despierto ${basic.secondsTohms(Math.floor(process.uptime()))}`, icon_url : this.user.avatarURL},
+        color : this.config.color
       }})
     })
   })

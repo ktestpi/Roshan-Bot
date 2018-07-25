@@ -7,7 +7,5 @@ const lang = require('../lang.json')
 module.exports = new Command('invite',{
   category : 'General', help : 'Invita a Roshan a tu servidor', args : ''},
   function(msg, args, command){
-    let self = this
-    console.log(this);
-    msg.reply(this.replace.do(`<roshan> **Invitación**: ${this.config.invite}`))
+    msg.reply(this.replace.do(lang.inviteServer,{link : this.config.invite},true))
   })

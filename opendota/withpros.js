@@ -34,10 +34,6 @@ module.exports = new Command('withpros',{
           footer : {text: self.replace.do(lang.withProsFooter,{number : resultsShow !== resultsTotal ? resultsShow + "/" + resultsTotal : results[1].length},true), icon_url : self.user.avatarURL},
           color : self.config.color
         }})
-
-        // opendota.odcall(this,msg,args,function(msg,args,profile){
-        //
-        // }) //.bind(this)
-      }).catch(e => {opendota.error(self,msg,lang.errorOpendotaRequest,e)})
+      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     })
   })

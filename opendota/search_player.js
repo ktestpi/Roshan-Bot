@@ -35,6 +35,6 @@ module.exports = new Command('player',{subcommandFrom : 'search',
           footer : {text : this.replace.do(lang.searchplayerFooter,{match : playersShow !== playersTotal ? playersShow + "/" + playersTotal : playersShow},true), icon_url : this.user.avatarURL},
           color : this.config.color
         }})
-      }).catch(err => console.log(err))
+      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     })
   })

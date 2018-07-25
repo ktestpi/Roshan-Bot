@@ -18,6 +18,6 @@ module.exports = new Command('lastmatch',{
         args[0] = cmd.name;
         args[1] = results[0][0].match_id
         cmd.process.call(self,msg,args,command)
-      }).catch(e => {opendota.error(self,msg,lang.errorOpendotaRequest,e)})
+      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     })
   })

@@ -1,3 +1,5 @@
+const { SimpleEnums } = require('../classes/enums')
+
 const HEROES = {
   "1" : {"name" : "Anti-Mage", "name_id" : "anti-mage", alias : ["antimage","am"]},
   "2" : {"name" : "Axe", "name_id" : "axe", alias : ["axe"]},
@@ -120,20 +122,20 @@ const HEROES = {
   "119" : {"name" : "Dark Willow", "name_id" : "dark_willow", alias : ["willow","dw"]},
   "120" : {"name" : "Pangolier", "name_id" : "pangolier", alias : ["pango"]}
 }
+const enumy = new SimpleEnums(HEROES)
+// console.log(enumy,enumy.getValue(44),enumy.getValue('44'));
 
-module.exports = function(id){
-  return HEROES[id] || null
-}
+module.exports = enumy
 
-module.exports.heroes = HEROES
-module.exports.heroesArray = Object.keys(HEROES).map(k => Object.assign({},{_id : k},HEROES[k]))
-
-module.exports.getHeroNameID = function(id){
-  return HEROES[id] ? HEROES[id].name_id : null
-}
-
-module.exports.getHeroIDbyTag = function(tag){
-  tag = tag.toLowerCase()
-  const hero = Object.keys(HEROES).map(k => Object.assign({},{_id : k},HEROES[k])).find(hero => hero.alias.includes(tag))
-  return hero ? hero._id : undefined
-}
+// module.exports.heroes = HEROES
+// module.exports.heroesArray = Object.keys(HEROES).map(k => Object.assign({},{_id : k},HEROES[k]))
+//
+// module.exports.getHeroNameID = function(id){
+//   return HEROES[id] ? HEROES[id].name_id : null
+// }
+//
+// module.exports.getHeroIDbyTag = function(tag){
+//   tag = tag.toLowerCase()
+//   const hero = Object.keys(HEROES).map(k => Object.assign({},{_id : k},HEROES[k])).find(hero => hero.alias.includes(tag))
+//   return hero ? hero._id : undefined
+// }

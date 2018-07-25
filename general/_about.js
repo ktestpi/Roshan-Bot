@@ -7,7 +7,6 @@ const lang = require('../lang.json')
 module.exports = new Command('about',{
   category : 'General', help : 'Información sobre el bot', args : '[errors,thanks]'},
   function(msg, args, command){
-    let self = this
     msg.reply({
       embed : {
         title : this.replace.do(lang.aboutTitle),
@@ -16,7 +15,7 @@ module.exports = new Command('about',{
           {name : lang.invite,
           value : util.md.link(lang.invitation,this.config.invite,true),
           inline : false},
-          {name : lang.inviteServer,
+          {name : lang.devServer,
           value : util.md.link(lang.discord,this.config.server,true),
           inline : false},
           {name : lang.patreon,
@@ -25,7 +24,7 @@ module.exports = new Command('about',{
         ],
         thumbnail : {url: this.user.avatarURL, height : 40, width : 40},
         footer : {
-          text : self.replace.do('aboutFooter'), icon_url : this.user.avatarURL},
+          text : this.replace.do('aboutFooter'), icon_url : this.user.avatarURL},
         color : this.config.color
       }
     });

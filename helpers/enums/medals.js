@@ -17,10 +17,9 @@ module.exports = function({rank,leaderboard}){
   // const medals = ["norank","herald", "guardian", "crusader", "archon", "legend", "ancient", "divine","immortal"];
   // const topmedals = ['top1000','top100','top10','top1'];
   let result = {medal : '', range : '', leaderboard ,compose : '', emoji : ''}
-  console.log(rank,leaderboard);
+  // console.log(rank,leaderboard);
   if(rank){
     if(leaderboard){
-      console.log('HELLO');
       switch (true) {
         case leaderboard > 1000:
           result.medal = MEDAL[8]

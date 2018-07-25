@@ -10,9 +10,9 @@ module.exports = new Command('feeds',{subcommandFrom : 'server',
   category : 'Aegis', help : 'Configuración de feeds', args : '<on,off,[channel]>',
   rolesCanUse: 'aegis'},
   function(msg, args, command){
-    let self = this
+    // let self = this
     if(args[2] === on){
-      this.cache.servers.modify(msg.channel.guild.id,{feeds : {enable : true}}).then(() => {msg.addReaction(this.config.emojis.default.accept)})
+      this.cache.servers.modify(msg.channel.guild.id,{feeds : {enable : true}}).then(() => msg.addReaction(this.config.emojis.default.accept))
     }else if(args[2] === off){
       this.cache.servers.modify(msg.channel.guild.id,{feeds : {enable : false}}).then(() => msg.addReaction(this.config.emojis.default.accept))
     }else{

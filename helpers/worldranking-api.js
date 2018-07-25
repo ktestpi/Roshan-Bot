@@ -29,7 +29,7 @@ api.searchPlayerInWorld = (query) => {
         const ix = d.leaderboard.findIndex(p => p.name.toLowerCase() === query.toLowerCase())
         if(ix > -1){return {pos : ix + 1 , player : d.leaderboard[ix], division : api.divisions[i]}}
       }).filter(p => p)
-      if(where.length){resolve(where)}else{reject()}
+      if(where.length){resolve(where)}else{reject(`Player not found with name: ${query}`)}
     }).catch(err => reject(err))
   })
 }

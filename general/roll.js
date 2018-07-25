@@ -7,7 +7,6 @@ const lang = require('../lang.json')
 module.exports = new Command('roll',{
   category : 'General', help : 'Rollea entre dos números', args : '[min/max] [max]'},
   function(msg, args, command){
-    let self = this
     let min, max, random;
     if(args.length == 1){
       min = 1;
@@ -31,5 +30,5 @@ module.exports = new Command('roll',{
       if(min > max){return};
       random = Math.round(Math.random()*(max - min) + min);
     }
-    msg.reply(`:game_die: **(${min}-${max}) | ${msg.author.username}** has obtenido un **${random}**`);
+    msg.reply(this.replace.do(lang.rollMessage,{min,max, username : msg.author.username,random},true));
   })

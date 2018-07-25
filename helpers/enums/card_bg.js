@@ -1,9 +1,7 @@
-const ENUM = {
+const { SimpleEnums } = require('../classes/enums')
+
+const card_bg = {
   "0" : 'roshan'
 }
 
-module.exports = function(id){
-  return ENUM[id] || null
-}
-
-module.exports.enum = ENUM
+module.exports = new SimpleEnums(card_bg)

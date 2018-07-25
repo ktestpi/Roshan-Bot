@@ -8,30 +8,28 @@ const enumPlayerPos = require('../helpers/enums/player_positions')
 module.exports = new Command('cardconfig',{
   category : 'Cuenta', help : 'Ayuda de la tarjeta de jugador@', args : ''},
   function(msg, args, command){
-    // let self = this
-
     const profile = this.cache.profiles.get(msg.author.id)
-    if(!profile){return} //needregister
+    if(!profile){return basic.needRegister(msg,user.id)}
     let heroes = profile.card.heroes.split(',')
     if(args.length > 1){
       let _heroes = [], _pos = []
       for (var i = 1; i < args.length; i++) {
         if(args[i].startsWith('.')){
-          const hero = enumHeroes.getHeroIDbyTag(args[i].slice(1))
-          if(hero !== undefined){_heroes.push(hero)}
+          const hero = enumHeroes.getKey(args[i].slice(1))
+          if(hero){_heroes.push(hero)}
         }else if(args[i].startsWith('-') && !_pos.length){
-          const position = enumPlayerPos(args[i].slice(1))
+          const position = enumPlayerPos.getValue(args[i].slice(1))
           if(position){_pos.push(args[i].slice(1))}
         }
       }
-
+      if(_heroes.length > 0  && _heroes.length < 3){return msg.reply('Debes establecer 3 héroes')}
       let counter = 0
       do{
         if(_heroes[counter]){heroes[counter] = _heroes[counter]}
         counter++
       }while(counter < 3)
       let update = {}
-      if(_heroes.length){update.heroes = heroes.join(',')}
+      if(_heroes.length){update.heroes = _heroes.join(',')}
       if(_pos.length){update.pos = _pos.join(',')}
       if(!Object.keys(update).length){return}
       this.cache.profiles.modify(msg.author.id,{card : update}).then(() => msg.addReaction(this.config.emojis.default.accept))
@@ -40,12 +38,11 @@ module.exports = new Command('cardconfig',{
         title : this.replace.do(lang.playerCard,{username : msg.author.username},true),
         thumbnail : {url : msg.author.avatarURL, width : 40, height : 40},
         fields : [
-          {name : 'Héroes destacados', value : `\`\`\`${heroes.map(h => enumHeroes(h).name).join(', ')}\`\`\``, inline : false},
-          {name : 'Posición', value : `\`\`\`${enumPlayerPos(profile.card.pos)}\`\`\``, inline : false}
+          {name : lang.highlightsHeroes, value : `\`\`\`${profile.card.heroes ? heroes.map(h => enumHeroes.getValue(h).name).join(', ') : this.replace.do(lang.errorCardNoHeroesConfig,{cmd : 'r!cardhelp'},true)}\`\`\``, inline : false},
+          {name : lang.position, value : `\`\`\`${enumPlayerPos.getValue(profile.card.pos)}\`\`\``, inline : false}
         ],
-        footer : {text : 'Roshan Card', icon_url : this.user.avatarURL},
+        footer : {text : lang.roshanCard, icon_url : this.user.avatarURL},
         color : this. config.color
       }})
     }
-
   })

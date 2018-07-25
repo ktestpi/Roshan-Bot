@@ -6,15 +6,15 @@ const enumPlayerPos = require('../helpers/enums/player_positions')
 module.exports = new Command('cardhelp',{
   category : 'Cuenta', help : 'Ayuda de la tarjeta de jugador@', args : ''},
   function(msg, args, command){
-    let self = this
+    console.log(enumPlayerPos.toArray());
     msg.replyDM({
       embed : {
-        title: 'Card - Ayuda',
-        description : 'Comando: r!cardconfig <argumentos>',
+        title: lang.cardConfigTitle,
+        description : lang.cardHelpCommand,
         fields : [
-          {name : 'Héroes (.)' , value : '`am,axe,kotl...`', inline : false},
-          {name : 'Posición (-)' , value : `\`${enumPlayerPos.array.map(k => k._id).join(',')}\``, inline : false},
-          {name : 'Ejemplos' , value : '`r!cardset .am .lina .invoker -sup`', inline : false}
+          {name : lang.cardHelpHeroesTitle , value : lang.cardHelpHeroesDesc, inline : false},
+          {name : lang.cardHelpPositionTitle , value : `\`${enumPlayerPos.toArray().map(k => k.key).join(',')}\``, inline : false},
+          {name : lang.cardHelpExampleTitle , value : lang.cardHelpExampleDesc, inline : false}
         ],
         color : this.config.color
       }

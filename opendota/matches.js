@@ -17,7 +17,7 @@ module.exports = new Command('matches',{
         let table = util.table.row([lang.wl, lang.hero, lang.kda, lang.duration.slice(0,3), lang.matchID], spacesBoard);
         for (let i = 0; i < 8; i++) {
           if(!results[1][i]){continue};
-          table += util.table.rowRaw([opendota.util.winOrLose(results[1][i].radiant_win,results[1][i].player_slot).slice(0,1), enumHeroes(results[1][i].hero_id).name, results[1][i].kills + '/' + results[1][i].deaths + '/' + results[1][i].assists, basic.durationTime(results[1][i].duration)], spacesBoard)
+          table += util.table.rowRaw([opendota.util.winOrLose(results[1][i].radiant_win,results[1][i].player_slot).slice(0,1), enumHeroes.getValue(results[1][i].hero_id).name, results[1][i].kills + '/' + results[1][i].deaths + '/' + results[1][i].assists, basic.durationTime(results[1][i].duration)], spacesBoard)
           + '    ' + util.md.link('https://www.dotabuff.com/matches/' + results[1][i].match_id,results[1][i].match_id) + '\n';
         };
         msg.reply({embed : {
@@ -32,6 +32,6 @@ module.exports = new Command('matches',{
           footer : {text : lang.noteData, icon_url : self.user.avatarURL},
           color : self.config.color
         }})
-      }).catch(e => console.log(e))
+      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     }) //.bind(this)
   })

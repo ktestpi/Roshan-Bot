@@ -4,11 +4,10 @@ const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 
-module.exports = new Command('servers',{subcommandFrom : 'bot',
+module.exports = new Command('servers',{
   category : 'Owner', help : 'Información de los servidores', args : '<cmd>',
   ownerOnly : true},
   function(msg, args, command){
-    let self = this
     let table = new util.table.new(['ID','N','F','Server','Members','Owner'],['18','1','1','20r','7c','15'],'.');
     const guilds = this.guilds.map(guild => {
       const cache = this.cache.servers.get(guild.id)

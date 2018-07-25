@@ -4,5 +4,6 @@ const util = require('erisjs-utils')
 
 module.exports = new Watcher('','guildMemberRemove',{}, function(guild,member){
   if(guild.id !== this.config.guildID){return};
-  this.logger.add('memberout',member.username,true);
+  // this.logger.add('memberout',member.username,true);
+  this.discordLog.controlMessage('memberout',`**${member.username}**`)
 })

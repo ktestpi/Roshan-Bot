@@ -21,12 +21,12 @@ module.exports = new Command('status',{subcommandFrom : 'bot',
     const status_modes = Object.keys(status_mode)
     let _status = args[2]
     if(!_status){
-      this.setStatus('online',null,null,null,true).then(() => this.logger.add('bot', `Status to default`,true)).catch(err => msg.reply(err))
+      this.setStatus('online',null,null,null,true).then(() => this.discordLog.controlMessage('bot', `Status to default`)).catch(err => this.discordLog.controlMessage('error','Ha ocurrido un error al cambiar de estado', err))
     }else{
       _status = _status.toLowerCase()
       if(status_modes.includes(_status)){
         const status_save = status_mode[_status]
-        this.setStatus(null,status_save,null,null,true).then(() => this.logger.add('bot', `Status to ${status_save}`,true)).catch(err => msg.reply(err))
+        this.setStatus(null,status_save,null,null,true).then(() => this.discordLog.controlMessage('bot', `Status to ${status_save}`)).catch(err => this.discordLog.controlMessage('error','Ha ocurrido un error al cambiar de estado', err))
       }
     }
   })

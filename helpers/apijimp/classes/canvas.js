@@ -8,30 +8,35 @@ class Square{
     this.h = h || 0
   }
   place(ref,mode,options){
-    if(!ref){throw new Error('Referencia no encontrada')}
+    // if(!ref){throw new Error('Referencia no encontrada')}
+    if(!ref){
+      console.log('Warning: Referencia no encontrada! => Ref = Self');
+      ref = {x : this.x, y : this.y, w : this.w, h : this.h}
+    }
+    options = options || {x : 0, y : 0}
     options.x = options.x || 0
     options.y = options.y || 0
-    if(mode.includes('lx')){
+    if(mode.includes('lx')){ // >>|[s] r|
         this.x = ref.x + options.x
-    }else if(mode.includes('rx')){
+    }else if(mode.includes('rx')){ // |r|[s]>>
         this.x = ref.x + ref.w + options.x
-    }else if(mode.includes('cx')){
+    }else if(mode.includes('cx')){ // |r[>s<]|>>
         this.x = ref.x + (ref.w-this.w)/2 + options.x
-    }else if(mode.includes('gxl')){
+    }else if(mode.includes('csx')){ // x[>s<]
+        this.x = this.x - this.w/2 + options.x
+    }else if(mode.includes('gxl')){ //|r[s]|
       this.x = ref.x + options.x
-    }else if(mode.includes('gxr')){
-      // ref.log()
-      // this.log()
-      // console.log(ref.x,ref.w,this.w,options.x);
+    }else if(mode.includes('gxr')){ //| r [s]|<<
       this.x = ref.x + ref.w - this.w - options.x
-      // console.log('THIS.X',this.x);
     }
-    if(mode.includes('ty')){
+    if(mode.includes('ty')){ // __|[s^] r|
         this.y = ref.y + options.y
     }else if(mode.includes('by')){
         this.y = ref.y + ref.h + options.y
     }else if(mode.includes('cy')){
         this.y = ref.y + (ref.h-this.h)/2 + options.y
+    }else if(mode.includes('csy')){
+        this.y = this.y - this.h/2 + options.y
     }else if(mode.includes('gyt')){
       this.y = ref.y
     }else if(mode.includes('gyb')){
@@ -54,40 +59,14 @@ class Square{
   }
 }
 
-function textWidth(text,font){
-  const chars = text.split('');
-  let size = 0
-  chars.forEach(c => {
-    size += font.chars[c] ? font.chars[c].xadvance : 0
-  })
-  return size
-}
-
-const elementsTypes = ['image','text','ref']
-
 class Element extends Square{
-  constructor(type,name,data){
+  constructor(name,data,canvas){
     super(data.x,data.y,data.w,data.h)
-    if(!elementsTypes.includes(type)){ throw new Error('Element not compatible with type:',type)}
-    this.type = type
+    this.type = 'Element'
     this.name = name
-    this.canvas = data.canvas
+    this.canvas = canvas
     // console.log('CREATE ELEMENT,',this.name,!this.canvas);
     if(!this.canvas){console.log('Element NO BASE: ',this.name);}
-    if(type === 'image'){
-      this.img = data.img
-      this.w = data.img.bitmap.width
-      this.h = data.img.bitmap.height
-    }else if(type === 'text'){
-      this.font = data.font
-      // console.log('TEXT ELEMENT: Font',this.name,this.font ? true : false);
-      // console.log(this.font);
-      this.text = data.text
-      this.w = textWidth(this.text,this.font)
-      this.h = data.font.info.size
-    }else if(type === 'ref'){
-
-    }
   }
   log(){
     console.log('Element:',this.name,'TYPE:',this.type);
@@ -98,6 +77,41 @@ class Element extends Square{
   add(){
     // console.log('ADDING:',this.name,!this.canvas);
     this.canvas.add(this)
+    return this
+  }
+}
+
+class Image extends Element{
+  constructor(name,data,canvas){
+    super(name,data,canvas)
+    this.type = 'Image'
+    this.img = data.img
+    this.w = data.img.bitmap.width
+    this.h = data.img.bitmap.height
+  }
+}
+
+class Text extends Element{
+  constructor(name,data,canvas){
+    super(name,data,canvas)
+    this.type = 'Text'
+    this.font = data.font
+    this.text = String(data.text)
+    this.w = Text.width(this.font,this.text)
+    this.h = data.font.info.size
+    this.cut = (chars) => {}
+  }
+  sliceUntil(chars){
+    this.text.slice(0,chars)
+    return this
+  }
+  static width(font,text){
+    const chars = text.split('');
+    let size = 0
+    chars.forEach(c => {
+      size += font.chars[c] ? font.chars[c].xadvance : 0
+    })
+    return size
   }
 }
 
@@ -109,34 +123,37 @@ class Canvas extends Square{
     this.elements = []
   }
   new(type,name,data){
-    data.canvas = this
-    return new Element(type,name,data)
+    return new Element(name,data,this)
   }
-  write(name,text,font){
+  write(name,text,font,options){
     let data = {}
     data.text = text
     data.font = typeof(font === 'string') && this.fonts[font] ? this.fonts[font] : font
-    return this.new('text',name,data)
+    options = options || {}
+    data.x = options.x ? options.x : undefined
+    data.y = options.y ? options.y : undefined
+    return new Text(name,data,this)
   }
   paint(name,img,options){
     let data = Object.assign({img},options ? options : {})
-    return this.new('image',name,data)
+    return new Image(name,data,this)
   }
   ref(name,data){
-    return this.new('ref',name,data)
+    return new Element(name,data,this)
   }
   group(name,elements,data){
     return new Group(name,elements,this)
   }
   add(el){
+    if(!((el instanceof Element) || (el instanceof Image) || (el instanceof Text))){ throw new Error('Elemento no compatible')}
     this.elements.push(el)
     return this
   }
   create(format){
     this.elements.forEach(el => {
-      if(el.type === 'image'){
+      if(el instanceof Image){
         this.base.composite(el.img,el.x,el.y)
-      }else if(el.type === 'text'){
+      }else if(el instanceof Text){
         this.base.print(el.font,el.x,el.y,el.text)
       }
     })
@@ -152,6 +169,7 @@ class Canvas extends Square{
     console.log('Canvas:',this.name);
     console.log('X/Y:',this.x,this.y);
     console.log('W/H:',this.w,this.h);
+    console.log('NumElements:',this.elements.length);
     return this
   }
 }
@@ -166,7 +184,7 @@ class Group extends Square{
     let min = {x : null, y : null}
     let max = {x : null, y : null}
     this.elements.forEach(el => {
-      // el.log()
+      if(!((el instanceof Element) || (el instanceof Image) || (el instanceof Text))){ throw new Error('Elemento no compatible para un grupo')}
       min.x = startFromNull(min.x,el.x)
       min.y = startFromNull(min.y,el.y)
       max.x = startFromNull(max.x,el.x+el.w)
@@ -195,13 +213,23 @@ class Group extends Square{
     return this.add()
   }
   move(x,y,dx,dy){
-    this.elements.forEach(e => e.move(x,y,dx,dy))
+    this.elements.forEach(el => el.move(x,y,dx,dy))
     this.calcSpace()
     return this
   }
   add(){
     this.elements.forEach(el => el.add())
     return this
+  }
+  alignElements(mode){
+    this.elements.forEach(el => {
+      if(mode === 'cx'){
+        el.move(null,null,(el.w-this.w/2),0)
+      }else if(mode === 'cy'){
+        el.move(null,null,0,(el.h-this.h/2))
+      }
+    })
+    return this.calcSpace()
   }
   calcSpace(){
     let min = {x : null, y : null}

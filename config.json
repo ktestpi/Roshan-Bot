@@ -6,19 +6,23 @@
     "helpMessageAfterCategories" : "**Nota**: Usa `r!help <categoría>` para los comandos de esa categoría.\n\n:information_source: Cualquier duda o problema puedes pasarte por el **servidor de Roshan**: https://discord.gg/SxsYkgX"
   },
   "logger" : {
-    "memberout" : {"icon" : "📤", "color" : "magenta"},
-    "memberin" : {"icon" : "📥", "color" : "magenta"},
-    "bot" : {"icon" : "🤖", "color" : "magenta"},
-    "accountnew" : {"icon" : "🤖📥", "color" : "magenta"},
-    "accountmodify" : {"icon" : "🤖📝", "color" : "magenta"},
-    "accountremove" : {"icon" : "🤖📤", "color" : "magenta"},
-    "guildnew" : {"icon" : "👥📥", "color" : "magenta"},
-    "guildremove" : {"icon" : "👥📤", "color" : "magenta"},
-    "oderror" : {"icon" : "🎮❌", "color" : "error"},
-    "feed" : {"icon" : "📰", "color" : "magenta"},
-    "notifications" : {"icon" : "🔔", "color" : "magenta"},
-    "shout" : {"icon" : "📢", "color" : "magenta"},
-    "game" : {"icon" : "🎮", "color" : "magenta"}
+    "dmMessage" : true,
+    "events" : [
+      {"tag" : "memberin", "icon" : "📥", "level" : 1, "color" : "magenta"},
+      {"tag" : "memberout", "icon" : "📤", "level" : 1, "color" : "magenta"},
+      {"tag" : "bot", "icon" : "🤖", "level" : 1, "color" : "magenta"},
+      {"tag" : "accountnew", "icon" : "🤖📥", "level" : 1, "color" : "magenta"},
+      {"tag" : "accountmodify", "icon" : "🤖📝", "level" : 1, "color" : "magenta"},
+      {"tag" : "accountremove", "icon" : "🤖📤", "level" : 1, "color" : "magenta"},
+      {"tag" : "guildnew", "icon" : "👥📥", "level" : 1, "color" : "magenta"},
+      {"tag" : "guildremove", "icon" : "👥📤", "level" : 1, "color" : "magenta"},
+      {"tag" : "oderror", "icon" : "🎮❌", "level" : 1, "color" : "magenta"},
+      {"tag" : "feed", "icon" : "📰", "level" : 1, "color" : "magenta"},
+      {"tag" : "notifications", "icon" : "🔔", "level" : 1, "color" : "magenta"},
+      {"tag" : "shout", "icon" : "📢", "level" : 1, "color" : "magenta"},
+      {"tag" : "game", "icon" : "🎮", "level" : 1, "color" : "magenta"},
+      {"tag" : "error", "icon" : "❌", "level" : 1, "color" : "magenta"}
+    ]
   },
   "update" : "12/04/2018",
   "server" : "https://discord.gg/SxsYkgX",
@@ -52,6 +56,7 @@
       "feeds" : "📰", "trophy" : "🏆",
       "Dnotification" : ":bell:", "Drobot" : ":robot: ", "Dfix" : ":tools: "
     },
+    "raw" : {"cooldown" : "<:cooldown:469273616681533462>"},
     "bot" : {}
   },
   "guild" : {"id" : "327603106257043456", "changelog": "327603215325462539", "feeds" : "342031271679098880", "biblioteca" : "335100706975514635", "sendmessages" : "330646027965300736", "botadmin": "338316246686892032", "accounts" : "330949705389441024", "notifications" : "331547028826095617", "bugs" : "327605187663364098", "alphatest" : "327603261085581312", "backup" : "398485131003822080", "generated" : "441307771510456331"},

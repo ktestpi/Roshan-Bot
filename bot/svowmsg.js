@@ -4,17 +4,16 @@ const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 
-module.exports = new Command('svowmsg',{subcommandFrom : 'bot',
-  category : 'Owner', help : 'Comando de control del bot', args : '<cmd>',
+module.exports = new Command('svowmsg',{
+  category : 'Owner', help : 'Mensage a propietario del servidor', args : '<guildID>',
   ownerOnly : true},
   function(msg, args, command){
-    let self = this
-    if(!args[2]){return}
-    const id = args[2];
+    if(!args[1]){return msg.reply(lang.errorNoServerID)}
+    const id = args[1];
     const guild = this.guilds.get(id);
-    if(!guild){return}
+    if(!guild){return msg.reply(lang.errorGuildNotFound)}
     const owner = guild.members.get(guild.ownerID);
-    const message = args.from(3)
+    const message = args.from(2)
     const embed = {
       author : {name : `Mensaje propietario: ${guild.name}`, icon_url : guild.iconURL},
       // title : message.reason,

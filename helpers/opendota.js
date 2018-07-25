@@ -26,7 +26,6 @@ const OPENDOTA_URLS = {
 let opendota = {};
 
 opendota.util = require('./opendota-utils.js')
-opendota.enum = require('./opendota-enums.js')
 
 opendota.request = function(mode,id){
   const urls = {
@@ -51,14 +50,14 @@ opendota.request = function(mode,id){
 opendota.titlePlayer = function(results,title,replace){
   // console.log(replace);console.log('*********************');
   const medal = enumMedal({rank : results[0].rank_tier, leaderboard : results[0].leaderboard_rank})
-  console.log(medal);
+  // console.log(medal);
   return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : replace.do(medal.emoji)},true)
   : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : replace.do(medal.emoji)},false)
   // return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : opendota.util.getMedal(results[0],'emoji',replace)},true)
   // : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : opendota.util.getMedal(results[0],'emoji',replace)},false)
 }
 
-opendota.odcall = function(bot,msg,args,callback){
+opendota.__odcall = function(bot,msg,args,callback){
   var profile = basic.getAccountID(msg,args,bot);
   if(profile.isCached){
     // console.log('Launch form cached',profile);
@@ -85,6 +84,33 @@ opendota.odcall = function(bot,msg,args,callback){
     }
   }
 }
+opendota.odcall = function(bot,msg,args,callback){
+  var profile = basic.getAccountID(msg,args,bot);
+  if(profile.isCached){
+    // console.log('Launch form cached',profile);
+    return callback(msg,args,profile);
+  }else{
+    if(profile.isDiscordID){
+      return bot.db.child('profiles/' + profile.account_id).once('value').then((snap) => {
+        if(!snap.exists()){basic.needRegister(msg,msg.author.id);return};
+        profile.id = snap.val().profile;
+        return callback(msg,args,profile);
+      })
+    }else{
+      if(!isNaN(profile.account_id)){
+        profile.profile.dota = profile.account_id;
+        return callback(msg,args,profile);
+      }else{
+        return basic.getProPlayerDotaID(profile.account_id).then((player) => {
+          // console.log('PLAYER',player);
+          profile.profile.dota = player.account_id;
+          profile.profile.steam = player.steamid;
+          return callback(msg,args,profile);
+        })
+      }
+    }
+  }
+}
 
 opendota.getPlayersDotaName = function(query){ //Promise
   return new Promise((resolve, reject) => {
@@ -105,8 +131,8 @@ opendota.getProPlayersDotaName = function(query){ //Promise
 }
 
 opendota.error = function(bot,msg,message,error){
-  bot.logger.add('oderror',`Ocurrió un error con Opendota:\n<< ${error} >>\nUser: ${msg.author.username} (${msg.author.id})`,true)
-  msg.author.getDMChannel().then(channel => channel.createMessage(message))
+  return Promise.all([bot.logger.add('oderror',`Ocurrió un error con Opendota:\n<< ${error} >>\nUser: ${msg.author.username} (${msg.author.id})`,true),
+  msg.author.getDMChannel().then(channel => channel.createMessage(message))])
 }
 
 opendota.urls = OPENDOTA_URLS

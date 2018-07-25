@@ -11,5 +11,6 @@ module.exports = new Watcher('','guildMemberAdd',{}, function(guild,member){
       this.createMessage(guild.id,this.replace.do('roshanGuildnewMemberWelcome',{member : member.mention},true));
     }
   }
-  this.logger.add('memberin',member.username,true);
+  // this.logger.add('memberin',member.username,true)
+  this.discordLog.controlMessage('memberin',`**${member.username}**`)
 })

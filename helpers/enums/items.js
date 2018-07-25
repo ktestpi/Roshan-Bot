@@ -1,3 +1,5 @@
+const { SimpleEnums } = require('../classes/enums')
+
 const ITEMS = {
   "1": "blink_dagger",
   "2": "blades_of_attack",
@@ -271,10 +273,9 @@ const ITEMS = {
   "1027": "river_painter7"
 }
 
+module.exports = new SimpleEnums(ITEMS)
 
-module.exports = function(id){
-  const item = ITEMS[id] || null
-  return !item.includes('recipe') ? ITEMS[id] : null
-}
-
-module.exports.items = ITEMS
+// module.exports = function(id){
+//   const item = ITEMS[id] || null
+//   return !item.includes('recipe') ? ITEMS[id] : null
+// }

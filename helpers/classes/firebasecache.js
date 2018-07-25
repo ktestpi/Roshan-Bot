@@ -24,6 +24,9 @@ class FirebaseCache extends util.type.Collection{
     delete match._id
     return match
   }
+  get(id){
+    return this.has(id) ? JSON.parse(JSON.stringify(super.get(id))) : undefined
+  }
   save(id,data){
     return new Promise((resolve, reject) => {
       this.add(id,data)

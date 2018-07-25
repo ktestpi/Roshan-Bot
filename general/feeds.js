@@ -12,9 +12,9 @@ module.exports = new Command('feeds',{
     const description = feeds.map(feed => `\`${util.dateCustom(parseInt(feed._id)*1000,'h:m D/M',true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + util.md.link(feed.link,':link:') : ''}`).join('\n')
     msg.reply({
       embed : {
-        title : 'Últimos feeds',
+        title : lang.lastFeeds,
         description : description,
-        fields : [{name : 'Más feeds', value : this.config.links.web_feeds, inline : false}],
+        fields : [{name : lang.moreFeeds, value : this.config.links.web_feeds, inline : false}],
         // fields : fields,
         // thumbnail : {
         //   url : links[query].thumbnail  || config.bot.icon,

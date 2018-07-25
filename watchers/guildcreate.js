@@ -28,5 +28,6 @@ module.exports = new Watcher('','guildCreate',{}, function(guild){
     }
   })
   resetServerConfig(this,guild)
-  this.logger.add('guildnew',guild.name,true);
+  // this.logger.add('guildnew',guild.name,true);
+  this.discordLog.controlMessage('guildnew',`**${guild.name}**`)
 })

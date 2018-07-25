@@ -1,3 +1,5 @@
+const { SimpleEnums } = require('../classes/enums')
+
 const GAMEMODE = {
   "0" : 'Unknown',
   "1" : 'All Pick',
@@ -25,8 +27,4 @@ const GAMEMODE = {
   "23" : 'Turbo'
 }
 
-module.exports = function(id){
-  return GAMEMODE[id] || null
-}
-
-module.exports.gamemode = GAMEMODE
+module.exports = new SimpleEnums(GAMEMODE)

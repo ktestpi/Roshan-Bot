@@ -7,13 +7,11 @@ module.exports = new Command(['beta'],{
   category : 'Owner', help : 'Betatesters', args : '[<add/remove> <mención>]',
   ownerOnly : true},
   function(msg, args, command){
-    // let self = this
-    // if(!args[1]){return}
     if(['add','remove'].includes(args[1]) && args.length > 2){
       const cmd = args[1]
       const members = msg.mentions.map(m => m.id)
       const regex = new RegExp('\\d+')
-      for (var i = 2; i < args.length; i++) {console.log(args[i],regex,regex.test(args[i]));
+      for (var i = 2; i < args.length; i++) {
         if(regex.test(args[i])){members.push(args[i])}
       }
       if(!members.length){return}

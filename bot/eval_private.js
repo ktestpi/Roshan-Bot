@@ -4,7 +4,7 @@ const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 const {inspect} = require('util')
 module.exports = new Command(['evalp','ep'],{
-  category : 'Owner', help : '', args : '',
+  category : 'Owner', help : '', args : '', hide : true,
   ownerOnly : true},
   function(msg, args, command){
     // let self = this
@@ -17,20 +17,20 @@ module.exports = new Command(['evalp','ep'],{
     if(toEval.includes('return')){toEval=`(function(){${toEval}})()`}
     try{
       let result = eval(toEval)
-      console.log(`Eval: ${toEval}`);
+      console.log(`EvalPrivate: ${toEval}`);
       Promise.resolve(result).then(res => {
         if(typeof result === 'object'){
           result = inspect(result)
         }
         result = String(result).slice(0,1000)
-        console.log(`Eval Result: ${result}`);
+        console.log(`EvalP Result: ${result}`);
         bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
       }).catch(err => {
-        console.log(`Eval Error: ${err}`);
+        console.log(`EvalP Error: ${err}`);
         bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
       })
     }catch(err){
-      console.log(`Code Error: ${err}`);
-      bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Code Error**\`\`\`js\n${err}\`\`\``)
+      console.log(`Code Error: ${err.stack}`);
+      bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
   })

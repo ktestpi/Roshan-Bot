@@ -1,3 +1,5 @@
+const { SimpleEnums } = require('../classes/enums')
+
 const LOBBYTYPE = {
   "-1" : 'Invalid',
   "0" : 'Pública', //Public matchmaking
@@ -11,8 +13,4 @@ const LOBBYTYPE = {
   "8" : 'Solo Mid 1 vs 1'
 }
 
-module.exports = function(id){
-  return LOBBYTYPE[id] || null
-}
-
-module.exports.lobby = LOBBYTYPE
+module.exports = new SimpleEnums(LOBBYTYPE)

@@ -39,7 +39,7 @@ module.exports = new Command('steam',{
   })
 
 function func(msg,args,profile,bot){
-  console.log('DOTABUFF ID', profile);
+  // console.log('DOTABUFF ID', profile);
   opendota.request('player_steam',profile.profile.dota).then(results => {
     if(!results[0].profile){return};
     msg.reply({
@@ -51,5 +51,5 @@ function func(msg,args,profile,bot){
         color : bot.config.color
       }
     })
-  }).catch(e => {opendota.error(bot,msg,lang.errorOpendotaRequest,e)})
+  }).catch(err => bot.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
 }

@@ -14,6 +14,7 @@ module.exports = new Command('search',{
     const query = args.from(2)
     api.searchPlayerInWorld(query).then(r => {
       // console.log(r);
+      // throw new Error('TestingError')
       const table = new util.table.new([lang.region,lang.position],['8','8r'])
       r.forEach(d => table.addRow([d.division,d.pos]))
       msg.reply({embed : {
@@ -21,7 +22,10 @@ module.exports = new Command('search',{
         description : lang.search + ': ' + `\`${query}\`\n\n${table.do()}`,
         color : this.config.color
       }})
-    }).catch(err => msg.reply(this.replace.do('errorWorldBoardSearchPlayer',{query : `\`${query}\``},true)))
+    }).catch(err => {
+      const error = lang.errorWorldBoardSearchPlayer.replaceKey({query})
+      this.discordLog.send('error',error,error,err,msg.channel)
+    })
   })
 
 const replace = (text) => text.replace(/`/g,'')

@@ -32,6 +32,6 @@ module.exports = new Command(['withfriends','friends'],{
         // opendota.odcall(this,msg,args,function(msg,args,profile){
         //
         // }) //.bind(this)
-      }).catch(e => {opendota.error(self,msg,lang.errorOpendotaRequest,e)})
+      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     })
   })

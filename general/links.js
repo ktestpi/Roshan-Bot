@@ -8,7 +8,6 @@ const links = require('../containers/links.json')
 module.exports = new Command('links',{
   category : 'General', help : 'Enlaces interesantes sobre el juego', args : '<categoría>'},
   function(msg, args, command){
-    let self = this
     const query = args.after
     if(!links[query]){return basic.wrongCmd(msg,links,args.until(1))};
     let textLinks = '';
@@ -29,7 +28,6 @@ module.exports = new Command('links',{
         }
       }
     };
-
     msg.reply({
       embed : {
         title : links[query].title,

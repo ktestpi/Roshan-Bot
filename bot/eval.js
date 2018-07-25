@@ -4,7 +4,7 @@ const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 const {inspect} = require('util')
 module.exports = new Command(['eval','e'],{
-  category : 'Owner', help : '', args : '',
+  category : 'Owner', help : '', args : '', hide : true,
   ownerOnly : true},
   function(msg, args, command){
     // let self = this
@@ -30,8 +30,8 @@ module.exports = new Command(['eval','e'],{
         msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
       })
     }catch(err){
-      console.log(`Code Error: ${err}`);
-      msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Code Error**\`\`\`js\n${err}\`\`\``)
+      console.log(`Code Error: ${err.stack}`);
+      msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
 
   })

@@ -8,7 +8,6 @@ const enumHeroes = require('../helpers/enums/heroes')
 module.exports = new Command(['randompick','rp'],{
   category : 'Dota 2', help : 'Elige aleatoriamente un héroe', args : ''},
   function(msg, args, command){
-    // let self = this
     let hero
     do {
       hero = enumHeroes(Math.floor(Math.random()*this.config.constants.heroes)).name;
