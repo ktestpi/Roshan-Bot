@@ -8,6 +8,7 @@ const DiscordLogger = require('../helpers/classes/logger')
 const lang = require('../lang.json')
 const { sortTourneys, updateAccountSchema } = require('../helpers/basic')
 const package = require('../package.json')
+const opendota =require('../helpers/opendota')
 
 module.exports = new Event('','ready',{}, function(){
   //Create containers
