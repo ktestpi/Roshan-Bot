@@ -3,7 +3,9 @@
     "prefix" : "r!",
     "helpMessage" : ":information_source: __**Ayuda de Roshan**__",
     "helpDM" : true,
-    "helpMessageAfterCategories" : "**Nota**: Usa `r!help <categoría>` para los comandos de esa categoría.\n\n:information_source: Cualquier duda o problema puedes pasarte por el **servidor de Roshan**: https://discord.gg/SxsYkgX"
+    "extensions" : ["eris/message"],
+    "helpMessageAfterCategories" : "**Nota**: Usa `r!help <categoría>` para los comandos de esa categoría.\n\n:information_source: Cualquier duda o problema puedes pasarte por el **servidor de Roshan**: https://discord.gg/SxsYkgX",
+    "devLogs" : false
   },
   "logger" : {
     "dmMessage" : true,

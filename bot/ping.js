@@ -1,8 +1,4 @@
 const { Command } = require('aghanim')
-// const opendota = require('../helpers/opendota')
-// const basic = require('../helpers/basic')
-// const lang = require('../lang.json')
-// const util = require('erisjs-utils')
 
 module.exports = new Command('ping',{
   category : 'Owner', help : 'Parche actual de dota', args : '',

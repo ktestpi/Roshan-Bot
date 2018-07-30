@@ -12,7 +12,8 @@ module.exports = new Command('tes',{
       // this.dislog.send('memberin',`Nuevo usuario: **${msg.author.username}**`,`Hola **${msg.author.username}**`,'Descripción del error',msg.author)
       // this.dislog.send('memberin',{title : 'Hola',description : msg.author.username},`Hola **${msg.author.username}**`,'Descripción del error',msg.author)
       // this.discordLog.send('guildnew',null,'Name Guild',null,msg.author)
-      console.log(this.cache.profiles.find(p => p._id === msg.author.id))
+      // console.log(this.cache.profiles.find(p => p._id === msg.author.id))
+      console.log(msg.prototype,msg.__proto__);
       // console.log(this.logg.bucket,this.logg.overview());
       // setTimeout(() => msg.reply(this.logg.overview()),2000)
   })

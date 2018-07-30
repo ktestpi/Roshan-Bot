@@ -16,9 +16,9 @@ module.exports = new Command(['match','m'],{
     opendota.request('match',args[1]).then(results => {
       if(results[0].error){return}
       if(results[0].game_mode === 19){return msg.reply('Es una partida de evento. No se muestra información sobre ella.')}
-      const spacesBoard = ['19','8','8','6','5','4','17'];
-      var radiant = new util.table.new([lang.hero, lang.kda, lang.gpmxpm, lang.lhd, lang.hdmg, lang.tdmg, lang.player], spacesBoard);
-      var dire = new util.table.new([lang.hero, lang.kda, lang.gpmxpm, lang.lhd, lang.hdmg, lang.tdmg, lang.player], spacesBoard);
+      const spacesBoard = ['19f','8f','8f','6f','5f','4f','17f'];
+      var radiant = new util.table.new([lang.hero, lang.kda, lang.gpmxpm, lang.lhd, lang.hdmg, lang.tdmg, lang.player], spacesBoard, '\u2002');
+      var dire = new util.table.new([lang.hero, lang.kda, lang.gpmxpm, lang.lhd, lang.hdmg, lang.tdmg, lang.player], spacesBoard, '\u2002');
       for (var i = 0; i < results[0].players.length; i++) {
         if(i < 5){
           radiant.addRow([enumHeroes.getValue(results[0].players[i].hero_id).name, results[0].players[i].kills + '/' + results[0].players[i].deaths + '/' + results[0].players[i].assists, results[0].players[i].gold_per_min + '/' + results[0].players[i].xp_per_min, results[0].players[i].last_hits + '/' + results[0].players[i].denies, util.number.tok(results[0].players[i].hero_damage) + lang.k, util.number.tok(results[0].players[i].tower_damage) + lang.k, results[0].players[i].name ? basic.parseText(results[0].players[i].name,'nf') : basic.parseText(results[0].players[i].personaname || lang.unknown,'nf')]);

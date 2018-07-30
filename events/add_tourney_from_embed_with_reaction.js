@@ -1,7 +1,7 @@
-const { Watcher } = require('aghanim')
+const { Event } = require('aghanim')
 const util = require('erisjs-utils')
 
-module.exports = new Watcher('','messageReactionAdd',{}, function(msg,emoji,userID){
+module.exports = new Event('','messageReactionAdd',{}, function(msg,emoji,userID){
   // console.log('ADD TOURNEY BEFORE',msg);
   if(userID === this.owner.id && emoji.name === this.config.emojis.default.trophy){
     // && msg.author.id === this.user.id && msg.embeds[0] && msg.embeds[0].title === 'Nuevo torneo'

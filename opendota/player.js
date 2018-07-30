@@ -37,6 +37,6 @@ module.exports = new Command(['player','p'],{
           footer : {text : lang.noteData, icon_url : self.user.avatarURL},
           color : self.config.color
         }})
-      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
+      }).catch(err => this.discordLog.send('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     }) //.bind(this)
   })

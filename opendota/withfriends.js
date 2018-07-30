@@ -13,11 +13,11 @@ module.exports = new Command(['withfriends','friends'],{
       opendota.request('player_friends',profile.profile.dota).then(results => {
         profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl,'steam');
         results[1] = results[1].filter(friend => friend.with_games > 0);
-        const spacesBoard = ['25','3c','6c'];
-        let table = util.table.row([basic.parseText(lang.player,'nf'),lang.games.slice(0,1),lang.gamesWR], spacesBoard);
+        const spacesBoard = ['25f','3cf','6cf'];
+        let table = util.table.row([basic.parseText(lang.player,'nf'),lang.games.slice(0,1),lang.gamesWR], spacesBoard,'\u2002');
         if(results[1].length > 0){
           for (var i = 0; i < results[1].length; i++) {
-            table += util.table.row([results[1][i].personaname,results[1][i].with_games,opendota.util.winratio(results[1][i].with_win,results[1][i].with_games - results[1][i].with_win) + '%'], spacesBoard);
+            table += util.table.row([results[1][i].personaname,results[1][i].with_games,opendota.util.winratio(results[1][i].with_win,results[1][i].with_games - results[1][i].with_win) + '%'], spacesBoard,'\u2002');
             if(table.length > self.config.constants.descriptionChars){break}
           }
         }

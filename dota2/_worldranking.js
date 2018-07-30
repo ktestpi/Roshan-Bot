@@ -12,7 +12,7 @@ module.exports = new Command('worldranking',{
     const division = api.divisions.indexOf(div) > -1 ? div : api.defaultDivision
     api.get(division).then(r => {
       const top = r.leaderboard.slice(0,this.config.constants.worldBoardTop)
-      const table = new util.table.new([lang.pos,lang.player],["3","20"])
+      const table = new util.table.new([lang.pos,lang.player],["3f","20f"],'\u2002')
       top.forEach((p,ix) => table.addRow([`#${ix+1}`,replace(p.name)]))
       msg.reply({embed : {
         title : lang.worldboard + ' - ' + division,

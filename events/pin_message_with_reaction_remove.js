@@ -1,7 +1,7 @@
-const { Watcher } = require('aghanim')
+const { Event } = require('aghanim')
 const util = require('erisjs-utils')
 
-module.exports = new Watcher('','messageReactionAdd',{}, function(msg,emoji,userID){
+module.exports = new Event('','messageReactionRemove',{}, function(msg,emoji,userID){
   if(msg.channel.guild && emoji.name === this.config.emojis.default.pin){
     const member = msg.channel.guild.members.get(userID);
     if(util.member.hasRole(member,this.config.roles.aegis)){

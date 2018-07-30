@@ -3,6 +3,7 @@ const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const util = require('erisjs-utils')
 const lang = require('../lang.json')
+const { resetServerConfig } = require('../helpers/basic.js')
 
 module.exports = new Command('newserver',{
   category : 'Owner', help : 'Añade nuevo servidor', args : '<serverID>'},

@@ -11,12 +11,12 @@ module.exports = new Command(['competitive','comp'],{
     msg.channel.sendTyping();
     opendota.request('competitive').then(results => {
       if(results[0].error){return}
-      const spacesBoard = ['19','2','19','17','11'];
+      const spacesBoard = ['19f','2f','19f','17f','11f'];
       var victory = ''
-      var table = util.table.row([lang.radiant,lang.w,lang.dire,lang.league,lang.matchID], spacesBoard);
+      var table = util.table.row([lang.radiant,lang.w,lang.dire,lang.league,lang.matchID], spacesBoard,'\u2002');
       for (var i = 0; i < 8; i++) {
         if(results[0][i].radiant_win){ victory = '>>'}else{victory = '<<'}
-        table += util.table.rowRaw([basic.parseText(results[0][i].radiant_name,'nf'),victory,basic.parseText(results[0][i].dire_name,'nf'), basic.parseText(results[0][i].league_name,'nf')], spacesBoard) + ' ' + util.md.link('https://www.dotabuff.com/matches/' + results[0][i].match_id,results[0][i].match_id) + '\n';
+        table += util.table.rowRaw([basic.parseText(results[0][i].radiant_name,'nf'),victory,basic.parseText(results[0][i].dire_name,'nf'), basic.parseText(results[0][i].league_name,'nf')], spacesBoard,'\u2002') + ' ' + util.md.link('https://www.dotabuff.com/matches/' + results[0][i].match_id,results[0][i].match_id) + '\n';
       }
       msg.reply({embed : {
         title : lang.lastProMatchesTitle,

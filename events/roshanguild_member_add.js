@@ -1,8 +1,8 @@
-const { Watcher } = require('aghanim')
+const { Event } = require('aghanim')
 const util = require('erisjs-utils')
 // const lang = require('../lang.json')
 
-module.exports = new Watcher('','guildMemberAdd',{}, function(guild,member){
+module.exports = new Event('','guildMemberAdd',{}, function(guild,member){
   if(guild.id !== this.config.guildID){return};
   if(this.config.switches.welcome){
     const mentionAdmin = util.role.get(guild,this.config.roles.admin);
