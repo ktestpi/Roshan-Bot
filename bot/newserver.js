@@ -21,7 +21,5 @@ module.exports = new Command('newserver',{
         color: this.config.color
       }
     })
-    resetServerConfig(this,guild)
-    // this.logger.add('guildnew',guild.name,true);
-    this.discordLog.controlMessage('guildnew',`**${guild.name}**`)
+    resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`))
   })
