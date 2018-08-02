@@ -14,10 +14,7 @@ const TOP = { top1000 : 'top1000', top100 : 'top100', top10 : 'top10', top1 : 't
 
 
 module.exports = function({rank,leaderboard}){
-  // const medals = ["norank","herald", "guardian", "crusader", "archon", "legend", "ancient", "divine","immortal"];
-  // const topmedals = ['top1000','top100','top10','top1'];
-  let result = {medal : '', range : '', leaderboard ,compose : '', emoji : ''}
-  // console.log(rank,leaderboard);
+  let result = {medal : '', range : '', leaderboard, compose : '', emoji : ''}
   if(rank){
     if(leaderboard){
       switch (true) {
@@ -47,7 +44,8 @@ module.exports = function({rank,leaderboard}){
     result.medal = MEDAL[0]
   }
   result.compose = result.range ? result.medal + '_' + result.range : result.medal
-  result.emoji = '<medal_' + result.compose + '>'
+  // result.emoji = '<medal_' + result.compose + '>'
+  result.emoji = '<medal_' + result.medal + '>' + (result.range ? ' ' + result.range : '') + (result.leaderboard ? ' #' + result.leaderboard : '')
   return result
 }
 

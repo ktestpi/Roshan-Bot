@@ -1,8 +1,4 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
-const opendota = require('../helpers/opendota')
-const basic = require('../helpers/basic')
-const lang = require('../lang.json')
 
 module.exports = new Command('playing',{
   category : 'Owner', help : 'Establece el mensaje de Jugando a', args : '<mensaje>',

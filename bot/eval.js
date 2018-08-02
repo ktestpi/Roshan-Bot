@@ -2,7 +2,8 @@ const { Command } = require('aghanim')
 const util = require('erisjs-utils')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
-const {inspect} = require('util')
+const { inspect } = require('util')
+
 module.exports = new Command(['eval','e'],{
   category : 'Owner', help : '', args : '', hide : true,
   ownerOnly : true},

@@ -1,8 +1,4 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
-const opendota = require('../helpers/opendota')
-const basic = require('../helpers/basic')
-const lang = require('../lang.json')
 
 module.exports = new Command('svleave',{
   category : 'Owner', help : 'Roshan sale de un servidor', args : '<cmd>',

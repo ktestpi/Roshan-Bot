@@ -1,8 +1,4 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
-const basic = require('../helpers/basic')
-const lang = require('../lang.json')
-const {inspect} = require('util')
 
 const variables = [
   {id : 'bot', desc : 'Bot'},
@@ -10,6 +6,7 @@ const variables = [
   {id : '_channel', desc : 'Canal actual'},
   {id : '_user', desc : 'Autor mensaje'}
 ]
+
 module.exports = new Command(['evalhelp','eh'],{
   category : 'Owner', help : '', args : '', hide : true,
   ownerOnly : true},

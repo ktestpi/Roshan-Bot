@@ -1,5 +1,4 @@
 const { Event } = require('aghanim')
-const util = require('erisjs-utils')
 
 module.exports = new Event('','messageReactionAdd',{}, function(msg,emoji,userID){
   // console.log('Watcher active',emoji,userID,this.config.emojis.default);
@@ -9,7 +8,7 @@ module.exports = new Event('','messageReactionAdd',{}, function(msg,emoji,userID
     }else if(emoji.name === this.config.emojis.default.loudspeaker){
       msg.channel.getMessage(msg.id).then(m => {this.messageAllGuilds(m,true,'notifications')})
     }else if(emoji.name == this.config.emojis.default.feeds){
-      msg.channel.getMessage(msg.id).then(m => {this.messageAllGuilds(m,true,'feeds')})
+      msg.channel.getMessage(msg.id).then(m => {this.messageAllGuilds(m,false,'feeds')})
     }
   }
 })

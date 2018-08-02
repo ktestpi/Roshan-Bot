@@ -1,8 +1,4 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
-const opendota = require('../helpers/opendota')
-const basic = require('../helpers/basic')
-const lang = require('../lang.json')
 
 module.exports = new Command('streaming',{
   category : 'Owner', help : 'Modifica el estado del bot a Streaming', args : '<link twitch> [mensaje]',

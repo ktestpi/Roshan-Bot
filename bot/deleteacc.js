@@ -1,7 +1,5 @@
 const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
-const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
 const lang = require('../lang.json')
 
 module.exports = new Command('deleteacc',{
@@ -18,7 +16,7 @@ module.exports = new Command('deleteacc',{
         title : lang.unregisterAccountTitle.replaceKey({id : user.id}),
         description : lang.unregisterAccountDesc.replaceKey({guildName,guildID}),
         //thumbnail : {url : msg.author.avatarURL, height : 40, width : 40},
-        footer : {text : user.username + ' | ' + user.id + ' | ' + util.date(msg.timestamp,'log') ,icon_url : user.avatarURL},
+        footer : {text : user.username + ' | ' + user.id + ' | ' + date.custom(msg.timestamp,'D/M/Y h:m:s') ,icon_url : user.avatarURL},
         color : this.config.colors.account.delete
       }
     }).then((m) => {

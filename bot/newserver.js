@@ -1,7 +1,5 @@
 const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
-const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
 const lang = require('../lang.json')
 const { resetServerConfig } = require('../helpers/basic.js')
 
@@ -15,11 +13,12 @@ module.exports = new Command('newserver',{
       embed : {
         title : lang.newServer,
         description : "**Nombre:** `" + guild.name + "`\n**ID:** `" + guild.id + "`\n**Miembros:** `" + guild.memberCount
-          + "`\n**Propietari@:** `" + guild.members.get(guild.ownerID).username + "`\n**Región:** `" + guild.region + "`\n**Creado:** `" + util.date(guild.createdAt,'log') + "`",
+          + "`\n**Propietari@:** `" + guild.members.get(guild.ownerID).username + "`\n**Región:** `" + guild.region + "`\n**Creado:** `" + date.custom(guild.createdAt,'D/M/Y h:m:s') + "`",
         thumbnail : {url : guild.iconURL || this.user.avatarURL, height : 40, width : 40},
-        footer : {text : guild.name + ' | ' + guild.id + ' | ' + util.date(guild.joinedAt,'log'),icon_url : this.user.avatarURL},
+        footer : {text : guild.name + ' | ' + guild.id + ' | ' + date.custom(guild.joinedAt,'D/M/Y h:m:s'),icon_url : this.user.avatarURL},
         color: this.config.color
       }
     })
+    console.log(this ? 'defined' : 'undefined');
     resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`))
   })

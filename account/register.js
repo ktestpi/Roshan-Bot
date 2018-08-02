@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
+const { Datee, Request } = require('erisjs-utils')
 const lang = require('../lang.json')
 
 module.exports = new Command('register',{
@@ -22,14 +22,14 @@ module.exports = new Command('register',{
         if(account[i] == '-' && i != 'dota'){account[i] = ''};
         account[i] = basic.parseProfileURL(account[i],i);
       }
-      util.request.getJSON('https://api.opendota.com/api/players/' + account.dota).then((result) => {
+      request.getJSON('https://api.opendota.com/api/players/' + account.dota).then((result) => {
         if(!result.profile){return msg.reply(lang.errorDotaIDNotValid.repalceKey({id : account.dota}))};
         this.createMessage(server.accounts,{
           embed : {
             title : lang.registerAccountTitle.replaceKey({id : msg.author.id}),
             description : this.replace.do('registerAccountDesc',{guildName, guildID, dotaID : account.dota, steamID : account.steam, twitchID : account.twitch, twitterID : account.twitter},true),
             //thumbnail : {url : config.icon, height : 40, width : 40},
-            footer : {text : msg.author.username + ' | ' + msg.author.id + ' | ' + util.date(msg.timestamp,'log'),icon_url : msg.author.avatarURL},
+            footer : {text : msg.author.username + ' | ' + msg.author.id + ' | ' + Datee.custom(msg.timestamp,'D/M/Y h:m:s'),icon_url : msg.author.avatarURL},
             color: this.config.colors.account.register
           }
         }).then(m => {

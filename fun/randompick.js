@@ -1,6 +1,4 @@
 const { Command } = require('aghanim')
-const opendota = require('../helpers/opendota')
-// const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 const enumHeroes = require('../helpers/enums/heroes')
 // const util = require('erisjs-utils')
@@ -10,7 +8,7 @@ module.exports = new Command(['randompick','rp'],{
   function(msg, args, command){
     let hero
     do {
-      hero = enumHeroes(Math.floor(Math.random()*this.config.constants.heroes)).name;
+      hero = enumHeroes.getValue(Math.floor(Math.random()*this.config.constants.heroes)).name;
     } while (hero.length < 1);
     msg.reply(this.replace.do(lang.randomPick, {author : msg.author.username, hero : hero},true))
   })

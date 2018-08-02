@@ -1,5 +1,5 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
+const { Markdown } = require('erisjs-utils')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
@@ -45,7 +45,7 @@ function func(msg,args,profile,bot){
     msg.reply({
       embed: {
         title : opendota.titlePlayer(results,lang.playerProfile,bot.replace),
-        description : bot.replace.do(lang.steamProfileDesc, {profile : opendota.util.nameAndNick(results[0].profile), link : util.md.link(results[0].profile.profileurl,lang.steam), url : results[0].profile.profileurl},true),
+        description : bot.replace.do(lang.steamProfileDesc, {profile : opendota.util.nameAndNick(results[0].profile), link : Markdown.link(results[0].profile.profileurl,lang.steam), url : results[0].profile.profileurl},true),
         thumbnail : {url : results[0].profile.avatarmedium, height : 40, width : 40},
         footer : {text : profile.isDiscordID ? profile.user.username : opendota.util.nameAndNick(results[0].profile), icon_url : profile.isDiscordID ? profile.user.avatarURL : results[0].profile.avatarmedium},
         color : bot.config.color

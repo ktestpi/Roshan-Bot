@@ -1,7 +1,7 @@
 const Aghanim = require('aghanim')
 const Eris = require('eris')
 const path = require('path')
-const util = require('erisjs-utils')
+const { Color } = require('erisjs-utils')
 const firebase = require('firebase-admin');
 
 // Extends Eris Guild Structure
@@ -33,11 +33,11 @@ try{
 }
 
 let CONFIG = require('./config.json')
-CONFIG.color = util.color.convert(CONFIG.color,'hex-int');
+CONFIG.color = Color.convert(CONFIG.color,'hex-int');
 for(cat in CONFIG.colors){
-  if(typeof CONFIG.colors[cat] == 'string'){CONFIG.colors[cat] = util.color.convert(CONFIG.colors[cat],'hex-int');continue}
+  if(typeof CONFIG.colors[cat] == 'string'){CONFIG.colors[cat] = Color.convert(CONFIG.colors[cat],'hex-int');continue}
   for(c in CONFIG.colors[cat]){
-    CONFIG.colors[cat][c] = util.color.convert(CONFIG.colors[cat][c],'hex-int');
+    CONFIG.colors[cat][c] = Color.convert(CONFIG.colors[cat][c],'hex-int');
   }
 }
 

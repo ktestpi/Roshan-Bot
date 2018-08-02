@@ -1,5 +1,4 @@
 const { Event } = require('aghanim')
-const util = require('erisjs-utils')
 // const lang = require('../lang.json')
 
 module.exports = new Event('','guildMemberRemove',{}, function(guild,member){

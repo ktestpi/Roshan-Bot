@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
+const { Markdown } = require('erisjs-utils')
 const lang = require('../lang.json')
 
 module.exports = new Command('about',{
@@ -13,10 +13,10 @@ module.exports = new Command('about',{
         description : this.replace.do(lang.aboutDescription),
         fields : [
           {name : lang.invite,
-          value : util.md.link(lang.invitation,this.config.invite,true),
+          value : Markdown.link(lang.invitation,this.config.invite,true),
           inline : false},
           {name : lang.devServer,
-          value : util.md.link(lang.discord,this.config.server,true),
+          value : Markdown.link(lang.discord,this.config.server,true),
           inline : false},
           {name : lang.patreon,
           value : this.replace.do(lang.patreonDesc,{link : this.config.links.patreon}),

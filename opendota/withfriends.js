@@ -1,5 +1,5 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
+const { Classes } = require('erisjs-utils')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
@@ -14,10 +14,10 @@ module.exports = new Command(['withfriends','friends'],{
         profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl,'steam');
         results[1] = results[1].filter(friend => friend.with_games > 0);
         const spacesBoard = ['25f','3cf','6cf'];
-        let table = util.table.row([basic.parseText(lang.player,'nf'),lang.games.slice(0,1),lang.gamesWR], spacesBoard,'\u2002');
+        let table = Classes.Table.renderRow([basic.parseText(lang.player,'nf'),lang.games.slice(0,1),lang.gamesWR], spacesBoard,'\u2002') + '\n';
         if(results[1].length > 0){
           for (var i = 0; i < results[1].length; i++) {
-            table += util.table.row([results[1][i].personaname,results[1][i].with_games,opendota.util.winratio(results[1][i].with_win,results[1][i].with_games - results[1][i].with_win) + '%'], spacesBoard,'\u2002');
+            table += Classes.Table.renderRow([results[1][i].personaname,results[1][i].with_games,opendota.util.winratio(results[1][i].with_win,results[1][i].with_games - results[1][i].with_win) + '%'], spacesBoard,'\u2002') + '\n';
             if(table.length > self.config.constants.descriptionChars){break}
           }
         }
@@ -32,6 +32,6 @@ module.exports = new Command(['withfriends','friends'],{
         // opendota.odcall(this,msg,args,function(msg,args,profile){
         //
         // }) //.bind(this)
-      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
+      }).catch(err => self.discordLog.send('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     })
   })

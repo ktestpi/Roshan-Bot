@@ -1,7 +1,6 @@
 const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
 const lang = require('../lang.json')
 const on = 'on'
 const off = 'off'

@@ -2,7 +2,7 @@ const { Command } = require('aghanim')
 // const opendota = require('../helpers/opendota')
 // const basic = require('../helpers/basic')
 const lang = require('../lang.json')
-const util = require('erisjs-utils')
+const { Classes } = require('erisjs-utils')
 const api = require('../helpers/worldranking-api')
 
 module.exports = new Command('search',{
@@ -15,11 +15,11 @@ module.exports = new Command('search',{
     api.searchPlayerInWorld(query).then(r => {
       // console.log(r);
       // throw new Error('TestingError')
-      const table = new util.table.new([lang.region,lang.position],['8','8r'])
+      const table = new Classes.Table([lang.region,lang.position],null,['8','8r'],'\u2002')
       r.forEach(d => table.addRow([d.division,d.pos]))
       msg.reply({embed : {
         title : lang.worldboardSeachPlayer,
-        description : lang.search + ': ' + `\`${query}\`\n\n${table.do()}`,
+        description : lang.search + ': ' + `\`${query}\`\n\n${table.render()}`,
         color : this.config.color
       }})
     }).catch(err => {

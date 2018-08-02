@@ -1,5 +1,5 @@
 const jimp = require('jimp')
-const util = require('erisjs-utils')
+const { Datee, Number} = require('erisjs-utils')
 const basic = require('../basic')
 const Canvas = require('./classes/canvas')
 const loader = require('./loader')
@@ -19,7 +19,7 @@ module.exports = function(data_info){
     p.gold_per_min,
     p.xp_per_min,
     p.last_hits + ' / ' + p.denies,
-    util.number.tok(p.hero_damage) + ' / ' + util.number.tok(p.tower_damage),
+    Number.tok(p.hero_damage) + ' / ' + Number.tok(p.tower_damage),
     Promise.all([
       loader.item(p.item_0),
       loader.item(p.item_1),
@@ -38,7 +38,7 @@ module.exports = function(data_info){
       try{
         let canvas = new Canvas(data[0],{w16 : data[11], y16 : data[12]})
         let winnerTeam = canvas.paint('winnerTeam',data[13],{x : 0, y : 0}).add()
-        const footerInfo = `Duración: ${basic.durationTime(data_info.duration)}  -  ID: ${data_info.match_id}  -  Jugada: ${util.date(data_info.start_time*1000,'hm/DMY')}`
+        const footerInfo = `Duración: ${basic.durationTime(data_info.duration)}  -  ID: ${data_info.match_id}  -  Jugada: ${Datee.custom(data_info.start_time*1000,'h:m D/M/Y',true)}`
         const infoMatch = canvas.write('infoMatch',footerInfo,'w16').set(canvas,'cxgyb',{ x : 0, y : 10})
         const refTable = canvas.ref('refTable',{x : 12 , y : 40})
         for (var i = 1; i < 11; i++) {

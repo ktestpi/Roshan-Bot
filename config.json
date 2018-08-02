@@ -26,7 +26,7 @@
       {"tag" : "error", "icon" : "❌", "level" : 1, "color" : "magenta"}
     ]
   },
-  "update" : "12/04/2018",
+  "update" : "04/08/2018",
   "server" : "https://discord.gg/SxsYkgX",
   "color" : "#007a00",
   "colors" : {"account" : {"register" : "#41ad49", "modify" : "#800080", "delete" : "#ff4723"}, "nextLvl" : "#ffbf00", "sendMsg" : {"owner" : "#003333", "server" : "#915300"}},
@@ -35,7 +35,7 @@
   "invite" : "https://discordapp.com/oauth2/authorize?client_id=324833828302749697&scope=bot&permissions=519232",
   "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan", "betatester" : "Betatester", "supporter" : "Patron"},
   "switches" : {"welcome" : true, "wrongCmd" : true, "msgGuilds" : false, "feeds" : false, "leaderboardUpdate" : false, "backupdb" : false},
-  "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10, "worldBoardTop" : 10, "heroes" : 120},
+  "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10, "worldBoardTop" : 10, "heroes" : 120, "hoursLeaderboardUpdate" : 20},
   "links" : {
     "profile" : {
       "dotabuff" : "https://www.dotabuff.com/players/",

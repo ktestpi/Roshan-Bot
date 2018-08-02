@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../helpers/basic')
 const util = require('erisjs-utils')
 const lang = require('../lang.json')
 const { sortTourneys } = require('../helpers/basic')
@@ -16,14 +15,14 @@ module.exports = new Command('tourneys',{
       if(tourneys_playing.length && !tourneys_next.length){return msg.reply(lang.errorTourneysNoEvents)}
       if(tourneys_playing.length){
         tourneys_playing.sort(sortTourneysPlaying)
-        fields.push({name: lang.tourneysNow.replaceKey({events : tourneys_playing.length}), value : tourneys_playing.map(t => `**${t._id}**${t.finish ? ' \`' + util.dateCustom(parseInt(t.finish)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
+        fields.push({name: lang.tourneysNow.replaceKey({events : tourneys_playing.length}), value : tourneys_playing.map(t => `**${t._id}**${t.finish ? ' \`' + util.Date.custom(parseInt(t.finish)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
       }
       if(tourneys_next.length){
         tourneys_next.sort(sortTourneysNext)
-        fields.push({name: lang.tourneysNext.replaceKey({events : tourneys_next.length}), value : tourneys_next.map(t => `**${t._id}**${t.until ? ' \`' + util.dateCustom(parseInt(t.until)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
+        fields.push({name: lang.tourneysNext.replaceKey({events : tourneys_next.length}), value : tourneys_next.map(t => `**${t._id}**${t.until ? ' \`' + util.Date.custom(parseInt(t.until)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
       }
       fields.push({name : lang.tourneysSuggestion, value : this.config.links.web_addtourney, inline : false})
-      // const description = tourneys.map(tourney => `\`${util.dateCustom(parseInt(feed._id)*1000,'h:m D/M',true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + util.md.link(feed.link,':link:') : ''}`).join('\n')
+      // const description = tourneys.map(tourney => `\`${util.Date.custom(parseInt(feed._id)*1000,'h:m D/M',true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + util.md.link(feed.link,':link:') : ''}`).join('\n')
       msg.reply({
         embed : {
           title : lang.tourneysTitle,
@@ -47,9 +46,9 @@ module.exports = new Command('tourneys',{
       const tourney = this.cache.tourneys.bucket.find(t => t._id.toLowerCase() === search.toLowerCase())
       if(!tourney){return msg.reply(lang.errorTourneysSearch.replaceKey({search}))}
       let fields = []
-      if(tourney.start){fields.push({name : lang.tourneysBegin, value : util.dateCustom(parseInt(tourney.start)*1000,'D/M',true), inline : true})}
-      if(tourney.finish){fields.push({name : lang.tourneysFinish, value : util.dateCustom(parseInt(tourney.finish)*1000,'D/M',true), inline : true})}
-      if(tourney.until){fields.push({name : lang.tourneysUntil, value : util.dateCustom(parseInt(tourney.until)*1000,'D/M',true), inline : true})}
+      if(tourney.start){fields.push({name : lang.tourneysBegin, value : util.Date.custom(parseInt(tourney.start)*1000,'D/M',true), inline : true})}
+      if(tourney.finish){fields.push({name : lang.tourneysFinish, value : util.Date.custom(parseInt(tourney.finish)*1000,'D/M',true), inline : true})}
+      if(tourney.until){fields.push({name : lang.tourneysUntil, value : util.Date.custom(parseInt(tourney.until)*1000,'D/M',true), inline : true})}
       if(tourney.link){fields.push({name : lang.link, value : tourney.link, inline : true})}
       msg.reply({embed : {
         title : `${tourney._id}${tourney.by ? ' (' + tourney.by +')' : ''}`,

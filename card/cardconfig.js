@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
 const lang = require('../lang.json')
 const enumHeroes = require('../helpers/enums/heroes')
 const enumPlayerPos = require('../helpers/enums/player_positions')

@@ -1,6 +1,6 @@
 const util = require('erisjs-utils')
 const lang = require('../lang.json')
-
+const dotasteam = require('./dotasteam.js')
 // const proplayersURL = require('./opendota.js').urls['proplayers']
 let self = module.exports
 // color = "#2BC6CC"
@@ -54,9 +54,9 @@ module.exports.replaceMessageFields = function(message,converted,replace,func){
 }
 module.exports.replaceColor = function(color,colors){
   if(typeof color === 'string'){
-    if(color.startsWith('#')){return util.color.convert(color,'hex-int')}
+    if(color.startsWith('#')){return util.Color.convert(color,'hex-int')}
     else if(colors[color]){
-      if(typeof colors[color] === 'string' && colors[color].startsWith('#')){return util.color.convert(color,'hex-int')}
+      if(typeof colors[color] === 'string' && colors[color].startsWith('#')){return util.Color.convert(color,'hex-int')}
       else{return colors[color]}
     }
   }
@@ -104,7 +104,7 @@ module.exports.needRegister = function(msg,id,reactionError){
 module.exports.getProPlayerDotaID = function(name){ //Promise
   return new Promise((resolve, reject) => {
     var urls =  ['https://api.opendota.com/api/proPlayers/'];
-    util.request.getJSONMulti(urls).then((results) => {
+    util.Request.getJSONMulti(urls).then((results) => {
       let pro = results[0].find(player => player.name.toLowerCase() === name.toLowerCase())
       if(pro){resolve(pro)}else{reject("getProPlayerDotaID not found")};
     }).catch(err => console.log(err))
@@ -115,17 +115,17 @@ module.exports.socialLinks = function(links,mode,urls){
   // console.log(links);
   const profile = Object.keys(links).filter(link => links[link]).map(link => ({type : link, link : module.exports.createProfileLink(links[link],link,urls)}))
   if(mode == 'inline'){
-    return profile.map(link => util.md.link(link.link,util.string.capitalize(link.type))).join(' / ')
+    return profile.map(link => util.Markdown.link(link.link,util.String.capitalize(link.type))).join(' / ')
   }else if(mode == 'vertical'){
-    return profile.map(link => util.md.link(link.link,util.string.capitalize(link.type),'embed+link')).join('\n')
+    return profile.map(link => util.Markdown.link(link.link,util.String.capitalize(link.type),'embed+link')).join('\n')
   }
 }
 
 module.exports.createProfileLink = function(content,mode,urls){
     if(mode === 'dota'){
-      return util.dota.idToUrl(content,'dotabuff')
+      return dotasteam.dota.idToUrl(content,'dotabuff')
     }else if(mode === 'steam'){
-      return content.startsWith('http') ? content : util.steam.idToUrl(content,mode)
+      return content.startsWith('http') ? content : dotasteam.steam.idToUrl(content,mode)
       // return content
     }else if(mode === 'twitch'){
       return urls.twitch + content
@@ -168,7 +168,7 @@ module.exports.durationTime = function(time){
   time = parseInt(time)
   var m = Math.floor(time/60)
   var s = time%60
-  return util.number.zerofication(m) + ':' + util.number.zerofication(s)
+  return util.Number.zerofication(m) + ':' + util.Number.zerofication(s)
 }
 
 module.exports.dotabuffError = function(msg){
@@ -179,7 +179,7 @@ module.exports.sendImageStructure = function(msg,query,links,cmd){
   if(!links[query]){return module.exports.wrongCmd(msg,links,cmd)} // TODO wrongCmd
   const match = links[query]
   if(typeof match === 'object'){
-    util.msg.sendImage(match.file).then(buffer => {
+    util.Message.sendImage(match.file).then(buffer => {
       msg.reply(match.msg,{file : buffer, name : match.name})
     })
   }else if(typeof query === 'string'){
@@ -202,7 +202,7 @@ module.exports.secondsTohms = function(seconds){
   seconds %= 3600;
   let minutes = Math.floor(seconds / 60);
   seconds = seconds % 60;
-  return `${util.number.zerofication(hours)}:${util.number.zerofication(minutes)}:${util.number.zerofication(seconds)}`
+  return `${util.Number.zerofication(hours)}:${util.Number.zerofication(minutes)}:${util.Number.zerofication(seconds)}`
 }
 
 module.exports.switchesEmojiStatus = function(swit){
@@ -220,13 +220,11 @@ const initialServerConfig = {
 }
 
 module.exports.resetServerConfig = function(bot,guild){
-  return new Promise((resolve,reject) => {
-    let reset = initialServerConfig;
-    const defaultChannel = util.guild.getDefaultChannel(guild).id
-    reset.notifications.channel = defaultChannel;
-    reset.feeds.channel = defaultChannel;
-    bot.cache.servers.save(guild.id,reset).then(() => resolve())
-  })
+  let reset = initialServerConfig;
+  const defaultChannel = util.Guild.getDefaultChannel(guild,bot).id
+  reset.notifications.channel = defaultChannel;
+  reset.feeds.channel = defaultChannel;
+  return bot.cache.servers.save(guild.id,reset)
 }
 
 module.exports.newAccount = function(data){

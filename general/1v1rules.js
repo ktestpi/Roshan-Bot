@@ -1,8 +1,5 @@
 const { Command } = require('aghanim')
-// const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
-// const util = require('erisjs-utils')
-// const lang = require('../lang.json')
 const messages = require('../containers/messages.json')
 const rules = {}
 rules['1v1rules'] = messages['1v1rules']

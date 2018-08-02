@@ -19,9 +19,9 @@ module.exports = new Event('','ready',{}, function(){
   //Save guild dev
   this.server = this.guilds.get(this.config.guild.id)
 
-  this.config.emojis.bot = util.guild.loadEmojis(this.server);
+  this.config.emojis.bot = util.Guild.loadEmojis(this.server);
 
-  this.replace = new util.string.ReplaceWithDictionaryAndLang([{ //Create a replacer with bot info + emojis + lang
+  this.replace = new util.Classes.ReplacerML({es : lang},{ //Create a replacer with bot info + emojis + lang
     bot_name : this.user.username,
     bot_icon : this.user.avatarURL,
     author_name : this.owner.username,
@@ -35,12 +35,16 @@ module.exports = new Event('','ready',{}, function(){
     server : this.config.server,
     version : package.version,
     update : this.config.update
-  },this.config.emojis.bot],true,lang);
+  },{arrow : ['<','>'], defaultLang : 'es'});
+  this.replace.addKeywords(this.config.emojis.bot,['<','>'])
+
   this.discordLog = new DiscordLogger(this.server.channels.get(this.config.guild.notifications),this.config.logger)
 
   process.on('unhandledRejection', (reason, p) => {
     this.discordLog.send('error','Unhandled Rejection at: '+p, null ,reason);
     // application specific logging, throwing an error, or other logic here
+    console.log(reason);
+    console.log(p);
   });
 
   this.db.child('bot').once('value').then(snap => {
@@ -75,14 +79,14 @@ module.exports = new Event('','ready',{}, function(){
 
   this.on('postready',function(){
     if(this.config.switches.backupdb){ //config.switches.backupdb
-      util.firebase.backupDBfile(this.db,this,this.config.guild.backup,{filenameprefix : 'roshan_db_', messageprefix : '**Roshan Backup DB**'}).then(snap => {
+      util.Firebase.backupDBfile(this.db,this,this.config.guild.backup,{filenameprefix : 'roshan_db_', messageprefix : '**Roshan Backup DB**'}).then(snap => {
         //Create cache maps for Profiles and Servers (Firebase)
         this.discordLog.log('info','Backup done!')
         this.cache.profiles = new FirebaseCache(this.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile]]));
         this.cache.servers = new FirebaseCache(this.db.child('servers'),snap.servers);
 
-        //Update leaderboard (Firebase)
-        if(this.config.switches.leaderboardUpdate){updateLeaderboard(this,snap.profiles)};
+        //Update leaderboard (Firebase) each this.config.hoursLeaderboardUpdate at least
+        if(this.config.switches.leaderboardUpdate && (this.config.constants.hoursLeaderboardUpdate*3600 + (new Date(snap.leaderboard.updated).getTime()/1000)) < new Date().getTime()/1000){updateLeaderboard(this,snap.profiles)};
 
         //Update public (Firebase)
         const data_public = {discord_invite : this.config.invite, discord_server : this.config.server, users : Object.keys(snap.profiles).length, version : package.version}
@@ -109,15 +113,15 @@ module.exports = new Event('','ready',{}, function(){
 
         this.cache.tourneys = new FireListenCache(this.db.child('tourneys'))
         this.cache.tourneys.order = function(){
-          const now = util.date()
+          const now = util.Date.now()
           return this.bucket.sort(sortTourneys)
         }
         this.cache.tourneys.getPlaying = function(){
-          const now = util.date()
+          const now = util.Date.now()
           return this.bucket.filter(t => t.start < now && now < t.finish)
         }
         this.cache.tourneys.getNext = function(){
-          const now = util.date()
+          const now = util.Date.now()
           return this.bucket.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
         }
         this.discordLog.log('info','Cache loaded');
@@ -140,11 +144,11 @@ const updateLeaderboard = function(bot,snap){
     players[i].avatar = member ? member.avatarURL : false;
   }
   players.forEach(player => {
-    if(!player.dota_id){console.log('THIS PROFILE',player.discord_id);}
+    if(!player.dota_id){console.log('THIS PROFILE',player.discord_id)}
     urls.push('https://api.opendota.com/api/players/' + player.dota_id)
   })
-  util.request.multipleJSON(urls,null,1,(results) => {
-    let update = {updated : util.date(), ranking : {}}
+  util.Request.multipleJSON(urls,null,1,(results) => {
+    let update = {updated : util.Date.now(), ranking : {}}
     for (let i = 0; i < results.length; i++) {
       if(!results){continue}
       const rank = opendota.util.getMedal(results[i],'raw',bot.replace);

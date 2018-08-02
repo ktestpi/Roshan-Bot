@@ -1,6 +1,6 @@
-const util = require('erisjs-utils')
+const { Datatype } = require('erisjs-utils')
 
-class FirebaseCache extends util.type.Collection{
+class FirebaseCache extends Datatype.Collection{
   constructor(db,data,path){
     super(data)
     this.db = db

@@ -1,5 +1,4 @@
 const jimp = require('jimp')
-const util = require('erisjs-utils')
 const basic = require('../basic')
 const opendota = require('../opendota')
 const enumHeroes = require('../enums/heroes')
@@ -31,7 +30,7 @@ module.exports = function(info){
       let canvas = new Canvas(data[0][0],{w16 : data[1][0], w8 : data[1][1]})
       let template = canvas.paint('template',data[0][1]).add()
       let avatar = canvas.paint('avatar',data[3].resize(jimp.AUTO,96))
-      let medal = canvas.paint('medal',data[4].resize(jimp.AUTO,64)).place(avatar,'cxby',{y : -16}).log()
+      let medal = canvas.paint('medal',data[4].resize(jimp.AUTO,64)).place(avatar,'cxby',{y : -16})
       let leaderboard
       // // let group_avatar = [avatar]
       let group_avatar = [avatar,medal]
@@ -52,7 +51,6 @@ module.exports = function(info){
       let steamAvatar = canvas.paint('steamAvatar',data[2][1].resize(jimp.AUTO,16)).place(dotaID,'rx',{ x : 4})
       let steamID = canvas.write('steamID',player.profile.steamid,'w8').place(steamAvatar,'rx', {x : 4})
       canvas.group('playerID',[dotaAvatar,dotaID,steamAvatar,steamID]).place(canvas,'gxr',{x : 10}).set(canvas,'gyb',{y : 12})
-      console.log(canvas.elements.length);
       canvas.create('png').then(buff => resolve(buff)).catch(err => reject(err))
     })
   })

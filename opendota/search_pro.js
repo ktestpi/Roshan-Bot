@@ -1,5 +1,5 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
+const { Markdown } = require('erisjs-utils')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
@@ -11,7 +11,7 @@ module.exports = new Command('pro',{subcommandFrom : 'search',
     const query = args.slice(2).join(' ')
     if(query.length < 2){return msg.reply(lang.errorSearchMinChars)}
     opendota.getProPlayersDotaName(query).then((players) => {
-      const text = players.map((player) => `**${basic.parseText(opendota.util.nameOrNick(player),'nf')}** ${util.md.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${util.md.link(player.profileurl,'S')}`).join(', ');
+      const text = players.map((player) => `**${basic.parseText(opendota.util.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
       msg.reply({embed : {
         title : lang.searchproTitle,
         description : this.replace.do(lang.searchproDescription,{query : query, text : text},true),

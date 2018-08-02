@@ -1,7 +1,5 @@
 const { Command } = require('aghanim')
-const opendota = require('../helpers/opendota')
-const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
+const { Datee, Markdown } = require('erisjs-utils')
 const lang = require('../lang.json')
 const links = require('../containers/links.json')
 
@@ -9,7 +7,7 @@ module.exports = new Command('feeds',{
   category : 'General', help : 'Últimos feeds', args : '<categoría>'},
   function(msg, args, command){
     const feeds = this.cache.feeds.order().slice(0,8)
-    const description = feeds.map(feed => `\`${util.dateCustom(parseInt(feed._id)*1000,'h:m D/M',true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + util.md.link(feed.link,':link:') : ''}`).join('\n')
+    const description = feeds.map(feed => `\`${Datee.custom(parseInt(feed._id)*1000,'h:m D/M',true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + Markdown.link(feed.link,':link:') : ''}`).join('\n')
     msg.reply({
       embed : {
         title : lang.lastFeeds,

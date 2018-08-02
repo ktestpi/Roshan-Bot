@@ -1,6 +1,6 @@
-const util = require('erisjs-utils')
+const { Classes } = require('erisjs-utils')
 
-module.exports = class DiscordLogger extends util.u.Logger{
+module.exports = class DiscordLogger extends Classes.Logger{
   constructor(channel,options){
     const customLogs = options.events.map(event => ({name : event.tag.toUpperCase(), level : event.level, color : event.color}))
     super(options.name,options.level,customLogs)

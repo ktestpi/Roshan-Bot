@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
+const { Datee } = require('erisjs-utils')
 const lang = require('../lang.json')
 
 module.exports = new Command('unregister',{
@@ -16,7 +16,7 @@ module.exports = new Command('unregister',{
         title : lang.unregisterAccountTitle.replaceKey({id : msg.author.id}),
         description : lang.unregisterAccountDesc.replaceKey({guildName,guildID}),
         //thumbnail : {url : msg.author.avatarURL, height : 40, width : 40},
-        footer : {text : msg.author.username + ' | ' + msg.author.id + ' | ' + util.date(msg.timestamp,'log') ,icon_url : msg.author.avatarURL},
+        footer : {text : msg.author.username + ' | ' + msg.author.id + ' | ' + Datee.custom(msg.timestamp,'D/M/Y h:m:s') ,icon_url : msg.author.avatarURL},
         color : this.config.colors.account.delete
       }
     }).then((m) => {

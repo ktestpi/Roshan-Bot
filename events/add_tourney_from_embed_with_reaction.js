@@ -1,5 +1,5 @@
 const { Event } = require('aghanim')
-const util = require('erisjs-utils')
+const { Datee } = require('erisjs-utils')
 
 module.exports = new Event('','messageReactionAdd',{}, function(msg,emoji,userID){
   // console.log('ADD TOURNEY BEFORE',msg);
@@ -20,7 +20,7 @@ module.exports = new Event('','messageReactionAdd',{}, function(msg,emoji,userID
             img : ndToVoidString(embed.thumbnail.url),
             link : ndToVoidString(embed.fields[5].value),
             info : ndToVoidString(embed.description),
-            ts : util.date()
+            ts : Datee.now()
           }
         }
         // console.log('DATA',data);

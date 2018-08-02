@@ -1,8 +1,5 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
-const opendota = require('../helpers/opendota')
-const basic = require('../helpers/basic')
-const lang = require('../lang.json')
+const { Guild } = require('erisjs-utils')
 
 module.exports = new Command('svmsg',{
   category : 'Owner', help : 'Mensaje a servidor', args : '<id> <mensaje>',
@@ -22,5 +19,5 @@ module.exports = new Command('svmsg',{
       footer : {text : this.user.username ,icon_url : this.user.avatarURL},
       color : this.config.colors.sendMsg.server
     }
-    util.guild.getDefaultChannel(guild).createMessage({embed}).then(() => this.createMessage(this.config.guild.notifications,{embed}))
+    Guild.getDefaultChannel(guild,this).createMessage({embed}).then(() => this.createMessage(this.config.guild.notifications,{embed}))
   })

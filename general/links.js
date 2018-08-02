@@ -1,8 +1,7 @@
 const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
-const lang = require('../lang.json')
+const { Markdown } = require('erisjs-utils')
 const links = require('../containers/links.json')
 
 module.exports = new Command('links',{
@@ -22,9 +21,9 @@ module.exports = new Command('links',{
       var arrayLinks = arrayFields[i].links.reverse();
       for (let j = arrayLinks.length - 1; j > -1; j--) {
         if(arrayLinks[j].hide){
-          textFields[i].value += util.md.link(arrayLinks[j].link,arrayLinks[j].name) + '\n';
+          textFields[i].value += Markdown.link(arrayLinks[j].link,arrayLinks[j].name) + '\n';
         }else{
-          textFields[i].value += util.md.link(arrayLinks[j].link,arrayLinks[j].name,'embed+link') + '\n';
+          textFields[i].value += Markdown.link(arrayLinks[j].link,arrayLinks[j].name,'embed+link') + '\n';
         }
       }
     };

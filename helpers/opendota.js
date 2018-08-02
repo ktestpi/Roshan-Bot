@@ -5,7 +5,7 @@ const enumMedal = require('../helpers/enums/medals')
 
 const request = (urls,id) => {
   // console.log(urls);
-  return util.request.getJSONMulti(urls.map(url => replace(url,'<id>',id)))}
+  return util.Request.getJSONMulti(urls.map(url => replace(url,'<id>',id)))}
 const replace = (text,match,repl) => text.replace(match,repl)
 
 const OPENDOTA_URLS = {
@@ -52,7 +52,7 @@ opendota.titlePlayer = function(results,title,replace){
   const medal = enumMedal({rank : results[0].rank_tier, leaderboard : results[0].leaderboard_rank})
   // console.log(medal);
   return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : replace.do(medal.emoji)},true)
-  : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : replace.do(medal.emoji)},false)
+  : util.String.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : replace.do(medal.emoji)},false)
   // return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : opendota.util.getMedal(results[0],'emoji',replace)},true)
   // : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : opendota.util.getMedal(results[0],'emoji',replace)},false)
 }

@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
@@ -34,6 +33,6 @@ module.exports = new Command('withpros',{
           footer : {text: self.replace.do(lang.withProsFooter,{number : resultsShow !== resultsTotal ? resultsShow + "/" + resultsTotal : results[1].length},true), icon_url : self.user.avatarURL},
           color : self.config.color
         }})
-      }).catch(err => this.discordLog('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
+      }).catch(err => self.discordLog.send('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
     })
   })

@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
-const util = require('erisjs-utils')
+const {Datee , Request} = require('erisjs-utils')
 const lang = require('../lang.json')
 
 module.exports = new Command('account',{
@@ -31,7 +31,7 @@ module.exports = new Command('account',{
         else{account[i] = basic.parseProfileURL(account[i],i)}
       }
       if(account.dota){
-        util.request.getJSON('https://api.opendota.com/api/players/' + account.dota).then(result => {
+        Request.getJSON('https://api.opendota.com/api/players/' + account.dota).then(result => {
           if(!result.profile){msg.addReaction(this.config.emojis.default.error);return}; //TODO need register
           this.logger.add('accountmodify',msg.author.username,true);
           this.createMessage(server.accounts,{
@@ -40,7 +40,7 @@ module.exports = new Command('account',{
               description : this.replace.do(`**Guild/DM:** \`${guildName}\` **ID:** \`${guildID}
               \`\n<dota> <dotaID>\n<steam> <steamID>\n<twitch> <twitchID>\n<twitter> <twitterID>`,{dotaID: account.dota, steamID : account.steam, twitchID : account.twitch, twitterID : account.twitter},true),
               //thumbnail : {url : config.icon, height : 40, width : 40},
-              footer : {text : msg.author.username + ' | ' + msg.author.id + ' | ' + util.date(msg.timestamp,'log') ,icon_url : msg.author.avatarURL},
+              footer : {text : msg.author.username + ' | ' + msg.author.id + ' | ' + Datee.custom(msg.timestamp,'D/M/Y h:m:s') ,icon_url : msg.author.avatarURL},
               color: this.config.colors.account.modify}
           }).then(m => {
               msg.addReaction(this.config.emojis.default.envelopeIncoming)

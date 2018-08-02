@@ -1,4 +1,4 @@
-const util = require('erisjs-utils')
+const { Request } = require('erisjs-utils')
 
 const api = {}
 api.divisions = ['europe', 'americas', 'china', 'seasia']
@@ -16,7 +16,7 @@ api.url = division => api.urls.base + api.urls[division]
 
 api.get = (division) => {
   return new Promise((resolve, reject) => {
-    util.request.getJSON(api.url(division)).then(result => {
+    Request.getJSON(api.url(division)).then(result => {
       resolve(result)
     }).catch(err => reject(err))
   })
@@ -37,7 +37,7 @@ api.searchPlayerInWorld = (query) => {
 api.promises = () => {
   let promises = [];
   for (var i = 0; i < api.divisions.length; i++) {
-    promises.push(util.request.getJSON(api.url(api.divisions[i])))
+    promises.push(Request.getJSON(api.url(api.divisions[i])))
   }
   return Promise.all(promises)
 }

@@ -1,5 +1,5 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
+// const util = require('erisjs-utils')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 

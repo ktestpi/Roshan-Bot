@@ -1,5 +1,5 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
+const { Markdown, Request } = require('erisjs-utils')
 const opendota = require('../helpers/opendota')
 const basic = require('../helpers/basic')
 const lang = require('../lang.json')
@@ -27,8 +27,8 @@ module.exports = new Command('player',{subcommandFrom : 'search',
       }
       const playersShow = players.length;
       const urls = players.map(player => 'https://api.opendota.com/api/players/' + player.account_id);
-      util.request.getJSONMulti(urls).then((player_profiles) => {
-        const text = player_profiles.map((player) => player.profile).map((player) => `**${basic.parseText(opendota.util.nameOrNick(player),'nf')}** ${util.md.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${util.md.link(player.profileurl,'S')}`).join(', ');
+      Request.getJSONMulti(urls).then((player_profiles) => {
+        const text = player_profiles.map((player) => player.profile).map((player) => `**${basic.parseText(opendota.util.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
         msg.reply({embed : {
           title : lang.searchplayerTitle,
           description : this.replace.do(lang.searchplayerDescription,{query : query, text : text},true),

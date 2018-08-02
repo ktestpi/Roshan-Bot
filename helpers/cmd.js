@@ -1,4 +1,3 @@
-const util = require('erisjs-utils')
 const lang = require('../lang.json')
 
 let self = module.exports

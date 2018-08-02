@@ -1,12 +1,10 @@
 const { Command } = require('aghanim')
-const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 const enumPlayerPos = require('../helpers/enums/player_positions')
 
 module.exports = new Command('cardhelp',{
   category : 'Cuenta', help : 'Ayuda de la tarjeta de jugador@', args : ''},
   function(msg, args, command){
-    console.log(enumPlayerPos.toArray());
     msg.replyDM({
       embed : {
         title: lang.cardConfigTitle,

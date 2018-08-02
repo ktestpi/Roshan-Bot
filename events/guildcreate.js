@@ -1,5 +1,4 @@
 const { Event } = require('aghanim')
-const util = require('erisjs-utils')
 const lang = require('../lang.json')
 const { resetServerConfig } = require('../helpers/basic.js')
 
@@ -21,13 +20,12 @@ module.exports = new Event('','guildCreate',{}, function(guild){
     embed : {
       title : lang.newServer,
       description : "**Nombre:** `" + guild.name + "`\n**ID:** `" + guild.id + "`\n**Miembros:** `" + guild.memberCount
-        + "`\n**Propietari@:** `" + guild.members.get(guild.ownerID).username + "`\n**Región:** `" + guild.region + "`\n**Creado:** `" + util.date(guild.createdAt,'log') + "`",
+        + "`\n**Propietari@:** `" + guild.members.get(guild.ownerID).username + "`\n**Región:** `" + guild.region + "`\n**Creado:** `" + date.custom(guild.createdAt,'D/M/S h:m:s') + "`",
       thumbnail : {url : guild.iconURL || this.user.avatarURL, height : 40, width : 40},
-      footer : {text : guild.name + ' | ' + guild.id + ' | ' + util.date(guild.joinedAt,'log'),icon_url : this.user.avatarURL},
+      footer : {text : guild.name + ' | ' + guild.id + ' | ' + date.custom(guild.joinedAt,'D/M/Y h:m:s'),icon_url : this.user.avatarURL},
       color: this.config.color
     }
   })
-  resetServerConfig(this,guild)
-  // this.logger.add('guildnew',guild.name,true);
-  this.discordLog.controlMessage('guildnew',`**${guild.name}**`)
+  resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating cofing for **${guild.name}** (${guild.id})`))
+  // this.logger.add('guildnew',guild.name,true)
 })

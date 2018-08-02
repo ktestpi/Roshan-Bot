@@ -1,7 +1,4 @@
 const { Command } = require('aghanim')
-const util = require('erisjs-utils')
-const basic = require('../helpers/basic')
-const lang = require('../lang.json')
 
 module.exports = new Command(['supp'],{
   category : 'Owner', help : 'Supports', args : '[<add/remove> <mención>]',
