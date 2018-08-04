@@ -11,12 +11,15 @@ module.exports = new Command(['eval','e'],{
     // let self = this
     if(!args[1]){return}
     let bot = this
+    let bla = this
     const _guild = msg.channel.guild
     const _channel = msg.channel
     const _user = msg.author
     let toEval = args.from(1)
     if(toEval.includes('return')){toEval=`(function(){${toEval}})()`}
     try{
+      const _message = msg
+      const reply = msg.reply
       let result = eval(toEval)
       console.log(`Eval: ${toEval}`);
       Promise.resolve(result).then(res => {

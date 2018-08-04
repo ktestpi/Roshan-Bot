@@ -13,5 +13,5 @@ module.exports = new Command('servers',{
       return cache ? ({id : guild.id, name : guild.name, owner : guild.members.get(guild.ownerID).username, members : guild.memberCount, notifications : cache.notifications.enable, feeds : cache.feeds.enable}) : undefined
     }).filter(guild => guild)
     guilds.forEach(guild => table.addRow([guild.id,guild.notifications ? '+' : '-',guild.feeds ? '+' : '-',guild.name,guild.members,guild.owner]))
-    msg.reply({embed : {title : `Notificaciones de los Servidores (${guilds.length})`,description : table.do()}})
+    msg.reply({embed : {title : `Notificaciones de los Servidores (${guilds.length})`,description : table.render()}})
   })

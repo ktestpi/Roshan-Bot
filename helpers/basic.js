@@ -221,7 +221,7 @@ const initialServerConfig = {
 
 module.exports.resetServerConfig = function(bot,guild){
   let reset = initialServerConfig;
-  const defaultChannel = util.Guild.getDefaultChannel(guild,bot).id
+  const defaultChannel = util.Guild.getDefaultChannel(guild,bot,true).id
   reset.notifications.channel = defaultChannel;
   reset.feeds.channel = defaultChannel;
   return bot.cache.servers.save(guild.id,reset)

@@ -1,6 +1,6 @@
 const { Extension } = require('aghanim')
 const Eris = require('eris')
-const util = require('erisjs-utils')
+const { Message, Guild } = require('erisjs-utils')
 const { resetServerConfig } = require('../helpers/basic.js')
 
 module.exports = new Extension('bot_extensions',function(bot){
@@ -26,17 +26,27 @@ module.exports = new Extension('bot_extensions',function(bot){
     if(msg.attachments.length < 1){
       servers.forEach(server => {
         const cached = this.cache.servers.get(server.id)
-        if(!cached){resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating config for **${guild.name}** (${guild.id})`))}
+        if(!cached){resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating config for **${server.name}** (${server.id})`,null,err))}
         if(!all && cached && !cached[mode].enable){return};
-        this.createMessage(server[mode].channel,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false});
+        const channel = cached ? cached[mode].channel : Guild.getDefaultChannel(server,this,true).id
+        this.createMessage(channel,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false}).catch(err => {
+          // Create the message to defaultChannel of guild (not cofigurated)
+          // this.createMessage(Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false})
+          this.discordLog.controlMessage('error',`Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`,null,err)
+        })
       })
     }else{
-      util.msg.sendImage(msg.attachments[0].url).then(buffer => {
+      Message.sendImage(msg.attachments[0].url).then(buffer => {
         servers.forEach(server => {
           const cached = this.cache.servers.get(server.id)
-          if(!cached){resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating config for **${guild.name}** (${guild.id})`))}
+          if(!cached){resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating config for **${server.name}** (${server.id})`))}
           if(!all && cached && !cached[mode].enable){return};
-          this.createMessage(server[channel].channel,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false},{file : results, name : msg.attachments[0].filename})
+          const channel = cached ? cached[mode].channel : Guild.getDefaultChannel(server,this,true).id
+          this.createMessage(channel,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false},{file : results, name : msg.attachments[0].filename}).catch(err => {
+            // Create the message to defaultChannel of guild (not cofigurated)
+            // this.createMessage(Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false},{file : results, name : msg.attachments[0].filename})
+            this.discordLog.controlMessage('error',`Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`,null,err)
+          })
         })
       })
     }
@@ -49,7 +59,7 @@ module.exports = new Extension('bot_extensions',function(bot){
       this.getMessages('470189277544841226').then(messages => {messages
         .filter(m => m.content.startsWith('🇫'))
         .map(m => ({tag: m.content.match(/\*\*(\w+)\*\*/)[1], src : m.content.match(/\`\`\`js[\n]?(.+)[\n]?\`\`\`/)[1]}))
-        .forEach(c => {try{this.scripts[c.tag] = eval(`${c.src}`)}catch(err){return this.discordLog.log('error','Error loading scripts',null,err)}})
+        .forEach(c => {try{this.scripts[c.tag] = eval(`${c.src}`)}catch(err){return this.discordLog.log('error','Error loading scripts\n'+err.stack)}})
         this.discordLog.log('info','Scripts loaded')
         resolve()
       })
