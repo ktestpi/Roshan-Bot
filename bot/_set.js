@@ -5,7 +5,7 @@ const lang = require('../lang.json')
 const util = require('erisjs-utils')
 const enumHeroes = require('../helpers/enums/heroes')
 
-module.exports = new Command('tes',{
+module.exports = new Command('set',{
   category : 'Owner', help : 'Testing', args : '', cooldownMessage :'Quedan **<cd>**s',
   ownerOnly : true, hide : true},
   function(msg, args, command){
@@ -13,7 +13,7 @@ module.exports = new Command('tes',{
       // this.dislog.send('memberin',{title : 'Hola',description : msg.author.username},`Hola **${msg.author.username}**`,'Descripción del error',msg.author)
       // this.discordLog.send('guildnew',null,'Name Guild',null,msg.author)
       // console.log(this.cache.profiles.find(p => p._id === msg.author.id))
-      msg.sendDM('setId',null,{user : msg.author.username},true)
+      this.cache.servers.modify(msg.channel.guild.id,{lang : 'es'})
       // console.log(this.logg.bucket,this.logg.overview());
       // setTimeout(() => msg.reply(this.logg.overview()),2000)
   })

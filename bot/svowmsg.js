@@ -20,8 +20,7 @@ module.exports = new Command('svowmsg',{
       color : this.config.colors.sendMsg.owner
     }
     owner.user.getDMChannel().then(channel => {
-      channel.createMessage({embed})
+      channel.createMessage({embed}).then(() => this.createMessage(this.config.guild.notifications,{embed}))
       // courier.send('log',{info : `${owner.username} | ${guild.name} | ${guild.id}`, info_icon : guild.iconURL, reason : `Propietario servidor`, message : message, color : config.colors.sendMsg.owner},{bot})
-      this.createMessage(this.config.guild.notifications,{embed})
     })
   })

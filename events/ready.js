@@ -21,7 +21,7 @@ module.exports = new Event('','ready',{}, function(){
 
   this.config.emojis.bot = util.Guild.loadEmojis(this.server);
 
-  this.replace = new util.Classes.ReplacerML({es : lang},{ //Create a replacer with bot info + emojis + lang
+  this.replace = new util.Classes.ReplacerML({es : lang, en : {'setId' : 'ID saved to <user>' }},{ //Create a replacer with bot info + emojis + lang
     bot_name : this.user.username,
     bot_icon : this.user.avatarURL,
     author_name : this.owner.username,
@@ -55,6 +55,7 @@ module.exports = new Event('','ready',{}, function(){
       this.config.switches.leaderboardUpdate = false;
       this.config.switches.backupdb = false;
       this.cache.profiles = new FirebaseCache(this.db.child('profiles'),{"189996884322942976" : {card : {bg : '0', pos : 'all', heroes : '1,2,3'}, profile : {dota : '112840925', steam : '76561198073106653', twitch : '', twitter : ''}}});
+      this.cache.servers = new FirebaseCache(this.db.child('servers'),{"327603106257043456" : {notifications : {enable : true, channel : "327603106257043456"}, feeds : {enable : true, channel : "327603106257043456"}}})
       this.cache.betatesters = new FireSetCache(this.db.child('betatesters'),[this.owner.id,...this.server.membersWithRole(this.config.roles.betatester).map(m => m.id)])
       this.cache.supporters = new FireSetCache(this.db.child('supporters'),[...this.server.membersWithRole(this.config.roles.supporter).map(m => m.id)])
     }

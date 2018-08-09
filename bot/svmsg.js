@@ -19,5 +19,5 @@ module.exports = new Command('svmsg',{
       footer : {text : this.user.username ,icon_url : this.user.avatarURL},
       color : this.config.colors.sendMsg.server
     }
-    Guild.getDefaultChannel(guild,this).createMessage({embed}).then(() => this.createMessage(this.config.guild.notifications,{embed}))
+    Guild.getDefaultChannel(guild,this,true).createMessage({embed}).then(() => this.createMessage(this.config.guild.notifications,{embed}))
   })
