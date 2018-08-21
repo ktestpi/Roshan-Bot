@@ -16,6 +16,6 @@ module.exports = new Command('lastmatch+',{
         args[0] = cmd.name;
         args[1] = results[0][0].match_id
         return cmd.process.call(self,msg,args,cmd)
-      })
-    }).catch(err => this.discordLog.send('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
+      }).catch(err => this.discordLog.send('oderror',lang.errorOpendotaRequest,lang.errorOpendotaRequest,err,msg.channel))
+    })
   })

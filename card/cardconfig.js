@@ -4,6 +4,13 @@ const lang = require('../lang.json')
 const enumHeroes = require('../helpers/enums/heroes')
 const enumPlayerPos = require('../helpers/enums/player_positions')
 
+enumHeroes.getKeyByAlias = function(tag){
+  for (let [key,val] of this) {
+    if(val.alias.includes(tag)){return key}
+  }
+  return undefined
+}
+
 module.exports = new Command('cardconfig',{
   category : 'Cuenta', help : 'Ayuda de la tarjeta de jugador@', args : ''},
   function(msg, args, command){
@@ -14,7 +21,7 @@ module.exports = new Command('cardconfig',{
       let _heroes = [], _pos = []
       for (var i = 1; i < args.length; i++) {
         if(args[i].startsWith('.')){
-          const hero = enumHeroes.getKey(args[i].slice(1))
+          const hero = enumHeroes.getKeyByAlias(args[i].slice(1))
           if(hero){_heroes.push(hero)}
         }else if(args[i].startsWith('-') && !_pos.length){
           const position = enumPlayerPos.getValue(args[i].slice(1))
