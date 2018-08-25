@@ -120,7 +120,8 @@ const HEROES = {
   "117" : {"name" : "", "name_id" : "", "alias" : []},
   "118" : {"name" : "", "name_id" : "", "alias" : []},
   "119" : {"name" : "Dark Willow", "name_id" : "dark_willow", alias : ["willow","dw"]},
-  "120" : {"name" : "Pangolier", "name_id" : "pangolier", alias : ["pango"]}
+  "120" : {"name" : "Pangolier", "name_id" : "pangolier", alias : ["pango"]},
+  "121" : {"name" : "Grimstroke", "name_id" : "grimstroke", alias : ["grimstroke","gs"]}
 }
 const enumy = new SimpleEnums(HEROES)
 // console.log(enumy,enumy.getValue(44),enumy.getValue('44'));
