@@ -5,7 +5,7 @@ const { Datee } = require('erisjs-utils')
 const lang = require('../lang.json')
 
 module.exports = new Command('unregister',{
-  category : 'Cuenta', help : 'Elimina tu cuenta de Roshan', args : ''},
+  category : 'Account', help : 'Elimina tu cuenta de Roshan', args : ''},
   function(msg, args, command){
     if(!this.cache.profiles.get(msg.author.id)){return msg.addReaction(this.config.emojis.default.error)}
     const guild = this.config.guild;

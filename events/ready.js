@@ -55,7 +55,8 @@ module.exports = new Event('','ready',{}, function(){
       this.config.switches.leaderboardUpdate = false;
       this.config.switches.backupdb = false;
       this.cache.profiles = new FirebaseCache(this.db.child('profiles'),{"189996884322942976" : {card : {bg : '0', pos : 'all', heroes : '1,2,3'}, profile : {dota : '112840925', steam : '76561198073106653', twitch : '', twitter : ''}}});
-      this.cache.servers = new FirebaseCache(this.db.child('servers'),{"327603106257043456" : {notifications : {enable : true, channel : "327603106257043456"}, feeds : {enable : true, channel : "327603106257043456"}}})
+      this.cache.servers = new FirebaseCache(this.db.child('servers'),{"327603106257043456" : {notifications : {enable : true, channel : "491295737251102733"}, feeds : {enable : true, channel : "491295737251102733", subs : "1,2,3"}},
+        "332023803691532289" : {notifications : {enable : true, channel : "332023803691532289"}, feeds : {enable : true, channel : "332023803691532289", subs : "1,2,3"}}})
       this.cache.betatesters = new FireSetCache(this.db.child('betatesters'),[this.owner.id,...this.server.membersWithRole(this.config.roles.betatester).map(m => m.id)])
       this.cache.supporters = new FireSetCache(this.db.child('supporters'),[...this.server.membersWithRole(this.config.roles.supporter).map(m => m.id)])
     }
@@ -79,6 +80,7 @@ module.exports = new Event('','ready',{}, function(){
   }).catch(err => {console.log(err);this.emit('postready')})
 
   this.on('postready',function(){
+    if(this._started){return}else{this._started = true}
     if(this.config.switches.backupdb){ //config.switches.backupdb
       util.Firebase.backupDBfile(this.db,this,this.config.guild.backup,{filenameprefix : 'roshan_db_', messageprefix : '**Roshan Backup DB**'}).then(snap => {
         //Create cache maps for Profiles and Servers (Firebase)

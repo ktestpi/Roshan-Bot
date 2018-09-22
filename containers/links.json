@@ -74,5 +74,31 @@
         "links" : [
           {"name" : "Twitter", "hide" : false, "link" : "https://twitter.com/AutoDota"},
           {"name" : "Telegram", "hide" : false, "link" : "http://t.me/AutoDota"}
-        ]}]}
+        ]}]},
+    "artifact" : {
+      "title" : "Artifact", "description" : "", "thumbnail" : "https://pbs.twimg.com/profile_images/894659755129552897/-EC4LJTe_400x400.jpg",
+      "footer" : { "text" : "", "icon" : ""},
+      "fields" : [
+        {"name" : "Oficial", "inline" : true,
+          "links" : [
+            {"name" : "Web", "hide" : false, "link" : "http://playartifact.com"},
+            {"name" : "Twitter", "hide" : false, "link" : "https://twitter.com/PlayArtifact"}
+          ]
+        },
+        {"name" : "Información", "inline" : true,
+          "links" : [
+            {"name" : "Gamepedia", "hide" : false, "link" : "https://artifact.gamepedia.com/"},
+            {"name" : "Artifactbuff", "hide" : false, "link" : "https://www.artifactbuff.com"},
+            {"name" : "ArtifactFire", "hide" : false, "link" : "https://www.artifactfire.com"},
+            {"name" : "LearnArtifact", "hide" : false, "link" : "http://www.learnartifact.com/"}
+          ]
+        },
+        {"name" : "Información - Español", "inline" : true,
+          "links" : [
+            {"name" : "ArtifactSpain", "hide" : false, "link" : "http://www.artifactspain.com"},
+            {"name" : "Artifact_Es - Discord", "hide" : false, "link" : "https://discord.gg/hxSC95p"},
+            {"name" : "Artifact_Es - Twitter", "hide" : false, "link" : "https://twitter.com/ES_Artifact"}
+          ]
+        }
+      ]}
 }

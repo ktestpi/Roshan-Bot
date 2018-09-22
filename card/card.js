@@ -5,8 +5,8 @@ const lang = require('../lang.json')
 const apijimp = require('../helpers/apijimp')
 const { check } = require('../helpers/cmd')
 
-module.exports = new Command('card',{
-  category : 'Cuenta', help : 'Muestra tu tarjeta de jugador', args : '', cooldown : 10, cooldownMessage : lang.warningInCooldown},
+module.exports = new Command('idcard',{
+  category : 'Account', help : 'Muestra tu tarjeta de jugador', args : '', cooldown : 10, cooldownMessage : lang.warningInCooldown},
   function(msg, args, command){
     let self = this
     let user = msg.mentions.length ? msg.mentions[0] : msg.author
@@ -19,7 +19,13 @@ module.exports = new Command('card',{
         profile.card.heroes = results[1].slice(0,3).map(h => h.hero_id).join(',')
         profile.card.pos = 'all'
         return apijimp.card([results[0],profile.card])})
-      .then(buffer => msg.reply(lang.playerCardCanConfig.replaceKey({username : user.username}),{file : buffer, name : user.username + '_roshan_card.png'}))
+      .then(buffer => this.createMessage(this.config.guild.generated,'',{file : buffer, name : user.username + '_roshan_card.png'}))
+      .then(m => msg.reply({embed : {
+          description : `${this.replace.do(lang.playerCard,{username : user.username},true)}\n${basic.socialLinks(profile.profile,'vertical',this.config.links.profile)}`,
+          image : { url : m.attachments[0].url},
+          color : this.config.color}
+        }))
+      // .then(buffer => msg.reply(lang.playerCardCanConfig.replaceKey({username : user.username}),{file : buffer, name : user.username + '_roshan_card.png'}))
       .catch(err => {
         // msg.reply()
         this.discordLog.send("error",lang.IE_CardCreate.replaceKey({username : user.username}),lang.errorCardCreate,err,msg.channel)
@@ -28,7 +34,17 @@ module.exports = new Command('card',{
     }else{
       return opendota.request('card',profile.profile.dota)
         .then(results => apijimp.card([...results,profile.card]))
-        .then(buffer => msg.reply(this.replace.do(lang.playerCard,{username : user.username},true),{file : buffer, name : user.username + '_roshan_card.png'}))
+        // .then(buffer => msg.reply({
+        //     embed : {description : `${this.replace.do(lang.playerCard,{username : user.username},true)}\n${basic.socialLinks(profile.profile,'inline',this.config.links.profile)}`, color : this.config.color}
+        //   },
+        //   {file : buffer, name : user.username + '_roshan_card.png'}))
+        .then(buffer => this.createMessage(this.config.guild.generated,'',{file : buffer, name : user.username + '_roshan_card.png'}))
+        .then(m => msg.reply({embed : {
+            description : `${this.replace.do(lang.playerCard,{username : user.username},true)}\n${basic.socialLinks(profile.profile,'vertical',this.config.links.profile)}`,
+            image : { url : m.attachments[0].url},
+            color : this.config.color}
+          }))
+        // .then(buffer => msg.reply(this.replace.do(lang.playerCard,{username : user.username},true),{file : buffer, name : user.username + '_roshan_card.png'}))
         .catch(err => {
           this.discordLog.send("error",lang.IE_CardCreate.replaceKey({username : user.username}),lang.errorCardCreateerr,err,msg.channel)
           // this.logger.add("error",lang.IE_CardCreate.replaceKey({username : user.username}),true)

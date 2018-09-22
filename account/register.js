@@ -5,7 +5,7 @@ const { Datee, Request } = require('erisjs-utils')
 const lang = require('../lang.json')
 
 module.exports = new Command('register',{
-  category : 'Cuenta', help : 'Registro en el bot', args : '[dotaID] [steamID] [twitchID] [twitterID]'},
+  category : 'Account', help : 'Registro en el bot', args : '[dotaID] [steamID] [twitchID] [twitterID]'},
   function(msg, args, command){
     // let self = this
     if(args.length < 2){

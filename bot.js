@@ -65,20 +65,22 @@ bot.addExtensionDir(path.join(__dirname,'extensions'))
 //Define categories for commands
 bot.addCategory('General','Ayuda de general')
 bot.addCategory('Dota 2','Ayuda de Dota 2')
-bot.addCategory('Cuenta','Ayuda para la gestión de la cuenta en Roshan')
-bot.addCategory('Aegis','Ayuda para comandos de admin')
+bot.addCategory('Account','Ayuda para la gestión de la cuenta en Roshan')
+bot.addCategory('Server','Ayuda para comandos de servidor')
 bot.addCategory('Owner','Ayuda para comandos de propietario')
 bot.addCategory('Fun','Ayuda los comandos de emojis y memes')
+bot.addCategory('Artifact','Ayuda los comandos de Artifact')
 
 //Load commands
 bot.addCommandDir(path.join(__dirname,'opendota'))
 bot.addCommandDir(path.join(__dirname,'account'))
-bot.addCommandDir(path.join(__dirname,'aegis'))
+bot.addCommandDir(path.join(__dirname,'server'))
 bot.addCommandDir(path.join(__dirname,'general'))
 bot.addCommandDir(path.join(__dirname,'fun'))
 bot.addCommandDir(path.join(__dirname,'bot'))
 bot.addCommandDir(path.join(__dirname,'dota2'))
 bot.addCommandDir(path.join(__dirname,'card'))
+bot.addCommandDir(path.join(__dirname,'artifact'))
 
 
 // bot.db.child('profiles').once('value').then(snap => {

@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 
 module.exports = new Command('del',
-  {category : 'Aegis', help : 'Elimina los últimos <mensajes>', args : '<mensajes>',
+  {category : 'Server', help : 'Elimina los últimos <mensajes>', args : '<mensajes>',
     rolesCanUse : 'aegis'},
   function(msg, args, command){
     const limit = 100, min = 10;

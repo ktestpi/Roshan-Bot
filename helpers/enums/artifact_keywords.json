@@ -1,0 +1,19 @@
+[
+  {"name" : "Cleave", "alias" : [], "text" : "Deals damage to a unit's neighbors.\n\nCleave deals X damage to the cards directly to the left and right of the unit being attacked. Cleave does not trigger if there is no unit to cleave off, such as the tower being attacked instead.", "image" : ""},
+  {"name" : "Condemn", "alias" : [], "text" : "Indiscriminately kills a target.\n\nCondemning any card in play instantly destroys it. Condemning an enemy unit awards the appropriate amount of gold that you would have recieved through destroying it through combat or other means. You do not receive gold for condemning your own cards.", "image" : ""},
+  {"name" : "Damage Immunity", "alias" : [], "text" : "Grants invulnerability to traditional damage.\n\nUnits with Damage Immunity cannot be dealt any damage from any source. They can still be killed through other means, such as HP loss.", "image" : ""},
+  {"name" : "Death Shield", "alias" : [], "text" : "Protect to a unit when it goes to die by damage.", "image" : ""},
+  {"name" : "Disarm", "alias" : [], "text" : "Prevents a unit from attacking.\n\nDisarming a card prevents it from attacking in the next Combat Phase.", "image" : ""},
+  {"name" : "Healing", "alias" : [], "text" : "Restores health immediately.", "image" : ""},
+  {"name" : "Neighbors", "alias" : [], "text" : "Units directly to the left and right of the target unit.", "image" : ""},
+  {"name" : "Piercing", "alias" : [], "text" : "Ignorate armor", "image" : ""},
+  {"name" : "Purge", "alias" : [], "text" : "Remove unit's modifiers", "image" : ""},
+  {"name" : "Rapid Deployment", "alias" : [], "text" : "Reduces the time spent waiting to be redeployed in the Fountain.\n\nRapid Deployment allows dead Heroes such as Rix overview Rix to ignore the normal 2 turn wait to reenter play, causing them to be immediately deployable in the next Deployment Phase.", "image" : ""},
+  {"name" : "Regeneration", "alias" : [], "text" : "Heals and prevents combat damage.\n\nIt is essentially negative combat damage. It applies during Combat Damage, potentially negating or even healing past damage. Regeneration can also save heroes from lethal damage.", "image" : ""},
+  {"name" : "Retaliate", "alias" : [], "text" : "Deals damage to attacking cards.\n\nA card with Retaliate X deals X damage to any unit attacking it.", "image" : ""},
+  {"name" : "Siege", "alias" : [], "text" : "Damages the tower when blocked.\n\nSiege Damage deals damage directly to the opponent's structure in the lane whenever the unit with Siege damage is blocked.", "image" : ""},
+  {"name" : "Silence", "alias" : [], "text" : "Prevents ability activation and spell casting.\n\nSilence prevents the afflicted hero from activating any abilities, which includes both hero abilities and item abilities. Additionally, a silenced hero cannot be used to fulfil the color requirement for casting spells (If you silence the only Green Cards.pngGreen hero in a lane, your opponent cannot cast any Green Cards.pngGreen spells.)", "image" : ""},
+  {"name" : "Stun", "alias" : [], "text" : "Prevents damage, abilities and spell casting.\n\nIt is essentially a combination of Disarm and Silence, preventing heroes from attacking (and hence dealing damage in combat), using items or abilities and enabling spell-casting.", "image" : ""},
+  {"name" : "Swap", "alias" : [], "text" : "Exchanges the position of two units.\n\nSwap exchanges the position of two units immediately, resetting combat targets and recalculating pathing.", "image" : ""},
+  {"name" : "Taunt", "alias" : [], "text" : "Redirects enemy attacks.\n\nTaunt forces neighbors of a target unit to attack it. It does not affect any cards that cannot normally attack the unit.", "image" : ""}
+]

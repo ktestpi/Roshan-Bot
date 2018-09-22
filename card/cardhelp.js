@@ -2,8 +2,8 @@ const { Command } = require('aghanim')
 const lang = require('../lang.json')
 const enumPlayerPos = require('../helpers/enums/player_positions')
 
-module.exports = new Command('cardhelp',{
-  category : 'Cuenta', help : 'Ayuda de la tarjeta de jugador@', args : ''},
+module.exports = new Command('idcardhelp',{
+  category : 'Account', help : 'Ayuda de la tarjeta de jugador@', args : ''},
   function(msg, args, command){
     msg.replyDM({
       embed : {

@@ -7,7 +7,7 @@ module.exports.SimpleEnums = class SimpleEnums extends Map{
   }
   getKey(value){
     for (let [key,val] of this) {
-      if(val === value){return key}
+      if(val.toLowerCase() === value.toLowerCase()){return key}
     }
     return undefined
   }

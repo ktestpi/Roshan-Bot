@@ -7,8 +7,8 @@ const _heroes = enumHeroes.toArray().filter(hero => hero.value.name).map(hero =>
   .sort(basic.sortBy('alpha','a','name')).map(hero => `\`${hero.alias.join(',')}\``).join(' | ')
 //
 
-module.exports = new Command('cardheroes',{
-  category : 'Cuenta', help : 'Ayuda de las etiquetas de héroes', args : ''},
+module.exports = new Command('idcardheroes',{
+  category : 'Account', help : 'Ayuda de las etiquetas de héroes', args : ''},
   function(msg, args, command){
     msg.replyDM({
       embed : {

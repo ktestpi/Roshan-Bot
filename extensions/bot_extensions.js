@@ -2,6 +2,7 @@ const { Extension } = require('aghanim')
 const Eris = require('eris')
 const { Message, Guild } = require('erisjs-utils')
 const { resetServerConfig } = require('../helpers/basic.js')
+const enumFeeds = require('../helpers/enums/feeds')
 
 module.exports = new Extension('bot_extensions',function(bot){
   bot.setStatus = function(type,status,msg,url,update){
@@ -17,18 +18,21 @@ module.exports = new Extension('bot_extensions',function(bot){
     promises.push(this.editStatus(this.config.status, {name : this.config.status_msg, type : this.config.status_act, url : this.config.status_url}))
     return Promise.all(promises)
   }
+  bot.artifactCards = require('../helpers/enums/artifact_cards.js')
   // console.log('HELLOOOOO');
   bot.messageAllGuilds = function(msg,all,mode){
     if(!this.config.switches.msgGuilds){return}
-    const message = mode !== 'feeds' ? msg.content : `${this.config.emojis.default.feeds} **${msg.author.username}**:\n${msg.content}`;
+    const message = mode !== 'feeds' ? msg.content : `${this.config.emojis.default.feeds} **${msg.author.username}**: ${msg.content}`;
+    const author = enumFeeds.getKey(msg.author.username);
     const servers = this.guilds.map(g => g)//this.cache.servers.getall()
     if(!servers){return};
     if(msg.attachments.length < 1){
       servers.forEach(server => {
         const cached = this.cache.servers.get(server.id)
-        if(!cached){resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating config for **${server.name}** (${server.id})`,null,err))}
+        if(!cached){resetServerConfig(this,server).then(() => this.discordLog.controlMessage('guildnew',`**${server.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating config for **${server.name}** (${server.id})`,null,err));return}
         if(!all && cached && !cached[mode].enable){return};
         const channel = cached ? cached[mode].channel : Guild.getDefaultChannel(server,this,true).id
+        if(mode === 'feeds' && !cached.feeds.subs.split(',').includes(author)){return}
         this.createMessage(channel,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false}).catch(err => {
           // Create the message to defaultChannel of guild (not cofigurated)
           // this.createMessage(Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false})
@@ -39,9 +43,10 @@ module.exports = new Extension('bot_extensions',function(bot){
       Message.sendImage(msg.attachments[0].url).then(buffer => {
         servers.forEach(server => {
           const cached = this.cache.servers.get(server.id)
-          if(!cached){resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating config for **${server.name}** (${server.id})`))}
+          if(!cached){resetServerConfig(this,server).then(() => this.discordLog.controlMessage('guildnew',`**${server.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating config for **${server.name}** (${server.id})`));return}
           if(!all && cached && !cached[mode].enable){return};
           const channel = cached ? cached[mode].channel : Guild.getDefaultChannel(server,this,true).id
+          if(mode === 'feeds' && !cached.feeds.subs.split(',').includes(author)){return}
           this.createMessage(channel,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false},{file : results, name : msg.attachments[0].filename}).catch(err => {
             // Create the message to defaultChannel of guild (not cofigurated)
             // this.createMessage(Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false},{file : results, name : msg.attachments[0].filename})

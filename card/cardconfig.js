@@ -11,8 +11,8 @@ enumHeroes.getKeyByAlias = function(tag){
   return undefined
 }
 
-module.exports = new Command('cardconfig',{
-  category : 'Cuenta', help : 'Ayuda de la tarjeta de jugador@', args : ''},
+module.exports = new Command('idcardconfig',{
+  category : 'Account', help : 'Ayuda de la tarjeta de jugador@', args : ''},
   function(msg, args, command){
     const profile = this.cache.profiles.get(msg.author.id)
     if(!profile){return basic.needRegister(msg,user.id)}

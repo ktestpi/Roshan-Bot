@@ -216,7 +216,7 @@ module.exports.wrongCmd = function(msg,list,prefix){
 
 const initialServerConfig = {
   notifications : {channel : "", enable : true},
-  feeds : {channel : "", enable : true}
+  feeds : {channel : "", enable : true, subs : ""}
 }
 
 module.exports.resetServerConfig = function(bot,guild){

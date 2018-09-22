@@ -6,7 +6,7 @@ const on = 'on'
 const off = 'off'
 
 module.exports = new Command('notifications',{subcommandFrom : 'server',
-  category : 'Aegis', help : 'Configuración de notificaciones', args : '<on,off,[channel]>',
+  category : 'Server', help : 'Configuración de notificaciones', args : '<on,off,[channel]>',
   rolesCanUse: 'aegis'},
   function(msg, args, command){
     // let self = this

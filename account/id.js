@@ -4,7 +4,7 @@ const basic = require('../helpers/basic')
 const lang = require('../lang.json')
 
 module.exports = new Command('id',{
-  category : 'Cuenta', help : 'Enlaces a Dotabuff, Steam, Twitch y Twitter', args : '[mención]'},
+  category : 'Account', help : 'Enlaces a Dotabuff, Steam, Twitch y Twitter', args : '[mención]'},
   function(msg, args, command){
     // let self = this
     const profile = basic.getAccountID(msg,args,this);

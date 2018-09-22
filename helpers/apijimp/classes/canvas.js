@@ -102,7 +102,7 @@ class Text extends Element{
     this.cut = (chars) => {}
   }
   sliceUntil(chars){
-    this.text.slice(0,chars)
+    this.text = this.text.slice(0,chars)
     return this
   }
   static width(font,text){

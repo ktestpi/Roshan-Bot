@@ -5,7 +5,7 @@ const {Datee , Request} = require('erisjs-utils')
 const lang = require('../lang.json')
 
 module.exports = new Command('account',{
-  category : 'Cuenta', help : 'Muestra/modifica tu cuenta', args : '[dotaID] [steamID] [twithID] [twitterID]'},
+  category : 'Account', help : 'Muestra/modifica tu cuenta', args : '[dotaID] [steamID] [twithID] [twitterID]'},
   function(msg, args, command){
     // let self = this
     const profile = this.cache.profiles.get(msg.author.id)

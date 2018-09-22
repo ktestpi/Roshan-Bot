@@ -1,7 +1,8 @@
 const { Command } = require('aghanim')
 
 module.exports = new Command('server',{
-  category : 'Aegis', help : 'Elimina los últimos <mensajes>', args : '<mensajes>',
+  category : 'Server', help : '
+  ', args : '<commando>',
   rolesCanUse : 'aegis'},
   function(msg, args, command){
 
