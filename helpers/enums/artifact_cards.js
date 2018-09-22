@@ -130,6 +130,7 @@ class ArtifactCardsCollection{
     if(!query){return}
     const card = this.getCard(query[1])
     if(!card){return}
+    
     return msg.reply({embed : {
       // title : card.name,
       author : {name : card.name, icon_url : ArtifactCardsCollection.cardTypeIcon(card.type), url : card.image},
