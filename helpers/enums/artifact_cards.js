@@ -50,31 +50,49 @@ class ArtifactCardsCollection{
     this.keywords = require('./artifact_keywords.json')
     this.image = options.image || "https://pbs.twimg.com/profile_images/894659755129552897/-EC4LJTe_400x400.jpg"
   }
-  addSet(set,language){
+  addSet(set,language,modifier){
     language = language || this.defaultLanguage
+    modifier = modifier || {}
     set.hosting_url = toURL(ArtifactCardsCollection.hostingUrl + "/language/" + language + '/' + set.order + ' - ' + set.name)
-    set.cards.forEach(card => {
-      const _card = card
-      _card.set = set.name
-      _card.image = toURL(set.hosting_url + '/cards/' + _card.image + '?raw=true')
-      _card.launched = set.launched
-      _card.rarityIcon = toURL(set.hosting_url + '/rarities/' + ArtifactCardsCollection.rarity(_card.rarity).toLowerCase() + '.png?raw=true') //set.symbols[ArtifactCardsCollection.rarity(_card.rarity).toLowerCase()] || rarities_icon[_card.rarity]
-      if(!this.cards[language]){this.cards[language] = []}
-      this.cards[language].push(_card)
-    })
     if(!this.sets[language]){this.sets[language] = []}
-    this.sets[language].push({name : set.name, alias : set.alias, launched : set.launched, totalcards : set.cards.length, image : set.hosting_url + '/' + set.image + '?raw=true', description : set.description, symbols : set.symbols,
+    if(!this.cards[language]){this.cards[language] = []}
+    const set_summary = {
+      name : set.name,
+      alias : set.alias,
+      launched : set.launched,
+      image : set.hosting_url + '/' + set.image + '?raw=true',
+      description : set.description,
+      symbol : set.symbol,
       summary : {
-        hero : set.cards.filter(c => c.type === 1).length,
-        creep : set.cards.filter(c => c.type === 2).length,
-        spell : set.cards.filter(c => c.type === 3).length,
-        improvement : set.cards.filter(c => c.type === 4).length,
-        weapon : set.cards.filter(c => c.type === 5).length,
-        armor : set.cards.filter(c => c.type === 6).length,
-        accessory : set.cards.filter(c => c.type === 7).length,
-        consumible : set.cards.filter(c => c.type === 8).length
+        hero : 0,
+        creep : 0,
+        spell : 0,
+        improvement : 0,
+        weapon : 0,
+        armor : 0,
+        accessory : 0,
+        consumible : 0
       }
+    }
+    const re = /['`\.]/
+    Object.keys(set.cards).forEach(c => {
+      if(!c){return}
+      let card = set.cards[c]
+      if(modifier[c]){card = Object.assign({},card,modifier[c])}
+      if(!card.alias){card.alias = []}
+      card.name = c
+      card.set = set.name
+      if(card.name.match(re)){card.alias.push(card.name.replace(new RegExp("['`\.]",'g'),''))}
+      card.image = toURL(set.hosting_url + '/cards/' + card.id  + '.jpg?raw=true')
+      card.launched = set.launched
+      card.rarityIcon = toURL(set.hosting_url + '/rarities/' + ArtifactCardsCollection.rarity(card.rarity).toLowerCase() + '.png?raw=true') //set.symbols[ArtifactCardsCollection.rarity(_card.rarity).toLowerCase()] || rarities_icon[_card.rarity]
+      // console.log(card);
+      this.cards[language].push(card)
+      if(!ArtifactCardsCollection.cardType(card.type).toLowerCase()){console.log('ERROR',card.name)}
+      set_summary.summary[ArtifactCardsCollection.cardType(card.type).toLowerCase()] += 1
     })
+    set_summary.totalcards = Object.keys(set_summary.summary).map(t => set_summary.summary[t]).reduce((s,c) => s+c,0)
+    this.sets[language].push(set_summary)
   }
   getCard(name,language){
     language = language || this.defaultLanguage
@@ -118,7 +136,7 @@ class ArtifactCardsCollection{
     return "https://github.com/Desvelao/artifact-database/blob/master/images"
   }
   static get hostingUrl(){
-    return "https://github.com/Desvelao/artifact-database/blob/master"
+    return "https://github.com/Desvelao/artifact-assets/blob/master"
   }
   static iconsCardString(card,replacer){
     const keys = ['manacost','goldcost']
@@ -143,7 +161,7 @@ class ArtifactCardsCollection{
 
 const artifactCards = new ArtifactCardsCollection({defaultLanguage : 'en'},{})
 
-artifactCards.addSet(require('artifact-database/language/en/0 - Basic/db.json'))
-artifactCards.addSet(require('artifact-database/language/en/1 - Starter/db.json'))
+artifactCards.addSet(require('artifact-database/language/en/sets/0 - Basic.json'),'en',require('../artifact_cards/en/0 - Basic.json'))
+artifactCards.addSet(require('artifact-database/language/en/sets/1 - Starter.json'),'en',require('../artifact_cards/en/1 - Starter.json'))
 
 module.exports = artifactCards
