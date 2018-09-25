@@ -15,14 +15,14 @@ const cards_colors = require('artifact-database/constants/cards_colors.json')
 // }
 
 const card_types_icon = {
-  '1' : 'https://github.com/Desvelao/artifact-database/blob/master/assets/cards_types/hero.png?raw=true',
-  '2' : 'https://github.com/Desvelao/artifact-database/blob/master/assets/cards_types/creep.png?raw=true',
-  '3' : 'https://github.com/Desvelao/artifact-database/blob/master/assets/cards_types/spell.png?raw=true',
-  '4' : 'https://github.com/Desvelao/artifact-database/blob/master/assets/cards_types/improvement.png?raw=true',
-  '5' : 'https://github.com/Desvelao/artifact-database/blob/master/assets/cards_types/weapon.png?raw=true',
-  '6' : 'https://github.com/Desvelao/artifact-database/blob/master/assets/cards_types/armor.png?raw=true',
-  '7' : 'https://github.com/Desvelao/artifact-database/blob/master/assets/cards_types/accessory.png?raw=true',
-  '8' : 'https://github.com/Desvelao/artifact-database/blob/master/assets/cards_types/consumible.png?raw=true'
+  '1' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/hero.png?raw=true',
+  '2' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/creep.png?raw=true',
+  '3' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/spell.png?raw=true',
+  '4' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/improvement.png?raw=true',
+  '5' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/weapon.png?raw=true',
+  '6' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/armor.png?raw=true',
+  '7' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/accessory.png?raw=true',
+  '8' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/consumible.png?raw=true'
 }
 
 
@@ -47,7 +47,7 @@ class ArtifactCardsCollection{
     this.assets.rarities = assets.rarities || ''
     this.defaultLanguage = options.defaultLanguage || 'en'
     this.assets.cardtype = assets.cardtype || ''
-    this.keywords = require('./artifact_keywords.json')
+    this.keywords = require('./artifact_keywords.json').sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase())
     this.image = options.image || "https://pbs.twimg.com/profile_images/894659755129552897/-EC4LJTe_400x400.jpg"
   }
   addSet(set,language,modifier){
@@ -150,10 +150,10 @@ class ArtifactCardsCollection{
     if(!card){return}
     return msg.reply({embed : {
       // title : card.name,
-      author : {name : card.name, icon_url : ArtifactCardsCollection.cardTypeIcon(card.type), url : card.image},
-      description : `${(card.type === 1 || card.type === 2) ? '**Stats:** ' + card.attack + '/' + card.armor + '/' + card.health + '\n': ''}${card.skills.length ? '**Skills:** ' + card.skills.map(s => `__(${ArtifactCardsCollection.skillType(s.type)}${s.type === 1 ? ' CD: ' + s.cooldown : ''})__ - \`${s.text}\``).join('\n') + '\n': ''}${card.text ? '**Text:** ' + card.text + '\n' : ''}${card.signature && card.type === 1 ? '**Signature Card:** '  + card.signature + '\n' : ''}${card.signaturefor && card.type !== 1 ? '**Signature Card for:** '  + card.signaturefor + '\n' : ''}${ArtifactCardsCollection.iconsCardString(card,replacer)}${card.alias.length ? '**Alias:** ' + card.alias.map(a => a).join(', ') + '\n' : ''}`,
+      author : {name : `${card.name}${(card.type === 1 || card.type === 2) ? ' - ' + card.attack + '/' + card.armor + '/' + card.health : ''}`, icon_url : ArtifactCardsCollection.cardTypeIcon(card.type), url : card.image},
+      description : `${card.skills.length ? card.skills.map(s => `${s.name ? '**' + s.name + '** ' : ''}(${ArtifactCardsCollection.skillType(s.type)}${s.type === 1 ? ' CD: ' + s.cooldown : ''}) - *${s.text}*`).join('\n') + '\n': ''}${card.text ? '*' + card.text + '*\n' : ''}${card.signature && card.type === 1 ? '__**Signature Card:**__ '  + card.signature + '\n' : ''}${card.signaturefor && card.type !== 1 ? '__**Signature Card for:**__ '  + card.signaturefor + '\n' : ''}${ArtifactCardsCollection.iconsCardString(card,replacer)}${card.alias.length ? '**Alias:** ' + card.alias.map(a => a).join(', ') + '\n' : ''}`,
       thumbnail : {url : card.image, height : 40, width : 40},
-      footer : {icon_url: card.rarityIcon, text : `Set: ${card.set} - Rarity: ${ArtifactCardsCollection.rarity(card.rarity)}`},
+      footer : {icon_url: card.rarityIcon, text : `Set: ${card.set} - ${ArtifactCardsCollection.rarity(card.rarity)}`},
       color : ArtifactCardsCollection.cardColor(card.color)
     }})
   }
@@ -161,7 +161,8 @@ class ArtifactCardsCollection{
 
 const artifactCards = new ArtifactCardsCollection({defaultLanguage : 'en'},{})
 
-artifactCards.addSet(require('artifact-database/language/en/sets/0 - Basic.json'),'en',require('../artifact_cards/en/0 - Basic.json'))
-artifactCards.addSet(require('artifact-database/language/en/sets/1 - Starter.json'),'en',require('../artifact_cards/en/1 - Starter.json'))
+const sets_en = require('artifact-database').sets_localiced.en
+Object.keys(sets_en).forEach(k => artifactCards.addSet(require(`artifact-database/language/en/sets/${k} - ${sets_en[k]}.json`),'en',require(`../artifact_cards/en/${k} - ${sets_en[k]}.json`)))
+// artifactCards.addSet(require('artifact-database/language/en/sets/1 - Call to Arms.json'),'en',require('../artifact_cards/en/1 - Call to Arms.json'))
 
 module.exports = artifactCards

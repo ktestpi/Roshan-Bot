@@ -1,10 +1,11 @@
 {
   "Crystal Maiden" : {"alias" : ["Crystal","Maiden","CM"]},
   "Fahrvhan the Dreamer" : {"alias" : ["Fahvrhan"]},
-  "J'Muy the Wise" : {"alias" : ["Jmuy","Jmuy the Wise"]},
+  "J'Muy the Wise" : {"alias" : ["Jmuy"]},
   "Keefe the Bold" : {"alias" : ["Keefe"]},
   "Legion Commander" : {"alias" : ["LC"]},
   "Phantom Assassin" : {"alias" : ["PA"]},
   "Riley the Cunning" : {"alias" : ["Riley"]},
-  "Sorla Khan" : {"alias" : ["Sorla"]}
+  "Sorla Khan" : {"alias" : ["Sorla"]},
+  "Winter Wyvern" : {"alias" : ["WW"]}
 }
