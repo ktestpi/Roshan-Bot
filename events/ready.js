@@ -11,9 +11,8 @@ const package = require('../package.json')
 const opendota = require('../helpers/opendota')
 
 module.exports = new Event('','ready',{}, function(){
+  if(this._started){return}else{this._started = true}
   //Create containers
-  this.cache = {}
-  this.scripts = {}
   this.scriptsUpdate()
 
   //Save guild dev
@@ -80,7 +79,6 @@ module.exports = new Event('','ready',{}, function(){
   }).catch(err => {console.log(err);this.emit('postready')})
 
   this.on('postready',function(){
-    if(this._started){return}else{this._started = true}
     if(this.config.switches.backupdb){ //config.switches.backupdb
       util.Firebase.backupDBfile(this.db,this,this.config.guild.backup,{filenameprefix : 'roshan_db_', messageprefix : '**Roshan Backup DB**'}).then(snap => {
         //Create cache maps for Profiles and Servers (Firebase)

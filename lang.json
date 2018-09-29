@@ -198,5 +198,7 @@
   "IE_CardRequest" : "Error en la petición de la tarjeta `<username>`",
   "serverSubscription" : "Este servidor se ha suscrito a: <subs>",
   "serverUnSubscription" : "Este servidor se ha desuscrito de: <subs>",
-  "serverSubcriptionsAvaliables" : "Subscripciones disponibles"
+  "serverSubcriptionsAvaliables" : "Subscripciones disponibles",
+  "giveawayTitle" : ":gift: Sorteo para **<members>** miembr@s",
+  "giveawayWinner" : ":tada: Ganador: **<winner>**"
 }

@@ -5,6 +5,8 @@ const { resetServerConfig } = require('../helpers/basic.js')
 const enumFeeds = require('../helpers/enums/feeds')
 
 module.exports = new Extension('bot_extensions',function(bot){
+  bot.cache = {}
+  bot.scripts = {}
   bot.setStatus = function(type,status,msg,url,update){
     // let self = this
     this.config.status = status !== null ? status : this.config.status
