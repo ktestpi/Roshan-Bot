@@ -22,7 +22,8 @@ const card_types_icon = {
   '5' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/weapon.png?raw=true',
   '6' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/armor.png?raw=true',
   '7' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/accessory.png?raw=true',
-  '8' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/consumible.png?raw=true'
+  // '8' : 'https://github.com/Desvelao/artifact-assets/blob/master/assets/cards_types/consumible.png?raw=true',
+  '8' : 'https://raw.githubusercontent.com/Desvelao/artifact-assets/master/assets/cards_types/consumible.png'
 }
 
 
@@ -148,6 +149,7 @@ class ArtifactCardsCollection{
     if(!query){return}
     const card = this.getCard(query[1])
     if(!card){return}
+    // console.log(ArtifactCardsCollection.cardTypeIcon(card.type));
     return msg.reply({embed : {
       // title : card.name,
       author : {name : `${card.name}${(card.type === 1 || card.type === 2) ? ' - ' + card.attack + '/' + card.armor + '/' + card.health : ''}`, icon_url : ArtifactCardsCollection.cardTypeIcon(card.type), url : card.image},
