@@ -15,7 +15,7 @@ module.exports = new Command('sets',{
         fields : [
           {name : 'Summary', value : `**Hero:** ${set.summary.hero}\n**Creep:** ${set.summary.creep}\n**Spell:** ${set.summary.spell}\n**Improvement:** ${set.summary.improvement}\n**Weapon:** ${set.summary.weapon}\n**Armor:** ${set.summary.armor}\n**Accessory:** ${set.summary.accessory}\n**Consumible:** ${set.summary.consumible}\n`, inline : false},
         ],
-        footer : {text : `${set.totalcards} cards - Launched at ${set.launched}`},
+        footer : {text : `${set.totalcards} cards - Realease at ${set.releaseDate}`},
         color : this.config.color
       }})
     }else{

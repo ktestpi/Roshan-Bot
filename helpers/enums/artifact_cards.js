@@ -55,12 +55,13 @@ class ArtifactCardsCollection{
     language = language || this.defaultLanguage
     modifier = modifier || {}
     set.hosting_url = toURL(ArtifactCardsCollection.hostingUrl + "/language/" + language + '/' + set.order + ' - ' + set.name)
+    set.alias = set.alias || []
     if(!this.sets[language]){this.sets[language] = []}
     if(!this.cards[language]){this.cards[language] = []}
     const set_summary = {
       name : set.name,
       alias : set.alias,
-      launched : set.launched,
+      releaseDate : set.releaseDate,
       image : set.hosting_url + '/' + set.image + '?raw=true',
       description : set.description,
       symbol : set.symbol,
@@ -84,8 +85,8 @@ class ArtifactCardsCollection{
       card.name = c
       card.set = set.name
       if(card.name.match(re)){card.alias.push(card.name.replace(new RegExp("['`\.]",'g'),''))}
-      card.image = toURL(set.hosting_url + '/cards/' + card.id  + '.jpg?raw=true')
-      card.launched = set.launched
+      card.image = toURL(set.hosting_url + '/cards/' + card.id  + '.png?raw=true')
+      card.releaseDate = set.releaseDate
       card.rarityIcon = toURL(set.hosting_url + '/rarities/' + ArtifactCardsCollection.rarity(card.rarity).toLowerCase() + '.png?raw=true') //set.symbols[ArtifactCardsCollection.rarity(_card.rarity).toLowerCase()] || rarities_icon[_card.rarity]
       // console.log(card);
       this.cards[language].push(card)
