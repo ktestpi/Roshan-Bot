@@ -82,4 +82,10 @@ module.exports = new Extension('bot_extensions',function(bot){
       this.cache.supporters = new FireSetCache(this.db.child('supporters'),[...this.server.membersWithRole(this.config.roles.supporter).map(m => m.id),...snap.supporters ? Object.keys(snap.supporters).filter(b => snap.betatesters[b]) : []])
     })
   }
+
+  bot.loadLastUpdateText = function(){
+    bot.getMessage(bot.config.guild.changelog,bot.server.channels.get(bot.config.guild.changelog).lastMessageID).then(m => {
+      bot._lastUpdateText = m.content
+    })
+  }
 })

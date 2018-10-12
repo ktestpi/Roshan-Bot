@@ -130,6 +130,7 @@ module.exports = new Event('','ready',{}, function(){
     }
   })
 
+  this.loadLastUpdateText()
 })
 
 

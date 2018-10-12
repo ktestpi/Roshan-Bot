@@ -200,5 +200,10 @@
   "serverUnSubscription" : "Este servidor se ha desuscrito de: <subs>",
   "serverSubcriptionsAvaliables" : "Subscripciones disponibles",
   "giveawayTitle" : ":gift: Sorteo para **<members>** miembr@s",
-  "giveawayWinner" : ":tada: Ganador: **<winner>**"
+  "giveawayWinner" : ":tada: Ganador: **<winner>**",
+  "searchCardTitle" : "Búsqueda de cartas",
+  "searchCardSearchText" : "Término de búsqueda",
+  "searchCardCards" : "Cartas",
+  "searchCardResults" : "<results> resultados",
+  "searchCardNoFound" : ":x: carta no encontrada: `<query>`"
 }

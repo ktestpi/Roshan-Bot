@@ -2,7 +2,8 @@ const card_types = require('artifact-database/constants/cards_types.json')
 const skills_types = require('artifact-database/constants/skills_types.json')
 const rarities = require('artifact-database/constants/rarities.json')
 const cards_colors = require('artifact-database/constants/cards_colors.json')
-
+const fs = require('fs')
+const _sig = ':sig'
 // const card_types_icon = {
 //   '1' : 'https://www.artifactbuff.com/images/cardtype-hero.png', //https://github.com/Desvelao/artifact-database/blob/master/assets/cardtype/hero.png?raw=true
 //   '2' : 'https://www.artifactbuff.com/images/cardtype-creep.png',
@@ -51,11 +52,35 @@ class ArtifactCardsCollection{
     this.keywords = require('./artifact_keywords.json').sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase())
     this.image = options.image || "https://pbs.twimg.com/profile_images/894659755129552897/-EC4LJTe_400x400.jpg"
   }
-  addSet(set,language,modifier){
+  static cardSchema(){
+    return {
+      name: "",
+      alias : [],
+      id: "",
+      type: 1,
+      skills: [],
+      text: "",
+      manacost: 0,
+      goldcost: 0,
+      color: "",
+      attack: 0,
+      armor: 0,
+      health: 0,
+      rarity: "",
+      signature: "",
+      signaturefor: "",
+      getInitiative: false,
+      crossLane : false
+    }
+  }
+  addSet(setpath,language,modifier){
     language = language || this.defaultLanguage
     modifier = modifier || {}
+    modifier.cards = modifier.cards || {}
+    const set = require(`artifact-database/language/en/sets/${setpath}/set.json`)
     set.hosting_url = toURL(ArtifactCardsCollection.hostingUrl + "/language/" + language + '/' + set.order + ' - ' + set.name)
-    set.alias = set.alias || []
+    set.alias = modifier.alias || []
+    set.releaseDate = set.releaseDate ? ArtifactCardsCollection.getDate(set.releaseDate) : ''
     if(!this.sets[language]){this.sets[language] = []}
     if(!this.cards[language]){this.cards[language] = []}
     const set_summary = {
@@ -76,29 +101,48 @@ class ArtifactCardsCollection{
         consumible : 0
       }
     }
-    const re = /['`\.]/
-    Object.keys(set.cards).forEach(c => {
-      if(!c){return}
-      let card = set.cards[c]
-      if(modifier[c]){card = Object.assign({},card,modifier[c])}
-      if(!card.alias){card.alias = []}
-      card.name = c
-      card.set = set.name
-      if(card.name.match(re)){card.alias.push(card.name.replace(new RegExp("['`\.]",'g'),''))}
-      card.image = toURL(set.hosting_url + '/cards/' + card.id  + '.png?raw=true')
-      card.releaseDate = set.releaseDate
-      card.rarityIcon = toURL(set.hosting_url + '/rarities/' + ArtifactCardsCollection.rarity(card.rarity).toLowerCase() + '.png?raw=true') //set.symbols[ArtifactCardsCollection.rarity(_card.rarity).toLowerCase()] || rarities_icon[_card.rarity]
-      // console.log(card);
-      this.cards[language].push(card)
-      if(!ArtifactCardsCollection.cardType(card.type).toLowerCase()){console.log('ERROR',card.name)}
+    const cards = fs.readdirSync(`node_modules/artifact-database/language/en/sets/${setpath}/cards`).map(f => {
+      const cardDB = require(`artifact-database/language/en/sets/${setpath}/cards/${f}`)
+      return Object.assign(ArtifactCardsCollection.cardSchema(),cardDB,modifier.cards[cardDB.name])
+    })
+    cards.sort((a,b) => a.type - b.type).forEach(card => {
+      if(!card){return}
+      this.addCard(card,set,language)
       set_summary.summary[ArtifactCardsCollection.cardType(card.type).toLowerCase()] += 1
     })
     set_summary.totalcards = Object.keys(set_summary.summary).map(t => set_summary.summary[t]).reduce((s,c) => s+c,0)
     this.sets[language].push(set_summary)
   }
+  addCard(card,set,language){
+    const re = /['`\.]/
+    language = language || this.defaultLanguage
+    if(!card.alias){card.alias = []}
+    if(card.signaturefor){
+      const signature = this.getCard(card.signaturefor,language)
+      if(signature){
+        [signature.name,...signature.alias].forEach(a => card.alias.push(a+_sig))
+      }
+    }
+    // card.name = c
+    card.set = set.name
+    if(card.name.match(re)){card.alias.push(card.name.replace(new RegExp("['`\.]",'g'),''))}
+    card.image = toURL(set.hosting_url + '/cards/' + card.id  + '.png?raw=true')
+    card.releaseDate = set.releaseDate
+    card.rarityIcon = toURL(set.hosting_url + '/rarities/' + ArtifactCardsCollection.rarity(card.rarity).toLowerCase() + '.png?raw=true') //set.symbols[ArtifactCardsCollection.rarity(_card.rarity).toLowerCase()] || rarities_icon[_card.rarity]
+    this.cards[language].push(card)
+    if(!ArtifactCardsCollection.cardType(card.type).toLowerCase()){console.log('ERROR',card.name)}
+  }
   getCard(name,language){
     language = language || this.defaultLanguage
     return this.cards[language].find(card => [card.name.toLowerCase(),...card.alias.map(alias => alias.toLowerCase())].includes(name.toLowerCase()))
+  }
+  searchCard(text,language){
+    language = language || this.defaultLanguage
+    text = text.toLowerCase()
+    return this.cards[language].filter(c => {
+      if([c.name,c.text,c.signature,c.signaturefor].map(s => s.toLowerCase()).find(s => s.includes(text))){return true}
+      if(c.skills.length && c.skills.find(s => s.text.includes(text))){return true}
+    }).sort((a,b) => a.name > b.name ? 1 : -1)
   }
   getSetCards(setname,language){
     language = language || this.defaultLanguage
@@ -144,17 +188,20 @@ class ArtifactCardsCollection{
     const keys = ['manacost','goldcost']
     return `${card.manacost ? `${replacer.do('<mana>')} ${card.manacost} ` : ''} ${card.goldcost ? `${replacer.do('<gold>')} ${card.goldcost} ` : ''} ${card.text.includes('Get initiative') ? '⚡' : ''}`
   }
+  static getDate(datestring){
+    const date = new Date(datestring)
+    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+  }
   sendMessageCard(msg,replacer){
     if(msg.author.bot){return}
     const query = msg.content.match(/\[([^\]]+)\]/)
     if(!query){return}
     const card = this.getCard(query[1])
     if(!card){return}
-    // console.log(ArtifactCardsCollection.cardTypeIcon(card.type));
     return msg.reply({embed : {
       // title : card.name,
       author : {name : `${card.name}${(card.type === 1 || card.type === 2) ? ' - ' + card.attack + '/' + card.armor + '/' + card.health : ''}`, icon_url : ArtifactCardsCollection.cardTypeIcon(card.type), url : card.image},
-      description : `${card.skills.length ? card.skills.map(s => `${s.name ? '**' + s.name + '** ' : ''}(${ArtifactCardsCollection.skillType(s.type)}${s.type === 1 ? ' CD: ' + s.cooldown : ''}) - *${s.text}*`).join('\n') + '\n': ''}${card.text ? '*' + card.text + '*\n' : ''}${card.signature && card.type === 1 ? '__**Signature Card:**__ '  + card.signature + '\n' : ''}${card.signaturefor && card.type !== 1 ? '__**Signature Card for:**__ '  + card.signaturefor + '\n' : ''}${ArtifactCardsCollection.iconsCardString(card,replacer)}${card.alias.length ? '**Alias:** ' + card.alias.map(a => a).join(', ') + '\n' : ''}`,
+      description : `${card.skills.length ? card.skills.map(s => `${s.name ? '**' + s.name + '** ' : ''}(${ArtifactCardsCollection.skillType(s.type)}${s.type === 1 ? ' CD: ' + s.cooldown : ''}) - *${s.text}*`).join('\n') + '\n': ''}${card.text ? '*' + card.text + '*\n' : ''}${card.signature && card.type === 1 ? '__**Signature Card:**__ '  + card.signature + '\n' : ''}${card.signaturefor && card.type !== 1 ? '__**Signature Card for:**__ '  + card.signaturefor + '\n' : ''}${ArtifactCardsCollection.iconsCardString(card,replacer)}${card.alias.length ? '\n**Alias:** ' + card.alias.map(a => a).join(', ') + '\n' : ''}`, //.filter(a => !a.includes(_sig))
       thumbnail : {url : card.image, height : 40, width : 40},
       footer : {icon_url: card.rarityIcon, text : `Set: ${card.set} - ${ArtifactCardsCollection.rarity(card.rarity)}`},
       color : ArtifactCardsCollection.cardColor(card.color)
@@ -165,7 +212,10 @@ class ArtifactCardsCollection{
 const artifactCards = new ArtifactCardsCollection({defaultLanguage : 'en'},{})
 
 const sets_en = require('artifact-database').sets_localiced.en
-Object.keys(sets_en).forEach(k => artifactCards.addSet(require(`artifact-database/language/en/sets/${k} - ${sets_en[k]}.json`),'en',require(`../artifact_cards/en/${k} - ${sets_en[k]}.json`)))
-// artifactCards.addSet(require('artifact-database/language/en/sets/1 - Call to Arms.json'),'en',require('../artifact_cards/en/1 - Call to Arms.json'))
+Object.keys(sets_en).forEach(k =>
+  artifactCards.addSet(`${k} - ${sets_en[k]}`,'en',require(`../artifact_cards/en/${k} - ${sets_en[k]}.json`))
+  // artifactCards.addSet(require(`artifact-database/language/en/sets/${k} - ${sets_en[k]}/set.json`),'en',require(`../artifact_cards/en/${k} - ${sets_en[k]}.json`))
+)
+
 
 module.exports = artifactCards
