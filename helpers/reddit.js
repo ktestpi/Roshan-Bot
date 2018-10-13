@@ -1,12 +1,20 @@
 const { Markdown, Request } = require('erisjs-utils');
 const REDDIT_DOTA2_URL = 'https://www.reddit.com/r/Dota2/';
+const REDDIT_ARTIFACT_URL = 'https://www.reddit.com/r/Artifact/';
+const REDDIT_BASE_URL = 'https://www.reddit.com/';
 const REDDIT_URL = 'https://www.reddit.com';
 const BY_ID_URL = 'https://www.reddit.com/by_id/';
 
 function toJSONURL(url){return url+'.json'};
 
-function posts(mode,limit){
-  const url = toJSONURL(REDDIT_DOTA2_URL + mode);
+const subreddits = {
+  dota2 : REDDIT_DOTA2_URL,
+  artifact : REDDIT_ARTIFACT_URL,
+  reddit : REDDIT_BASE_URL
+}
+
+function posts(mode,limit,subreddit){
+  const url = toJSONURL(subreddits[subreddit] + mode);
   return new Promise((resolve,reject) =>{
     Request.getJSON(url).then(result => {
       resolve(postsToList(result,limit))

@@ -83,9 +83,9 @@ module.exports = new Extension('bot_extensions',function(bot){
     })
   }
 
-  bot.loadLastUpdateText = function(){
-    bot.getMessage(bot.config.guild.changelog,bot.server.channels.get(bot.config.guild.changelog).lastMessageID).then(m => {
-      bot._lastUpdateText = m.content
+  bot.loadLastPatchNotes = function(){
+    this.getMessage(this.config.guild.changelog,this.server.channels.get(this.config.guild.changelog).lastMessageID).then(m => {
+      this._lastUpdateText = m.content
     })
   }
 })

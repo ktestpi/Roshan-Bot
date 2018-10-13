@@ -87,7 +87,7 @@ module.exports = new Event('','ready',{}, function(){
         this.cache.servers = new FirebaseCache(this.db.child('servers'),snap.servers);
 
         //Update leaderboard (Firebase) each this.config.hoursLeaderboardUpdate at least
-        if(this.config.switches.leaderboardUpdate && (this.config.constants.hoursLeaderboardUpdate*3600 + (new Date(snap.leaderboard.updated).getTime()/1000)) < new Date().getTime()/1000){updateLeaderboard(this,snap.profiles)};
+        if(this.config.switches.leaderboardUpdate && (this.config.constants.hoursLeaderboardUpdate*3600 + snap.leaderboard.updated) < new Date().getTime()/1000){updateLeaderboard(this,snap.profiles)};
 
         //Update public (Firebase)
         const data_public = {discord_invite : this.config.invite, discord_server : this.config.server, users : Object.keys(snap.profiles).length, version : package.version}
@@ -130,7 +130,7 @@ module.exports = new Event('','ready',{}, function(){
     }
   })
 
-  this.loadLastUpdateText()
+  this.loadLastPatchNotes()
 })
 
 

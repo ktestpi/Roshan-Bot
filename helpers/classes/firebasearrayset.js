@@ -7,7 +7,7 @@ module.exports = class FirebaseArraySet extends Set{
     }
     this.possibleVals = pvalues && pvalues.length ? new Set(pvalues) : new Set()
   }
-  addVal(value){console.log('calling with',value);
+  addVal(value){
     if(this.possibleVals.has(value)){super.add(value)}
   }
   deleteVal(value){

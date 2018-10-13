@@ -1,7 +1,7 @@
 const { Event } = require('aghanim')
 const lang = require('../lang.json')
 const { resetServerConfig } = require('../helpers/basic.js')
-const { Datee } = require('erisjs-utils')
+const { Datee , Guild } = require('erisjs-utils')
 
 module.exports = new Event('','guildCreate',{}, function(guild){
   // console.log('Watcher active',emoji,userID,this.config.emojis.default);
@@ -27,6 +27,14 @@ module.exports = new Event('','guildCreate',{}, function(guild){
       color: this.config.color
     }
   })
-  resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`)).catch(err => this.discordLog.controlMessage('error',`Error creating cofing for **${guild.name}** (${guild.id})`))
+  resetServerConfig(this,guild)
+    .then(() => {
+        this.discordLog.controlMessage('guildnew',`**${guild.name}**`)
+        const defaultChannel = Guild.getDefaultChannel(guild,this,true)
+        if(defaultChannel){
+          defaultChannel.createMessage(`:flag_gb: Hi, I am a **Dota 2** and **Artifact** bot in Spanish. Read the **server guide**: use \`r!getstarted-en\`\n\n:flag_es: Hola, soy un bot en español para **Dota 2** y **Artifact**. Lee la guía del servidor: usa \`r!getstarted-es\``)
+        }
+    })
+    .catch(err => this.discordLog.controlMessage('error',`Error creating cofing for **${guild.name}** (${guild.id})`))
   // this.logger.add('guildnew',guild.name,true)
 })
