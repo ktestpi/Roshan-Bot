@@ -186,7 +186,7 @@ class ArtifactCardsCollection{
   }
   static iconsCardString(card,replacer){
     const keys = ['manacost','goldcost']
-    return `${card.manacost ? `${replacer.do('<mana>')} ${card.manacost} ` : ''} ${card.goldcost ? `${replacer.do('<gold>')} ${card.goldcost} ` : ''} ${card.text.includes('Get initiative') ? '⚡' : ''}`
+    return `${card.manacost ? `${replacer.replacer('<mana>')} ${card.manacost} ` : ''} ${card.goldcost ? `${replacer.replacer('<gold>')} ${card.goldcost} ` : ''} ${card.text.includes('Get initiative') ? '⚡' : ''}`
   }
   static getDate(datestring){
     const date = new Date(datestring)
