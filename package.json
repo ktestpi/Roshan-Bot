@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "./node_modules/.bin/nodemon bot.js",
     "eslint": "./node_modules/.bin/eslint bot.js",
-    "test-heroku-postbuild": "npm i Desvelao/artifact-database",
-    "heroku-postbuild": "npm install"
+    "heroku-postbuild": "npm i Desvelao/artifact-database Desvelao/aghanim#dev",
+    "test-heroku-postbuild": "npm install"
   },
   "keywords": [
     "Roshan",
