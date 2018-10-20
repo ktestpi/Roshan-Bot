@@ -2,7 +2,7 @@ const { Extension } = require('aghanim')
 const Eris = require('eris')
 const { Message, Guild } = require('erisjs-utils')
 const { resetServerConfig } = require('../helpers/basic.js')
-const enumFeeds = require('../helpers/enums/feeds')
+const enumFeeds = require('../enums/feeds')
 
 module.exports = new Extension('bot_extensions',function(bot){
   bot.cache = {}
@@ -20,7 +20,7 @@ module.exports = new Extension('bot_extensions',function(bot){
     promises.push(this.editStatus(this.config.status, {name : this.config.status_msg, type : this.config.status_act, url : this.config.status_url}))
     return Promise.all(promises)
   }
-  bot.artifactCards = require('../helpers/enums/artifact_cards.js')
+  bot.artifactCards = require('../enums/artifact_cards.js')
   // console.log('HELLOOOOO');
   bot.messageAllGuilds = function(msg,all,mode){
     if(!this.config.switches.msgGuilds){return}

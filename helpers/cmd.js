@@ -1,16 +1,12 @@
-const lang = require('../lang.json')
-
-let self = module.exports
-
 const check = {
   isBetatester : function(msg,args,cmd){
     const result = this.cache.betatesters.has(msg.author.id)
-    if(!result){msg.reply('Es una función para Betatesters')}
+    if(!result){msg.reply(this.local.getUserString('denyUseNotBetatester',msg))}
     return result
   },
   isSupporter : function(msg,args,cmd){
     const result = this.cache.supporters.has(msg.author.id)
-    if(!result){msg.reply('Es una función para Supporters')}
+    if(!result){msg.reply(this.local.getUserString('denyUseNotSupporter',msg))}
     return result
   }
 }

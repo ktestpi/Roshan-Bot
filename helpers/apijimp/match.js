@@ -4,7 +4,7 @@ const basic = require('../basic')
 const Canvas = require('./classes/canvas')
 const loader = require('./loader')
 
-const UNKNOWN = 'Desconocid@'
+const UNKNOWN = 'Unknown'
 
 module.exports = function(data_info){
   // console.log(data_info);
@@ -38,7 +38,7 @@ module.exports = function(data_info){
       try{
         let canvas = new Canvas(data[0],{w16 : data[11], y16 : data[12]})
         let winnerTeam = canvas.paint('winnerTeam',data[13],{x : 0, y : 0}).add()
-        const footerInfo = `Duración: ${basic.durationTime(data_info.duration)}  -  ID: ${data_info.match_id}  -  Jugada: ${Datee.custom(data_info.start_time*1000,'h:m D/M/Y',true)}`
+        const footerInfo = `Duration: ${basic.durationTime(data_info.duration)}  -  ID: ${data_info.match_id}  -  Played: ${Datee.custom(data_info.start_time*1000,'h:m D/M/Y',true)}`
         const infoMatch = canvas.write('infoMatch',footerInfo,'w16').set(canvas,'cxgyb',{ x : 0, y : 10})
         const refTable = canvas.ref('refTable',{x : 12 , y : 40})
         for (var i = 1; i < 11; i++) {

@@ -1,5 +1,4 @@
 const util = require('erisjs-utils')
-const lang = require('../lang.json')
 const dotasteam = require('./dotasteam.js')
 // const proplayersURL = require('./opendota.js').urls['proplayers']
 let self = module.exports
@@ -30,7 +29,7 @@ module.exports.getAccountID = function(msg,args,bot){
 }
 
 module.exports.parseText = function(text,mode){
-  if(typeof text != 'string'){return lang.unknown}
+  if(typeof text != 'string'){return 'Unknown'}
   var newText = text;
   if(mode == 'nf'){
     newText = text.replace(new RegExp('`','g'),'\'')
@@ -216,7 +215,8 @@ module.exports.wrongCmd = function(msg,list,prefix){
 
 const initialServerConfig = {
   notifications : {channel : "", enable : true},
-  feeds : {channel : "", enable : true, subs : ""}
+  feeds : {channel : "", enable : true, subs : ""},
+  lang : ''
 }
 
 module.exports.resetServerConfig = function(bot,guild){
@@ -224,6 +224,7 @@ module.exports.resetServerConfig = function(bot,guild){
   const defaultChannel = util.Guild.getDefaultChannel(guild,bot,true).id
   reset.notifications.channel = defaultChannel;
   reset.feeds.channel = defaultChannel;
+  reset.lang = this.locale.defaultLanguage
   return bot.cache.servers.save(guild.id,reset)
 }
 
@@ -231,6 +232,7 @@ module.exports.newAccount = function(data){
   return {
     // medal : data.medal || false,
     // leaderboard : data.leaderboard || false,
+    lang : 'en',
     card : {
       bg : '0',
       pos : 'all', //1-5,sup,core,off,mid,carry,all
@@ -242,6 +244,7 @@ module.exports.newAccount = function(data){
 
 module.exports.accountSchema = function(){
   return {
+    lang : '',
     card : {
       bg : '',
       heroes : '',

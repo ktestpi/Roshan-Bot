@@ -1,7 +1,7 @@
-const victory = require('../lang.json').victory
-const defeat = require('../lang.json').defeat
-const radiant = require('../lang.json').radiant
-const dire = require('../lang.json').dire
+const VICTORY = 'Victory'
+const DEFEAT = 'Defeat'
+const RADIANT = 'Radiant'
+const DIRE = 'Dire'
 
 module.exports.kda = function(kills,deaths,assists){
   return ((kills + assists)/deaths).toFixed(2)
@@ -13,17 +13,17 @@ module.exports.winratio = function(wins,loses){
 
 module.exports.winnerTeam = function(table){
   if(table.radiant_win){
-    if(table.radiant_team){return table.radiant_team.name}else{return radiant};
+    if(table.radiant_team){return table.radiant_team.name}else{return RADIANT};
   }else{
-    if(table.dire_team){return table.dire_team.name}else{return dire};
+    if(table.dire_team){return table.dire_team.name}else{return DIRE};
   }
 }
 
 module.exports.winOrLose = function(state,slot){
   if(((parseInt(slot) < 100) &&(state)) || ((parseInt(slot) > 100) &&(!state))){
-    return victory; //lang.victory
+    return VICTORY; //lang.victory
   }else{
-    return defeat; //lang.defeat
+    return DEFEAT; //lang.defeat
   }
 }
 

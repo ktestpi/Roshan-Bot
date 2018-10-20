@@ -1,9 +1,9 @@
 const jimp = require('jimp')
-const enumHeroes = require('../enums/heroes')
-const enumPlayerPos = require('../enums/player_positions')
-const enumItems = require('../enums/items')
-const enumCardBG = require('../enums/card_bg')
-const enumMedals = require('../enums/medals')
+const enumHeroes = require('../../enums/heroes')
+const enumPlayerPos = require('../../enums/player_positions')
+const enumItems = require('../../enums/items')
+const enumCardBG = require('../../enums/card_bg')
+const enumMedals = require('../../enums/medals')
 const AssetLoader = require('./classes/assetloader')
 
 const loader = new AssetLoader('./img/',{

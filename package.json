@@ -1,6 +1,6 @@
 {
   "name": "Roshan",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Discord bot about Dota 2 and Artifact written in ErisJS using Aghanim command client",
   "main": "bot.js",
   "scripts": {

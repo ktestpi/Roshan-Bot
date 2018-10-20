@@ -9,7 +9,7 @@ const enumCardBG = require('../enums/card_bg')
 const enumMedals = require('../enums/medals')
 const Canvas = require('./classes/canvas')
 const loader = require('./loader')
-const UNKNOWN = 'Desconocid@'
+const UNKNOWN = 'Unknown'
 
 module.exports.matches = function(data_info){
   // console.log(data_info);

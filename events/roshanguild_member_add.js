@@ -2,7 +2,7 @@ const { Event } = require('aghanim')
 const { Guild } = require('erisjs-utils')
 // const lang = require('../lang.json')
 
-module.exports = new Event('','guildMemberAdd',{}, function(guild,member){
+module.exports = new Event('memberin_dev_server','guildMemberAdd',{}, function(guild,member){
   if(guild.id !== this.config.guildID){return};
   if(this.config.switches.welcome){
     const mentionAdmin = Guild.getRole(guild,this.config.roles.admin);

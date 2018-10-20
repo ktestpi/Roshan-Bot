@@ -3,6 +3,8 @@ const Eris = require('eris')
 const path = require('path')
 const { Color } = require('erisjs-utils')
 const firebase = require('firebase-admin');
+const Locale = require('./classes/locale.js')
+// const { cmdLocalString } = require('../../helpers/localestrings')
 
 // Extends Eris Guild Structure
 // Eris.Guild.prototype.membersWithRole = function(roleName){
@@ -68,21 +70,41 @@ bot.addCategory('Dota 2','Ayuda de Dota 2')
 bot.addCategory('Account','Ayuda para la gestión de la cuenta en Roshan')
 bot.addCategory('Server','Ayuda para comandos de servidor')
 bot.addCategory('Owner','Ayuda para comandos de propietario')
-bot.addCategory('Fun','Ayuda los comandos de emojis y memes')
+bot.addCategory('Fun','Ayuda para comandos de emojis y memes')
 bot.addCategory('Artifact','Ayuda los comandos de Artifact')
 
+// bot.addCommand = function(command){
+//   if (!(command instanceof Command)) throw new TypeError('Not a command')
+//   if(!this.categories.find(c => c.name === command.category)){command.category = DEFAULT_CATEGORY;console.log(`${command.category} not found! Established as ${DEFAULT_CATEGORY} in ${command.name}`)}
+//   if(!command.subcommandFrom){
+//     const cmd = this.commands.find(c => [c.name,...c.aliases].some(cname => [command.name,...command.aliases].includes(cname)))
+//     if(cmd){throw new Error('Command exists',command.name)}
+//     else{this.commands.push(command);logger.dev(`Command added: ${command.name}`)}
+//   }else{
+//     const cmd = this.commands.find(c => [c.name,...c.aliases].includes(command.subcommandFrom))
+//     if(!cmd){throw new Error('Upcommand not found',command.subcommandFrom)}
+//     else{
+//       if(command.category !== cmd.category){command.category = cmd.category;console.log(`${command.category} not same upcomand! Established as ${cmd.category}`)}
+//       command.upcommand = cmd
+//       cmd.subcommands.push(command)
+//       // logger.dev(`Subcommand added: ${command.name} from ${cmd.name}`)
+//     }
+//   }
+//   return this
+// }
+//
 //Load commands
-bot.addCommandDir(path.join(__dirname,'opendota'))
-bot.addCommandDir(path.join(__dirname,'account'))
-bot.addCommandDir(path.join(__dirname,'server'))
-bot.addCommandDir(path.join(__dirname,'general'))
-bot.addCommandDir(path.join(__dirname,'fun'))
-bot.addCommandDir(path.join(__dirname,'bot'))
-bot.addCommandDir(path.join(__dirname,'dota2'))
-bot.addCommandDir(path.join(__dirname,'card'))
-bot.addCommandDir(path.join(__dirname,'artifact'))
+bot.addCommandDir(path.join(__dirname,'commands/opendota'))
+bot.addCommandDir(path.join(__dirname,'commands/account'))
+bot.addCommandDir(path.join(__dirname,'commands/server'))
+bot.addCommandDir(path.join(__dirname,'commands/general'))
+bot.addCommandDir(path.join(__dirname,'commands/fun'))
+bot.addCommandDir(path.join(__dirname,'commands/owner'))
+bot.addCommandDir(path.join(__dirname,'commands/dota2'))
+bot.addCommandDir(path.join(__dirname,'commands/card'))
+bot.addCommandDir(path.join(__dirname,'commands/artifact'))
 
-
+bot.locale = new Locale(path.join(__dirname,'locale'),{},{defaultLanguage : 'en', devLanguage : 'en'})
 // bot.db.child('profiles').once('value').then(snap => {
 //   if(!snap.exists()){return}
 //   snap = snap.val()
@@ -92,5 +114,46 @@ bot.addCommandDir(path.join(__dirname,'artifact'))
 //     bot.db.child(`profiles/${profile._id}/profile`).update({dota : profile.profile.dotabuff})
 //   })
 // })
+
+function filterCommands(cmd,query,owner){
+  if(query === 'owner'){
+    return owner
+  }
+  return !cmd.hide
+}
+
+bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
+  const categories = this.categories.map(c => c.name.toLowerCase())
+  const query = args.from(1).toLowerCase();
+  const lang = this.locale.getUserStrings(msg)
+  const owner = msg.author.id === bot.owner.id
+  if(query === 'owner' && !owner){return}
+  let helpMessage = lang.helpMessage +'\n\n'
+  if(categories.includes(query)){
+    const cmds = this.getCommandsFromCategories(query)
+    const prefix = this.defaultPrefix
+    if(!cmds){helpMessage += this.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${this.defaultPrefix}help ${c.name.toLowerCase()}\` - ${this.locale.getCat(c.name,msg)}`).join('\n') + '\n\n' + lang.helpMessageAfterCategories}//// TODO:
+    else{
+      helpMessage += cmds.filter(c => filterCommands(c,query,owner)).map(c => {
+        const langCmd = this.locale.getCmd(c.name,msg)
+        return `\`${prefix}${c.name}${langCmd.args ? ' ' + langCmd.args : ''}\` - ${langCmd.help}${c.subcommands.length ? '\n' + c.subcommands.filter(s => filterCommands(s,query,owner)).map(s => {
+          const langCmd = this.locale.getCmd(c.name + '_' + s.name,msg)
+          return `  · \`${s.name}${langCmd.args ? ' ' + langCmd.args : ''}\` - ${langCmd.help}`}).join('\n') : ''}`
+      }).join('\n')
+    }
+  }else{
+    helpMessage += this.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${this.defaultPrefix}help ${c.name.toLowerCase()}\` - ${this.locale.getCat(c.name,msg)}`).join('\n') + '\n\n' + lang.helpMessageAfterCategories
+  }
+  if(!this.setup.helpDM){
+    msg.reply(helpMessage)
+  }else{
+    msg.author.getDMChannel().then(channel => channel.createMessage(helpMessage))
+  }
+}))
+
+bot.on('errorAghanimEvent',function(ev,error,msg){
+  console.log(ev.name,'tuvo un error!',error)
+})
+
 
 bot.connect();

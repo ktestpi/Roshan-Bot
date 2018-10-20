@@ -1,7 +1,6 @@
 const util = require('erisjs-utils')
-const unknown = require('../lang.json').unknown
 const basic = require('./basic.js')
-const enumMedal = require('../helpers/enums/medals')
+const enumMedal = require('../enums/medals')
 
 const request = (urls,id) => {
   // console.log(urls);
@@ -51,8 +50,9 @@ opendota.titlePlayer = function(results,title,replace){
   // console.log(replace);console.log('*********************');
   const medal = enumMedal({rank : results[0].rank_tier, leaderboard : results[0].leaderboard_rank})
   // console.log(medal);
-  return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : replace.do(medal.emoji)},true)
-  : util.String.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : replace.do(medal.emoji)},false)
+
+  return typeof results[0].profile.loccountrycode == 'string' ? replace.replacer(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : replace.replacer(medal.emoji)})
+  : util.String.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : replace(medal.emoji)},false)
   // return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : opendota.util.getMedal(results[0],'emoji',replace)},true)
   // : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : opendota.util.getMedal(results[0],'emoji',replace)},false)
 }
@@ -130,9 +130,8 @@ opendota.getProPlayersDotaName = function(query){ //Promise
   })
 }
 
-opendota.error = function(bot,msg,message,error){
-  return Promise.all([bot.logger.add('oderror',`Ocurrió un error con Opendota:\n<< ${error} >>\nUser: ${msg.author.username} (${msg.author.id})`,true),
-  msg.author.getDMChannel().then(channel => channel.createMessage(message))])
+opendota.error = function(bot,msg,err){
+  return bot.discordLog.send('oderror',bot.locale.getDevString('errorOpendotaRequest',msg),bot.locale.getUserString('errorOpendotaRequest',msg),err,msg.channel)
 }
 
 opendota.urls = OPENDOTA_URLS

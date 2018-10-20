@@ -1,0 +1,41 @@
+const { Command } = require('aghanim')
+const { Markdown, Request } = require('erisjs-utils')
+const opendota = require('../../helpers/opendota')
+const basic = require('../../helpers/basic')
+
+module.exports = new Command('searchplayer',{
+  category : 'Dota 2', help : 'Busca a un/a jugador/a', args : '[búsqueda]'},
+  function(msg, args, command){
+    let self = this
+    const query = args.slice(1).join(' ')
+    const lang = this.locale.getUserStrings(msg)
+    if(query.length < 2){return msg.reply(lang.errorSearchMinChars)}
+    msg.channel.sendTyping()
+    opendota.getPlayersDotaName(query).then((players) => {
+      if(players.length < 1){return};
+      const playersTotal = players.length;
+      const limit = 10;
+      // console.log('Players',players);
+      // if(players.length > limit){
+      //   players.sort(function() {
+      //     return .5 - Math.random()});
+      //   players = players.slice(0,limit)
+      // }
+      players.sort(function(a,b) {
+        return b.similarity - a.similarity})
+      if(players.length > limit){
+        players = players.slice(0,limit)
+      }
+      const playersShow = players.length;
+      const urls = players.map(player => 'https://api.opendota.com/api/players/' + player.account_id);
+      return Request.getJSONMulti(urls).then((player_profiles) => {
+        const text = player_profiles.map((player) => player.profile).map((player) => `**${basic.parseText(opendota.util.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
+        return msg.reply({embed : {
+          title : lang.searchplayerTitle,
+          description : this.locale.replacer(lang.searchplayerDescription,{query : query, text : text}),
+          footer : {text : this.locale.replacer(lang.searchplayerFooter,{match : playersShow !== playersTotal ? playersShow + "/" + playersTotal : playersShow}), icon_url : this.user.avatarURL},
+          color : this.config.color
+        }})
+      }).catch(err => opendota.error(self,msg,err))
+    })
+  })

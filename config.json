@@ -5,7 +5,8 @@
     "helpDM" : true,
     "extensions" : ["eris/message"],
     "helpMessageAfterCategories" : "**Nota**: Usa `r!help <categoría>` para los comandos de esa categoría.\n\n:information_source: Cualquier duda o problema puedes pasarte por el **servidor de Roshan**: https://discord.gg/SxsYkgX",
-    "devLogs" : false
+    "devLogs" : false,
+    "disableHelp" : true
   },
   "logger" : {
     "dmMessage" : true,

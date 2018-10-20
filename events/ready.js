@@ -1,16 +1,16 @@
 const { Event } = require('aghanim')
 const util = require('erisjs-utils')
 const Eris = require('eris')
-const FirebaseCache = require('../helpers/classes/firebasecache.js')
-const FireListenCache = require('../helpers/classes/firelistencache.js')
-const FireSetCache = require('../helpers/classes/firesetcache')
-const DiscordLogger = require('../helpers/classes/logger')
-const lang = require('../lang.json')
-const { sortTourneys, updateAccountSchema } = require('../helpers/basic')
+const FirebaseCache = require('../classes/firebasecache.js')
+const FireListenCache = require('../classes/firelistencache.js')
+const FireSetCache = require('../classes/firesetcache')
+const DiscordLogger = require('../classes/logger')
+const { sortTourneys, updateAccountSchema, resetServerConfig } = require('../helpers/basic')
 const package = require('../package.json')
 const opendota = require('../helpers/opendota')
+const path = require('path')
 
-module.exports = new Event('','ready',{}, function(){
+module.exports = new Event('ready','ready',{}, function(){
   if(this._started){return}else{this._started = true}
   //Create containers
   this.scriptsUpdate()
@@ -20,7 +20,7 @@ module.exports = new Event('','ready',{}, function(){
 
   this.config.emojis.bot = util.Guild.loadEmojis(this.server);
 
-  this.replace = new util.Classes.ReplacerML({es : lang, en : {'setId' : 'ID saved to <user>' }},{ //Create a replacer with bot info + emojis + lang
+  this.locale.addConstants({ //Create a replacer with bot info + emojis + lang
     bot_name : this.user.username,
     bot_icon : this.user.avatarURL,
     author_name : this.owner.username,
@@ -34,8 +34,8 @@ module.exports = new Event('','ready',{}, function(){
     server : this.config.server,
     version : package.version,
     update : this.config.update
-  },{arrow : ['<','>'], defaultLang : 'es'});
-  this.replace.addKeywords(this.config.emojis.bot,['<','>'])
+  })
+  this.locale.addConstants(this.config.emojis.bot)
 
   this.discordLog = new DiscordLogger(this.server.channels.get(this.config.guild.notifications),this.config.logger)
 
@@ -53,9 +53,9 @@ module.exports = new Event('','ready',{}, function(){
       this.discordLog.log('info','Creating a fake DB...');
       this.config.switches.leaderboardUpdate = false;
       this.config.switches.backupdb = false;
-      this.cache.profiles = new FirebaseCache(this.db.child('profiles'),{"189996884322942976" : {card : {bg : '0', pos : 'all', heroes : '1,2,3'}, profile : {dota : '112840925', steam : '76561198073106653', twitch : '', twitter : ''}}});
-      this.cache.servers = new FirebaseCache(this.db.child('servers'),{"327603106257043456" : {notifications : {enable : true, channel : "491295737251102733"}, feeds : {enable : true, channel : "491295737251102733", subs : "1,2,3"}},
-        "332023803691532289" : {notifications : {enable : true, channel : "332023803691532289"}, feeds : {enable : true, channel : "332023803691532289", subs : "1,2,3"}}})
+      this.cache.profiles = new FirebaseCache(this.db.child('profiles'),{"189996884322942976" : {lang : 'es', card : {bg : '0', pos : 'all', heroes : '1,2,3'}, profile : {dota : '112840925', steam : '76561198073106653', twitch : '', twitter : ''}}});
+      this.cache.servers = new FirebaseCache(this.db.child('servers'),{"327603106257043456" : {lang : 'es', notifications : {enable : true, channel : "491295737251102733"}, feeds : {enable : true, channel : "491295737251102733", subs : "1,2,3"}},
+        "332023803691532289" : {lang : 'es', notifications : {enable : true, channel : "332023803691532289"}, feeds : {enable : true, channel : "332023803691532289", subs : "1,2,3"}}})
       this.cache.betatesters = new FireSetCache(this.db.child('betatesters'),[this.owner.id,...this.server.membersWithRole(this.config.roles.betatester).map(m => m.id)])
       this.cache.supporters = new FireSetCache(this.db.child('supporters'),[...this.server.membersWithRole(this.config.roles.supporter).map(m => m.id)])
     }
@@ -125,7 +125,12 @@ module.exports = new Event('','ready',{}, function(){
           const now = util.Date.now()
           return this.bucket.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
         }
-        this.discordLog.log('info','Cache loaded');
+        this.discordLog.log('info','Cache loaded')
+        this.guilds.forEach(g => {
+          if(!this.cache.servers.get(g.id)){
+            resetServerConfig(this,g).then(() => this.discordLog.warn('info',`${g.name} encontrado. Registrado en el bot.`))
+          }
+        })
       })
     }
   })

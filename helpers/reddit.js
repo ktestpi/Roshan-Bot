@@ -1,4 +1,5 @@
 const { Markdown, Request } = require('erisjs-utils');
+
 const REDDIT_DOTA2_URL = 'https://www.reddit.com/r/Dota2/';
 const REDDIT_ARTIFACT_URL = 'https://www.reddit.com/r/Artifact/';
 const REDDIT_BASE_URL = 'https://www.reddit.com/';
