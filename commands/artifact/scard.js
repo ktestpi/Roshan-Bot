@@ -8,7 +8,7 @@ module.exports = new Command(['searchcard','scard'],{
     if(!query){return}
     const filtered = this.artifactCards.searchCard(query)
     const lang = this.locale.getUserStrings(msg)
-    if(!filtered.length){return msg.reply(lang.searchCardNoFound,{query})}
+    if(!filtered.length){return msg.reply(this.locale.replacer(lang.searchCardNoFound,{query}))}
     const reduced = reduceWithCount(filtered.map(c => c.name),max)
     return msg.reply({embed : {
       title : lang.searchCardTitle,

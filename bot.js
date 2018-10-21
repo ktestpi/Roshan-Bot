@@ -73,26 +73,6 @@ bot.addCategory('Owner','Ayuda para comandos de propietario')
 bot.addCategory('Fun','Ayuda para comandos de emojis y memes')
 bot.addCategory('Artifact','Ayuda los comandos de Artifact')
 
-// bot.addCommand = function(command){
-//   if (!(command instanceof Command)) throw new TypeError('Not a command')
-//   if(!this.categories.find(c => c.name === command.category)){command.category = DEFAULT_CATEGORY;console.log(`${command.category} not found! Established as ${DEFAULT_CATEGORY} in ${command.name}`)}
-//   if(!command.subcommandFrom){
-//     const cmd = this.commands.find(c => [c.name,...c.aliases].some(cname => [command.name,...command.aliases].includes(cname)))
-//     if(cmd){throw new Error('Command exists',command.name)}
-//     else{this.commands.push(command);logger.dev(`Command added: ${command.name}`)}
-//   }else{
-//     const cmd = this.commands.find(c => [c.name,...c.aliases].includes(command.subcommandFrom))
-//     if(!cmd){throw new Error('Upcommand not found',command.subcommandFrom)}
-//     else{
-//       if(command.category !== cmd.category){command.category = cmd.category;console.log(`${command.category} not same upcomand! Established as ${cmd.category}`)}
-//       command.upcommand = cmd
-//       cmd.subcommands.push(command)
-//       // logger.dev(`Subcommand added: ${command.name} from ${cmd.name}`)
-//     }
-//   }
-//   return this
-// }
-//
 //Load commands
 bot.addCommandDir(path.join(__dirname,'commands/opendota'))
 bot.addCommandDir(path.join(__dirname,'commands/account'))
@@ -147,7 +127,7 @@ bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
   if(!this.setup.helpDM){
     msg.reply(helpMessage)
   }else{
-    msg.author.getDMChannel().then(channel => channel.createMessage(helpMessage))
+    msg.replyDM(helpMessage)
   }
 }))
 

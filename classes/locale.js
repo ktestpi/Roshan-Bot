@@ -57,6 +57,10 @@ module.exports = class Locale{
     let lang
     const usercached = msg._client.cache.profiles.get(msg.author.id)
     if(usercached){lang = usercached.lang}
+    else if(msg.channel.type === 0){
+      const svcached = msg._client.cache.servers.get(msg.channel.guild.id)
+      if(svcached){lang = svcached.lang}
+    }
     return lang || this.defaultLanguage
   }
   getUserStrings(msg){

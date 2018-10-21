@@ -51,6 +51,7 @@ class ArtifactCardsCollection{
     this.assets.cardtype = assets.cardtype || ''
     this.keywords = require('./artifact_keywords.json').sort((a,b) => a.name.toLowerCase() > b.name.toLowerCase())
     this.image = options.image || "https://pbs.twimg.com/profile_images/894659755129552897/-EC4LJTe_400x400.jpg"
+    this.limitParseCards = 2
   }
   static cardSchema(){
     return {
@@ -69,8 +70,12 @@ class ArtifactCardsCollection{
       rarity: "",
       signature: "",
       signaturefor: "",
-      getInitiative: false,
-      crossLane : false
+      charges : 0,
+      artist : "",
+      lore : "",
+      anyLane : false,
+      getInitiative : false,
+      token : false
     }
   }
   addSet(setpath,language,modifier){
@@ -192,12 +197,23 @@ class ArtifactCardsCollection{
     const date = new Date(datestring)
     return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
   }
-  sendMessageCard(msg,replacer){
+  parseMessage(msg,replacer){
     if(msg.author.bot){return}
-    const query = msg.content.match(/\[([^\]]+)\]/)
-    if(!query){return}
-    const card = this.getCard(query[1])
-    if(!card){return}
+    const query = msg.content.match(/\[([^\]]+)\]/g)
+    console.log(query);
+    if(!query || !query.length){return}
+    let limit = 0
+    const cards = []
+    query.forEach(q => {
+      const search = q.match(/\[([^\]]+)]/)
+      const card = this.getCard(search[1])
+      limit++
+      if(!card || limit > this.limitParseCards){return}
+      cards.push(card)
+    })
+    cards.forEach(card => this.sendMessageCard(msg,card,replacer))
+  }
+  sendMessageCard(msg,card,replacer){
     return msg.reply({embed : {
       // title : card.name,
       author : {name : `${card.name}${(card.type === 1 || card.type === 2) ? ' - ' + card.attack + '/' + card.armor + '/' + card.health : ''}`, icon_url : ArtifactCardsCollection.cardTypeIcon(card.type), url : card.image},
