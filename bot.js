@@ -116,7 +116,7 @@ bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
     else{
       helpMessage += cmds.filter(c => filterCommands(c,query,owner)).map(c => {
         const langCmd = this.locale.getCmd(c.name,msg)
-        return `\`${prefix}${c.name}${langCmd.args ? ' ' + langCmd.args : ''}\` - ${langCmd.help}${c.subcommands.length ? '\n' + c.subcommands.filter(s => filterCommands(s,query,owner)).map(s => {
+        return `\`${prefix}${c.name}${langCmd.args ? ' ' + langCmd.args : ''}\` - ${langCmd.help || c.help}${c.subcommands.length ? '\n' + c.subcommands.filter(s => filterCommands(s,query,owner)).map(s => {
           const langCmd = this.locale.getCmd(c.name + '_' + s.name,msg)
           return `  · \`${s.name}${langCmd.args ? ' ' + langCmd.args : ''}\` - ${langCmd.help}`}).join('\n') : ''}`
       }).join('\n')
@@ -134,6 +134,5 @@ bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
 bot.on('errorAghanimEvent',function(ev,error,msg){
   console.log(ev.name,'tuvo un error!',error)
 })
-
 
 bot.connect();

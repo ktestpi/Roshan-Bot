@@ -130,23 +130,3 @@ module.exports = class Locale{
     }
   }
 }
-
-class StringLocale extends String{
-  constructor(string,constants){
-    super(string)
-    this.constants = constants
-  }
-  replace(replacer){
-    let result = String(this)
-    for(let str in this.constants){
-      result = result.replace(new RegExp(`<${str}>`,'g'),this.constants[str]) // Replace
-    }
-    for(let str in replacer){
-      // console.log(str,replacer[str]);
-      result = result.replace(new RegExp(`<${str}>`,'g'),replacer[str]) // Replace
-    }
-    return result
-  }
-}
-
-const mys = new StringLocale('hola',{bla : 'hello'})

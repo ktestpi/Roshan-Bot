@@ -18,7 +18,7 @@ module.exports = new Event('guild_create','guildCreate',{}, function(guild){
   // });
   this.createMessage(this.config.guild.notifications,{
     embed : {
-      title : lang.newServer,
+      title : 'Nuevo servidor',
       description : "**Nombre:** `" + guild.name + "`\n**ID:** `" + guild.id + "`\n**Miembros:** `" + guild.memberCount
         + "`\n**Propietari@:** `" + guild.members.get(guild.ownerID).username + "`\n**Región:** `" + guild.region + "`\n**Creado:** `" + Datee.custom(guild.createdAt,'D/M/Y h:m:s',true) + "`",
       thumbnail : {url : guild.iconURL || this.user.avatarURL, height : 40, width : 40},
@@ -31,7 +31,7 @@ module.exports = new Event('guild_create','guildCreate',{}, function(guild){
         this.discordLog.controlMessage('guildnew',`**${guild.name}**`)
         const defaultChannel = Guild.getDefaultChannel(guild,this,true)
         if(defaultChannel){
-          defaultChannel.createMessage(`:flag_gb: Hi, I am a **Dota 2** and **Artifact** bot in Spanish. Read the **server guide**: use \`r!getstarted\``)
+          defaultChannel.createMessage(`:flag_gb: Hi, I am a **Dota 2** and **Artifact** bot. Read the **server guide**: use \`r!getstarted\``)
         }
     })
     .catch(err => this.discordLog.controlMessage('error',`Error creating server config for **${guild.name}** (${guild.id})`))

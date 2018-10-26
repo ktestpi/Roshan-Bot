@@ -200,15 +200,14 @@ class ArtifactCardsCollection{
   parseMessage(msg,replacer){
     if(msg.author.bot){return}
     const query = msg.content.match(/\[([^\]]+)\]/g)
-    console.log(query);
     if(!query || !query.length){return}
     let limit = 0
     const cards = []
     query.forEach(q => {
       const search = q.match(/\[([^\]]+)]/)
       const card = this.getCard(search[1])
+      if(!card || limit === this.limitParseCards){return}
       limit++
-      if(!card || limit > this.limitParseCards){return}
       cards.push(card)
     })
     cards.forEach(card => this.sendMessageCard(msg,card,replacer))

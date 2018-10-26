@@ -29,9 +29,11 @@ class FirebaseCache extends Datatype.Collection{
   }
   save(id,data){
     return new Promise((resolve, reject) => {
-      this.add(id,data)
-      this.db.child(id+this.path).update(data).then(() => resolve()).catch(err => reject(err))
-      })
+      // this.add(id,data)
+      // this.db.child(id+this.path).update(data).then(() => resolve()).catch(err => reject(err))
+      const add = this.has(id) ? mergeObject(this.data(id),data) : data
+      this.db.child(id+this.path).update(add).then(() => {this.add(id,add);resolve(this.get(id))}).catch(err => reject(err))
+    })
   }
   erase(id){
     return new Promise((resolve, reject) => {
@@ -51,8 +53,9 @@ class FirebaseCache extends Datatype.Collection{
 }
 
 function mergeObject(base,merge){
+    base = base !== undefined ? base : {}
     for (var el in merge) {
-      if(typeof merge[el] === 'object'){mergeObject(base[el],merge[el])}
+      if(typeof merge[el] === 'object'){base[el] = mergeObject(base[el],merge[el])}
       else{base[el] = merge[el]}
     }
     // delete base['_id']

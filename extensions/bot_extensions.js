@@ -60,6 +60,16 @@ module.exports = new Extension('bot_extensions',function(bot){
     // if(!notAll){config.logger.add(mode,message,true)}else{config.logger.add('shout',message,true);}
   }
 
+  bot.addGame = function(game){
+    if(!this.game){this.games = {}}
+    this.games[game.name.toLowerCase()] = game
+    this.addCategory(game.category,'')
+    game.commands.forEach(cmd => {cmd.game = game;cmd.category = game.category;this.addCommand(cmd)})
+    game.events.forEach(ev => {ev.game = game;ev.category = game.category;this.addEvent(ev)})
+    // this.events.forEach(ev => bot.addEvent(ev))
+    game.client = this
+  }
+
   bot.scriptsUpdate = function(){
     return new Promise((resolve, reject) => {
       this.scripts = {};

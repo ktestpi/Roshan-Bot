@@ -9,6 +9,7 @@ const { sortTourneys, updateAccountSchema, resetServerConfig } = require('../hel
 const package = require('../package.json')
 const opendota = require('../helpers/opendota')
 const path = require('path')
+const Diretide = require('../seasonal/diretide')
 
 module.exports = new Event('ready','ready',{}, function(){
   if(this._started){return}else{this._started = true}
@@ -45,6 +46,11 @@ module.exports = new Event('ready','ready',{}, function(){
     console.log(reason);
     console.log(p);
   });
+
+  this.addGame(Diretide)
+  Diretide.cache = {}
+
+  // Diretide.insert(bot)
 
   this.db.child('bot').once('value').then(snap => {
     if(!snap.exists()){return}else{snap = snap.val()}
@@ -131,6 +137,13 @@ module.exports = new Event('ready','ready',{}, function(){
             resetServerConfig(this,g).then(() => this.discordLog.warn('info',`${g.name} encontrado. Registrado en el bot.`))
           }
         })
+        // DIretide
+        Diretide.cache.users = new FirebaseCache(this.db.child('diretide/users'),snap.diretide.users);
+        Diretide.cache.teams = new FirebaseCache(this.db.child('diretide/teams'),snap.diretide.teams);
+        Diretide.status.addDB(this.db.child('diretide/roshan'))
+        if(Diretide.config.autostart){
+          Diretide.status.randomSugarRush(Diretide.config.events.sugarrush.randomFirstStart)
+        }
       })
     }
   })

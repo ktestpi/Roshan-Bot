@@ -1,15 +1,16 @@
 const fs = require('fs')
-const Event = require('event')
+const Events = require('events')
 
-module.exports = class RoshanGame extends Event{
-  constructor(name,category,description,config,status){
+module.exports = class RoshanGame extends Events{
+  constructor(name,category,config,status){
     super()
     this.name = name
     this.category = category
-    this.description = description
     this.config = config
     this.status = status
     this.commands = []
+    this.events = []
+    this.actions = {}
     this.on('error', function(err){
       console.log(this.name + ':ERROR:' + err);
     })
@@ -22,16 +23,31 @@ module.exports = class RoshanGame extends Event{
       this[where].push(require(path + '/' + file))
     })
   }
+  addEventsDir(path){
+    this.addDir(path,'events')
+  }
   addEvent(ev){
     this.addDir(path,'events')
   }
   readDirFiles(path){
     return fs.readdirSync(path)
   }
-  insert(bot){
-    bot.addCategory(this.category,this.categoryHelp)
-    game.commands.forEach(cmd => {cmd.game = this;bot.addCommand(cmd)})
-    game.events.forEach(ev => bot.addEvent(ev))
+  addActions(actions){
+    Object.keys(actions).forEach(key => {
+      this.addAction(actions[key],key)
+    })
+  }
+  addAction(action,key){
+    this.actions[key] = action.bind(this)
+  }
+  reply(channel,content,file){
+    return this.client.createMessage(typeof channel === 'string' ? channel : channel.channel.id,content,file)
+  }
+  replyDM(msg,content,file){
+    return msg.author.getDMChannel().then((channel) => channel.createMessage(content,file))
+  }
+  log(content,file){
+    return this.reply(this.config.logChannel,content,file)
   }
 }
 
