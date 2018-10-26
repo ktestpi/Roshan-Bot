@@ -9,7 +9,7 @@ const { sortTourneys, updateAccountSchema, resetServerConfig } = require('../hel
 const package = require('../package.json')
 const opendota = require('../helpers/opendota')
 const path = require('path')
-const Diretide = require('../seasonal/diretide/index.js')
+const Diretide = require('../seasonal/diretide')
 
 module.exports = new Event('ready','ready',{}, function(){
   if(this._started){return}else{this._started = true}
