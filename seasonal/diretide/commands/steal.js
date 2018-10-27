@@ -15,7 +15,7 @@ module.exports = new Command('steal',{
     if(!game.actions.reqUserCheck(user,game.config.setup.steal.require)){game.reply(msg,game.actions.reqUserShow(game.config.setup.steal.require));return command.error()} //show requirements
     if(game.actions.reqUserActiveOwnTeam(user,team)){msg.reply('You can\'t steal own team basket');return command.error()}
     const ts = game.actions.reqCheckTime(team.ts.steal)
-    if(ts > 0){game.reply(msg,`${team._id} team basket is protected: ${ts} seconds remaining`);return command.error()}
+    if(ts < 0){game.reply(msg,`${team._id} team basket is protected: ${ts} seconds remaining`);return command.error()}
 
     const candies = game.actions.intervalRandomNumberLimited(game.config.setup.steal.rewards.candies)
     if(candies === 0){game.reply(msg,`${team._id} team basket is empty`);return command.error()}
