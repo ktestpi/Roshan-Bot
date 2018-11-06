@@ -1,40 +1,49 @@
 const { Command } = require('aghanim')
-const opendota = require('../../helpers/opendota')
+const odutil = require('../../helpers/opendota-utils')
 const basic = require('../../helpers/basic')
 const enumHeroes = require('../../enums/heroes')
 
 module.exports = new Command(['player','p'],{
   category : 'Dota 2', help : 'Información sobre un/a jugador/a', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
-    let self = this
-    opendota.odcall(this,msg,args,function(msg,args,profile){
-      const lang = self.locale.getUserStrings(msg)
-      msg.channel.sendTyping();
-      opendota.request('player',profile.profile.dota).then(results => {
-        profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl,'steam');
-        let top5Heroes = ''
-        for (var i = 0; i < 5; i++) {
-          top5Heroes += self.locale.replacer(lang.top5Heroes,{hero : enumHeroes.getValue(results[2][i].hero_id).name, wr : opendota.util.winratio(results[2][i].win,results[2][i].games-results[2][i].win), games : results[2][i].games}) + '\n'
-        };
-        const kda = opendota.util.kda(results[3][0].sum,results[3][1].sum,results[3][2].sum)
-        msg.reply({embed : {
-          title : opendota.titlePlayer(results,lang.playerProfile,self.locale),
-          description : basic.socialLinks(profile.profile,'inline',self.config.links.profile) || '',
-          fields : [
-            {name : lang.wlr,
-            value : results[1].win + '/' + results[1].lose + ' (' + opendota.util.winratio(results[1].win,results[1].lose) + '%)',
-            inline : true},
-            {name : lang.KDA,
-            value : results[3][0].sum + '/' + results[3][1].sum + '/' + results[3][2].sum + ' (' + kda + ')',
-            inline : false},
-            {name : lang.top5HeroesTitle,
-            value : top5Heroes,
-            inline : true}
-          ],
-          thumbnail : {url : results[0].profile.avatarmedium, height : 40, width : 40},
-          footer : {text : lang.noteData, icon_url : self.user.avatarURL},
-          color : self.config.color
-        }})
-      }).catch(err => opendota.error(self,msg,err))
-    }) //.bind(this)
+    msg.channel.sendTyping()
+    return this.od.userID(msg, args)
+      .then(player => Promise.all([player,this.od.player(player.data.profile.dota)]))
+      .then(data => {
+        const [player, results] = data
+        const profile = player.data
+        profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl, 'steam')
+        const lang = this.locale.getUserStrings(msg)
+        const top5Heroes = results[2].slice(0,5).reduce((sum, el) => {
+          return sum
+            + this.locale.replacer(lang.top5Heroes, { hero: enumHeroes.getValue(el.hero_id).name, wr: odutil.winratio(el.win, el.games - el.win), games: el.games }) + '\n'
+        },'')
+        const kda = odutil.kda(results[3][0].sum, results[3][1].sum, results[3][2].sum)
+        return msg.reply({
+          embed: {
+            title: odutil.titlePlayer(results, lang.playerProfile, this.locale),
+            description: basic.socialLinks(profile.profile, 'inline', this.config.links.profile) || '',
+            fields: [
+              {
+                name: lang.wlr,
+                value: results[1].win + '/' + results[1].lose + ' (' + odutil.winratio(results[1].win, results[1].lose) + '%)',
+                inline: true
+              },
+              {
+                name: lang.KDA,
+                value: results[3][0].sum + '/' + results[3][1].sum + '/' + results[3][2].sum + ' (' + kda + ')',
+                inline: false
+              },
+              {
+                name: lang.top5HeroesTitle,
+                value: top5Heroes,
+                inline: true
+              }
+            ],
+            thumbnail: { url: results[0].profile.avatarmedium, height: 40, width: 40 },
+            footer: { text: lang.noteData, icon_url: this.user.avatarURL },
+            color: this.config.color
+          }
+        })
+      }).catch(err => this.od.error(msg, err))
   })

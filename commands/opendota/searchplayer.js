@@ -1,6 +1,6 @@
 const { Command } = require('aghanim')
 const { Markdown, Request } = require('erisjs-utils')
-const opendota = require('../../helpers/opendota')
+const odutil = require('../../helpers/opendota-utils')
 const basic = require('../../helpers/basic')
 
 module.exports = new Command('searchplayer',{
@@ -11,7 +11,7 @@ module.exports = new Command('searchplayer',{
     const lang = this.locale.getUserStrings(msg)
     if(query.length < 2){return msg.reply(lang.errorSearchMinChars)}
     msg.channel.sendTyping()
-    opendota.getPlayersDotaName(query).then((players) => {
+    this.od.getPlayersDotaName(query).then((players) => {
       if(players.length < 1){return};
       const playersTotal = players.length;
       const limit = 10;
@@ -29,13 +29,13 @@ module.exports = new Command('searchplayer',{
       const playersShow = players.length;
       const urls = players.map(player => 'https://api.opendota.com/api/players/' + player.account_id);
       return Request.getJSONMulti(urls).then((player_profiles) => {
-        const text = player_profiles.map((player) => player.profile).map((player) => `**${basic.parseText(opendota.util.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
+        const text = player_profiles.map((player) => player.profile).map((player) => `**${basic.parseText(odutil.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
         return msg.reply({embed : {
           title : lang.searchplayerTitle,
           description : this.locale.replacer(lang.searchplayerDescription,{query : query, text : text}),
           footer : {text : this.locale.replacer(lang.searchplayerFooter,{match : playersShow !== playersTotal ? playersShow + "/" + playersTotal : playersShow}), icon_url : this.user.avatarURL},
           color : this.config.color
         }})
-      }).catch(err => opendota.error(self,msg,err))
+      }).catch(err => this.od.error(msg, err))
     })
   })

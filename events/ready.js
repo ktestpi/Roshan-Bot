@@ -7,15 +7,18 @@ const FireSetCache = require('../classes/firesetcache')
 const DiscordLogger = require('../classes/logger')
 const { sortTourneys, updateAccountSchema, resetServerConfig } = require('../helpers/basic')
 const package = require('../package.json')
-const opendota = require('../helpers/opendota')
+const odutil = require('../helpers/opendota-utils')
 const path = require('path')
-const Diretide = require('../seasonal/diretide')
+// const Diretide = require('../seasonal/diretide')
+const ArtifactManager = require('../helpers/artifact')
 
 module.exports = new Event('ready','ready',{}, function(){
   if(this._started){return}else{this._started = true}
   //Create containers
   this.scriptsUpdate()
-
+  
+  this.artifact = new ArtifactManager()
+  this.artifact.update()
   //Save guild dev
   this.server = this.guilds.get(this.config.guild.id)
 
@@ -26,9 +29,6 @@ module.exports = new Event('ready','ready',{}, function(){
     bot_icon : this.user.avatarURL,
     author_name : this.owner.username,
     author_id : this.owner.id,
-    // role_admin : config.roles.admin,
-    // role_pin : config.roles.pin,
-    // role_aegis : config.roles.aegis,
     channel_bugs : "<#" + this.config.guild.bugs + ">",
     channel_biblioteca : "<#" + this.config.guild.biblioteca + ">",
     channel_foso : "<#" + this.config.guild.id + ">",
@@ -36,6 +36,7 @@ module.exports = new Event('ready','ready',{}, function(){
     version : package.version,
     update : this.config.update
   })
+  
   this.locale.addConstants(this.config.emojis.bot)
 
   this.discordLog = new DiscordLogger(this.server.channels.get(this.config.guild.notifications),this.config.logger)
@@ -47,10 +48,8 @@ module.exports = new Event('ready','ready',{}, function(){
     console.log(p);
   });
 
-  this.addGame(Diretide)
-  Diretide.cache = {}
-
-  // Diretide.insert(bot)
+  // Diretide.cache = {}
+  // this.addGame(Diretide)
 
   this.db.child('bot').once('value').then(snap => {
     if(!snap.exists()){return}else{snap = snap.val()}
@@ -87,16 +86,25 @@ module.exports = new Event('ready','ready',{}, function(){
   this.on('postready',function(){
     if(this.config.switches.backupdb){ //config.switches.backupdb
       util.Firebase.backupDBfile(this.db,this,this.config.guild.backup,{filenameprefix : 'roshan_db_', messageprefix : '**Roshan Backup DB**'}).then(snap => {
-        //Create cache maps for Profiles and Servers (Firebase)
         this.discordLog.log('info','Backup done!')
+        
+        //Create cache maps for Profiles and Servers (Firebase)
         this.cache.profiles = new FirebaseCache(this.db.child('profiles'),Object.keys(snap.profiles).map(profile => [profile,snap.profiles[profile]]));
         this.cache.servers = new FirebaseCache(this.db.child('servers'),snap.servers);
-
+        
         //Update leaderboard (Firebase) each this.config.hoursLeaderboardUpdate at least
-        if(this.config.switches.leaderboardUpdate && (this.config.constants.hoursLeaderboardUpdate*3600 + snap.leaderboard.updated) < new Date().getTime()/1000){updateLeaderboard(this,snap.profiles)};
+        if(this.config.switches.leaderboardUpdate
+          && (this.config.constants.hoursLeaderboardUpdate*3600 + snap.leaderboard.updated) < new Date().getTime()/1000){
+            updateLeaderboard(this,snap.profiles)
+        }
 
         //Update public (Firebase)
-        const data_public = {discord_invite : this.config.invite, discord_server : this.config.server, users : Object.keys(snap.profiles).length, version : package.version}
+        const data_public = {
+          discord_invite : this.config.invite,
+          discord_server : this.config.server,
+          users : Object.keys(snap.profiles).length,
+          version : package.version
+        }
         this.db.child('public').update(data_public).then(() => this.discordLog.log('info','Update public Info'))
 
         // Update accounts schema
@@ -132,57 +140,65 @@ module.exports = new Event('ready','ready',{}, function(){
           return this.bucket.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
         }
         this.discordLog.log('info','Cache loaded')
+        
+        // Check guilds config setted
         this.guilds.forEach(g => {
           if(!this.cache.servers.get(g.id)){
             resetServerConfig(this,g).then(() => this.discordLog.warn('info',`${g.name} encontrado. Registrado en el bot.`))
           }
         })
-        // DIretide
-        Diretide.cache.users = new FirebaseCache(this.db.child('diretide/users'),snap.diretide.users);
-        Diretide.cache.teams = new FirebaseCache(this.db.child('diretide/teams'),snap.diretide.teams);
-        Diretide.status.addDB(this.db.child('diretide/roshan'))
-        if(Diretide.config.autostart){
-          Diretide.status.randomSugarRush(Diretide.config.events.sugarrush.randomFirstStart)
-        }
+        
+        // // Diretide Cache
+        // Diretide.cache.users = new FirebaseCache(this.db.child('diretide/users'),snap.diretide.users)
+        // Diretide.cache.teams = new FirebaseCache(this.db.child('diretide/teams'),snap.diretide.teams)
+        
+        // //Diretide add DB
+        // Diretide.status.addDB(this.db.child('diretide/roshan'))
+        
+        // // Diretide Autostart Game
+        // if(Diretide.config.autostart){
+        //   Diretide.status.randomSugarRush(Diretide.config.events.sugarrush.randomFirstStart)
+        // }
       })
     }
   })
-
   this.loadLastPatchNotes()
 })
 
 
-const updateLeaderboard = function(bot,snap){
-  let urls = [];
-  let players = Object.keys(snap).map(p => {return {discord_id : p, dota_id : snap[p].profile.dota}})//.filter(p => bot.guilds.find(g => g.members.get(p.discord_id)));
-  for (var i = 0; i < players.length; i++) {
-    let guild = bot.guilds.find(g => g.members.get(players[i].discord_id)), member;
-    if(guild){
-      member = guild.members.get(players[i].discord_id)
-    }
-    players[i].username = member ? member.username : false;
-    players[i].avatar = member ? member.avatarURL : false;
-  }
-  players.forEach(player => {
-    if(!player.dota_id){console.log('THIS PROFILE',player.discord_id)}
-    urls.push('https://api.opendota.com/api/players/' + player.dota_id)
-  })
-  util.Request.multipleJSON(urls,null,1,(results) => {
-    let update = {updated : util.Date.now(), ranking : {}}
-    for (let i = 0; i < results.length; i++) {
-      if(!results){continue}
-      const rank = opendota.util.getMedal(results[i],'raw',bot.replace);
-      update.ranking[players[i].discord_id] = {username : players[i].username || results[i].profile.personaname, nick : results[i].profile.personaname || '', avatar : players[i].avatar || results[i].profile.avatarmedium, rank : rank.rank, leaderboard : rank.leaderboard};
-    }
-    bot.db.child('leaderboard').set(update).then(() => bot.discordLog.log('info','Ranking Updated'))
-  })
-  // util.request.getJSONMulti(urls).then((results) => {
-  //   let update = {updated : util.date(),ranking : {}};
-  //   for (let i = 0; i < results.length; i++) {
-  //     if(!results){continue}
-  //     const rank = opendota.util.getMedal(results[i],'raw',bot.replace);
-  //     update.ranking[players[i].discord_id] = {username : players[i].username || results[i].profile.personaname, nick : results[i].profile.personaname || '', avatar : players[i].avatar || results[i].profile.avatarmedium, rank : rank.rank, leaderboard : rank.leaderboard};
-  //   }
-  //   bot.db.child('leaderboard').set(update)
-  // }).catch(err => console.log(err))
+const updateLeaderboard = function (bot, snap) {
+  return Object.keys(snap).map(p => ({ discord_id: p, dota_id: snap[p].profile.dota }))
+    .filter(player => player.dota_id)
+    .map(player => {
+      const guild = bot.guilds.find(g => g.members.get(player.discord_id))
+      let member
+      if(guild){
+        member = guild.members.get(player.discord_id)
+      }
+      player.username = member ? member.username : false
+      player.avatar = member ? member.avatarURL : false
+      return player})
+    .reduce((promise, player) => {
+      return promise.then(results => new Promise(res => {
+        setTimeout(() => bot.od.player_steam(player.dota_id).then(dataArray => {
+          const [data] = dataArray;
+         player.data = data;res([...results,player])}), 2000)
+      }))
+    },Promise.resolve([]))
+    .then(players => {
+      const update = players.reduce((update, player) => {
+        const { data } = player
+        if (!data) { return update }
+        const rank = odutil.getMedal(data, 'raw')
+        update.ranking[player.discord_id] = {
+          username: player.username || data.profile.personaname,
+          nick: data.profile.personaname || '',
+          avatar: player.avatar || data.profile.avatarmedium,
+          rank: rank.rank, 
+          leaderboard: rank.leaderboard 
+        }
+        return update
+      }, { updated: util.Date.now(), ranking: {} })
+      return bot.db.child('leaderboard').set(update).then(() => bot.discordLog.log('info', 'Ranking Updated'))
+    })
 }

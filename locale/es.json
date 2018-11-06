@@ -199,6 +199,7 @@
   "Link" : "Enlace",
   "IE_CardCreate" : "Error al crear la tarjeta para `<username>`",
   "IE_CardRequest" : "Error en la petición de la tarjeta `<username>`",
+  "needRegister" : ":x: No puedes usar ese comando porque **no estás registrad@**. Para ello, **usa `r!register` y sigue las instrucciones**",
   "serverSubscription" : "Este servidor se ha suscrito a: <subs>",
   "serverUnSubscription" : "Este servidor se ha desuscrito de: <subs>",
   "serverSubcriptionsAvaliables" : "Subscripciones disponibles",

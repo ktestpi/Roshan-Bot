@@ -131,7 +131,7 @@ bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
   }
 }))
 
-bot.on('errorAghanimEvent',function(ev,error,msg){
+bot.on('aghanim:messageCreate:error',function(ev,error,msg){
   console.log(ev.name,'tuvo un error!',error)
 })
 

@@ -199,6 +199,7 @@
   "Link" : "Link",
   "IE_CardCreate" : "Error to create ID Card to `<username>`",
   "IE_CardRequest" : "Error in request to ID Card `<username>`",
+  "needRegister": ":x: You can't use this command because **you aren't registered**. Use `r!register` and follow the instructions.",
   "serverSubscription" : "This server has subscribed to: <subs>",
   "serverUnSubscription" : "This server has unsubscribed of: <subs>",
   "serverSubcriptionsAvaliables" : "Avaliables susbscriptions",

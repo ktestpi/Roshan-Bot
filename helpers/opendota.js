@@ -1,141 +1,147 @@
-const util = require('erisjs-utils')
-const basic = require('./basic.js')
-const enumMedal = require('../enums/medals')
+const { Request } = require('erisjs-utils')
+const { accountSchema } = require('../helpers/basic.js')
 
-const request = (urls,id) => {
-  // console.log(urls);
-  return util.Request.getJSONMulti(urls.map(url => replace(url,'<id>',id)))}
-const replace = (text,match,repl) => text.replace(match,repl)
+const baseURL = 'https://api.opendota.com/api/'
 
-const OPENDOTA_URLS = {
-   player : 'https://api.opendota.com/api/players/<id>',
-   player_wl : 'https://api.opendota.com/api/players/<id>/wl',
-   player_heroes : 'https://api.opendota.com/api/players/<id>/heroes',
-   player_totals : 'https://api.opendota.com/api/players/<id>/totals',
-   player_matches : 'https://api.opendota.com/api/players/<id>/matches?significant=0',
-   player_pros : 'https://api.opendota.com/api/players/<id>/pros',
-   player_friends : 'https://api.opendota.com/api/players/<id>/peers?date=30',
-   match : 'https://api.opendota.com/api/matches/<id>',
-   competitive : 'https://api.opendota.com/api/proMatches/',
-   proplayers : 'https://api.opendota.com/api/proPlayers/',
-   search_player : 'https://api.opendota.com/api/search?q=<id>&similarity=0.5',
-   search_pro : 'https://api.opendota.com/api/proPlayers/'
+const Endpoints = {
+    player: 'players/<id>',
+    player_wl: 'players/<id>/wl',
+    player_heroes: 'players/<id>/heroes',
+    player_totals: 'players/<id>/totals',
+    player_matches: 'players/<id>/matches?significant=0',
+    player_pros: 'players/<id>/pros',
+    player_friends: 'players/<id>/peers?date=30',
+    match: 'matches/<id>',
+    competitive: 'proMatches/',
+    proplayers: 'proPlayers/',
+    search_player: 'search?q=<id>&similarity=0.5',
+    search_pro: 'proPlayers/'
 }
 
-let opendota = {};
-
-opendota.util = require('./opendota-utils.js')
-
-opendota.request = function(mode,id){
-  const urls = {
-    card : [OPENDOTA_URLS.player],
-    card_heroes : [OPENDOTA_URLS.player,OPENDOTA_URLS.player_heroes],
-    player : [OPENDOTA_URLS.player,OPENDOTA_URLS.player_wl,OPENDOTA_URLS.player_heroes,OPENDOTA_URLS.player_totals],
-    player_matches : [OPENDOTA_URLS.player,OPENDOTA_URLS.player_matches],
-    player_lastmatch : [OPENDOTA_URLS.player_matches],
-    player_friends : [OPENDOTA_URLS.player,OPENDOTA_URLS.player_friends],
-    player_pros : [OPENDOTA_URLS.player,OPENDOTA_URLS.player_pros],
-    player_steam : [OPENDOTA_URLS.player],
-    match : [OPENDOTA_URLS.match],
-    competitive : [OPENDOTA_URLS.competitive],
-    search_player : [OPENDOTA_URLS.search_player],
-    search_pro : [OPENDOTA_URLS.search_pro]
-  }
-  if(urls[mode]){
-    return request(urls[mode],id)
-  }
+const urls = {
+    card: [Endpoints.player],
+    card_heroes: [Endpoints.player, Endpoints.player_heroes],
+    player: [Endpoints.player, Endpoints.player_wl, Endpoints.player_heroes, Endpoints.player_totals],
+    player_matches: [Endpoints.player, Endpoints.player_matches],
+    player_lastmatch: [Endpoints.player_matches],
+    player_friends: [Endpoints.player, Endpoints.player_friends],
+    player_pros: [Endpoints.player, Endpoints.player_pros],
+    player_steam: [Endpoints.player],
+    match: [Endpoints.match],
+    competitive: [Endpoints.competitive],
+    search_player: [Endpoints.search_player],
+    search_pro: [Endpoints.search_pro]
 }
 
-opendota.titlePlayer = function(results,title,replace){
-  // console.log(replace);console.log('*********************');
-  const medal = enumMedal({rank : results[0].rank_tier, leaderboard : results[0].leaderboard_rank})
-  // console.log(medal);
+const decorator = (f,urls) => id => f(urls,id)
 
-  return typeof results[0].profile.loccountrycode == 'string' ? replace.replacer(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : replace.replacer(medal.emoji)})
-  : util.String.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : replace.replacer(medal.emoji)},false)
-  // return typeof results[0].profile.loccountrycode == 'string' ? replace.do(title,{user : opendota.util.nameAndNick(results[0].profile), flag : results[0].profile.loccountrycode.toLowerCase(), medal : opendota.util.getMedal(results[0],'emoji',replace)},true)
-  // : util.string.replace(title,{'<user>' : opendota.util.nameAndNick(results[0].profile), ':flag_<flag>:' : ' ', '<medal>' : opendota.util.getMedal(results[0],'emoji',replace)},false)
-}
-
-opendota.__odcall = function(bot,msg,args,callback){
-  var profile = basic.getAccountID(msg,args,bot);
-  if(profile.isCached){
-    // console.log('Launch form cached',profile);
-    callback(msg,args,profile);
-  }else{
-    if(profile.isDiscordID){
-      bot.db.child('profiles/' + profile.account_id).once('value').then((snap) => {
-        if(!snap.exists()){basic.needRegister(msg,msg.author.id);return};
-        profile.id = snap.val().profile;
-        callback(msg,args,profile);
-      })
-    }else{
-      if(!isNaN(profile.account_id)){
-        profile.profile.dota = profile.account_id;
-        callback(msg,args,profile);
-      }else{
-        basic.getProPlayerDotaID(profile.account_id).then((player) => {
-          // console.log('PLAYER',player);
-          profile.profile.dota = player.account_id;
-          profile.profile.steam = player.steamid;
-          callback(msg,args,profile);
+class Opendota{
+    constructor(client,db){
+        this.client = client
+        this.baseURL = baseURL
+        this._calls = 0
+        this.db = this.client.db.child(db)
+        Object.keys(urls).forEach(key => {
+            this[key] = decorator(this.request.bind(this),urls[key].map(url => this.baseURL + url))
         })
-      }
-    }
-  }
-}
-opendota.odcall = function(bot,msg,args,callback){
-  var profile = basic.getAccountID(msg,args,bot);
-  if(profile.isCached){
-    // console.log('Launch form cached',profile);
-    return callback(msg,args,profile);
-  }else{
-    if(profile.isDiscordID){
-      return bot.db.child('profiles/' + profile.account_id).once('value').then((snap) => {
-        if(!snap.exists()){basic.needRegister(msg,msg.author.id);return};
-        profile.id = snap.val().profile;
-        return callback(msg,args,profile);
-      })
-    }else{
-      if(!isNaN(profile.account_id)){
-        profile.profile.dota = profile.account_id;
-        return callback(msg,args,profile);
-      }else{
-        return basic.getProPlayerDotaID(profile.account_id).then((player) => {
-          // console.log('PLAYER',player);
-          profile.profile.dota = player.account_id;
-          profile.profile.steam = player.steamid;
-          return callback(msg,args,profile);
+        this.db.once('value').then((snap) =>{
+            this._calls = snap.exists() ? snap.val().odcalls : 0
+            const date = new Date()
+            if(date.getDate() === 1){
+                this.save(0)
+            }
         })
-      }
     }
-  }
+    url(name){
+        return Endpoints[name]
+    }
+    request(urls,id){
+        return Request.getJSONMulti(urls.map(url => replace(url, '<id>', id)))
+            .then(results => {
+                return this.incremental(results.length).then(() => results)
+                }
+            )
+    }
+    get calls(){
+        return this._calls
+    }
+    set calls(value){
+        return this.save(value)
+    }
+    save(value){
+        const update = { odcalls: value === undefined ? this._calls : value}
+        this._calls = update.odcalls
+        return this.db.update(update)
+    }
+    incremental(add){
+        this._calls += add || 0
+        return this.save(this._calls)
+    }
+    userID(msg,args){
+        return new Promise((res, rej) => {
+            let id
+            if(msg.mentions.length > 0){
+                res(this.baseProfile(msg.mentions[0]))
+            }else if(args[1]){
+                const number = parseInt(args[1])
+                if(!isNaN(number)){
+                    res(this.baseProfile(undefined, number))
+                }else{
+                    this.getProPlayerID(args.from(1)).then(player => res(this.baseProfile(undefined, player.account_id)))
+                }
+            }else{
+                res(this.baseProfile(msg.author.id))
+            }
+        })
+        if (cachePlayerID) {
+            base.isCached = true; base.isDiscordID = false;
+            profile = Object.assign({}, base, cachePlayerID)
+        } else {
+            profile = Object.assign({}, base, module.exports.accountSchema())
+        }
+        return profile
+    }
+    baseProfile(discordID,dotaID){
+        const cache = this.client.cache.profiles.get(discordID)
+        const data = cache || accountSchema()
+        if(dotaID){data.profile.dota = dotaID}
+        return { discordID, cached: cache ? true : false, data }
+    }
+    error(msg, err){
+        return this.client.discordLog.send('oderror', this.client.locale.getDevString('errorOpendotaRequest', msg), this.client.locale.getUserString('errorOpendotaRequest', msg), err, msg.channel)
+    }
+    userCall(msg,args){
+        return this.userID(msg,args).then(playerID => new Promise((res,rej) => {
+            
+        }))
+    }
+    getProPlayerID(name){
+        return new Promise((resolve, reject) => {
+            const urls = ['https://api.opendota.com/api/proPlayers/'];
+            this.request(urls).then((results) => {
+                let pro = results[0].find(player => player.name.toLowerCase() === name.toLowerCase())
+                if (pro) { resolve(pro) } else { reject("getProPlayerDotaID not found") };
+            })
+        })
+    }
+    getProPlayersDotaName(query) { //Promise
+        return new Promise((resolve, reject) => {
+            this.search_pro(query).then((results) => {
+                let pros = results[0].filter(player => player.name.toLowerCase().match(new RegExp(query.toLowerCase())))
+                if (pros) { resolve(pros) } else { reject("getProPlayersDotaName not found") };
+            }).catch(err => console.log(err))
+        })
+    }
+    getPlayersDotaName(query) { //Promise
+        return new Promise((resolve, reject) => {
+            this.search_player(query).then((results) => {
+                let players = results[0];
+                if (players) { resolve(players) } else { reject("getPlayersDotaName not found") };
+            }).catch(err => console.log(err))
+        })
+    }
 }
 
-opendota.getPlayersDotaName = function(query){ //Promise
-  return new Promise((resolve, reject) => {
-    opendota.request('search_player',query).then((results) => {
-      let players = results[0];
-      if(players){resolve(players)}else{reject("getPlayersDotaName not found")};
-    }).catch(err => console.log(err))
-  })
-}
+const replace = (text, match, repl) => text.replace(match, repl)
 
-opendota.getProPlayersDotaName = function(query){ //Promise
-  return new Promise((resolve, reject) => {
-    opendota.request('search_pro',query).then((results) => {
-      let pros = results[0].filter(player => player.name.toLowerCase().match(new RegExp(query.toLowerCase())))
-      if(pros){resolve(pros)}else{reject("getProPlayersDotaName not found")};
-    }).catch(err => console.log(err))
-  })
-}
-
-opendota.error = function(bot,msg,err){
-  return bot.discordLog.send('oderror',bot.locale.getDevString('errorOpendotaRequest',msg),bot.locale.getUserString('errorOpendotaRequest',msg),err,msg.channel)
-}
-
-opendota.urls = OPENDOTA_URLS
-
-opendota.urlReplace = replace
-
-module.exports = opendota
+module.exports = Opendota

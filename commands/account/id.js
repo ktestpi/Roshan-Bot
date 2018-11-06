@@ -12,7 +12,7 @@ module.exports = new Command('id',{
     }else{
       if(profile.isDiscordID){
         this.config.db.child('profiles/' + profile.account_id).once('value').then((snap) => {
-          if(!snap.exists()){return basic.needRegister(msg,profile.account_id,config)};
+          if(!snap.exists()){return basic.needRegister(msg)};
           profile.id = Object.assign(snap.profile,{});
           func(msg,args,profile,this);
         })

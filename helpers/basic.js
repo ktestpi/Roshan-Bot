@@ -4,7 +4,6 @@ const dotasteam = require('./dotasteam.js')
 let self = module.exports
 // color = "#2BC6CC"
 module.exports.getAccountID = function(msg,args,bot){
-  // console.log(args);
   var base = {account_id : "", isCached : false, isDiscordID : true};
   if(msg.mentions.length > 0){
     base.account_id = msg.mentions[0].id;
@@ -15,12 +14,9 @@ module.exports.getAccountID = function(msg,args,bot){
     base.account_id = msg.author.id;
   };
   const cachePlayerID = bot.cache.profiles.get(base.account_id);
-  // console.log('CACHEPLAYERID',cachePlayerID,bot.cache.profiles.getid(profile.account_id));
-  // console.log(profile);
   let profile
   if(cachePlayerID){
     base.isCached = true; base.isDiscordID = false;
-    // profile = Object.assign({},base,bot.cache.profiles.data(base.account_id))
     profile = Object.assign({},base,cachePlayerID)
   }else{
     profile = Object.assign({},base,module.exports.accountSchema())
@@ -60,44 +56,12 @@ module.exports.replaceColor = function(color,colors){
     }
   }
 }
-// module.exports.odcall = function(bot,msg,args,callback){
-//   var profile = self.getAccountID(msg,args,bot);
-//   if(profile.isCached){
-//     console.log('Launch form cached');
-//     callback(msg,args,profile);
-//   }else{
-//     if(profile.isDiscordID){
-//       bot.db.child('profiles/' + profile.account_id).once('value').then((snap) => {
-//         if(!snap.exists()){self.needRegister(msg,msg.author.id);return};
-//         profile.id = snap.val().profile;
-//         callback(msg,args,profile);
-//       })
-//     }else{
-//       if(!isNaN(profile.account_id)){
-//         profile.id.dotabuff = profile.account_id;
-//         callback(msg,args,profile);
-//       }else{
-//         self.getProPlayerDotaID(profile.account_id).then((player) => {
-//           profile.id.dotabuff = player.account_id;
-//           profile.id.steam = player.steamid;
-//           callback(msg,args,profile);
-//         })
-//       }
-//     }
-//   }
-// }
 
-module.exports.needRegister = function(msg,id,reactionError){
+module.exports.needRegister = function(msg){
   msg.addReaction(reactionError);
-  if(msg.author.id != id){return};
-  const message = ':x: No puedes usar ese comando porque **no estás registrad@**. Para ello, **usa `r!register` y sigue las instrucciones**. ¡Muchas gracias!';
-  if(msg.channel.type == 0){
-    msg.author.getDMChannel().then((channel) => {
-      channel.createMessage(message);
-    })
-  }else{
-    msg.reply(message);
-  }
+  if(msg.author.id !== id){return}
+  const message = msg._client.locale.getUserString('needRegister',msg)
+  return msg.channel.type === 0 ? msg.replyDM(message) : msg.reply(message)
 }
 
 module.exports.getProPlayerDotaID = function(name){ //Promise

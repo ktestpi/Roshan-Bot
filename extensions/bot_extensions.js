@@ -3,10 +3,12 @@ const Eris = require('eris')
 const { Message, Guild } = require('erisjs-utils')
 const { resetServerConfig } = require('../helpers/basic.js')
 const enumFeeds = require('../enums/feeds')
+const opendota = require('../helpers/opendota.js')
 
 module.exports = new Extension('bot_extensions',function(bot){
   bot.cache = {}
   bot.scripts = {}
+  bot.od = new opendota(bot,'botstats')
   bot.setStatus = function(type,status,msg,url,update){
     // let self = this
     this.config.status = status !== null ? status : this.config.status
@@ -20,8 +22,9 @@ module.exports = new Extension('bot_extensions',function(bot){
     promises.push(this.editStatus(this.config.status, {name : this.config.status_msg, type : this.config.status_act, url : this.config.status_url}))
     return Promise.all(promises)
   }
+
   bot.artifactCards = require('../enums/artifact_cards.js')
-  // console.log('HELLOOOOO');
+
   bot.messageAllGuilds = function(msg,all,mode){
     if(!this.config.switches.msgGuilds){return}
     const message = mode !== 'feeds' ? msg.content : `${this.config.emojis.default.feeds} **${msg.author.username}**: ${msg.content}`;
@@ -61,7 +64,7 @@ module.exports = new Extension('bot_extensions',function(bot){
   }
 
   bot.addGame = function(game){
-    if(!this.game){this.games = {}}
+    if(!this.games){this.games = {}}
     this.games[game.name.toLowerCase()] = game
     this.addCategory(game.category,'')
     game.commands.forEach(cmd => {cmd.game = game;cmd.category = game.category;this.addCommand(cmd)})

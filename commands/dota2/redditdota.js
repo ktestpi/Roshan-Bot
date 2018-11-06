@@ -8,15 +8,23 @@ module.exports = new Command(['redditdota','redditd'],{
     if(!args[1]){return}
     if(['top','hot','new'].indexOf(args[1].toLowerCase()) > -1){
       msg.channel.sendTyping();
-      reddit.posts(args[1],5,'dota2').then(result => {
-        msg.reply({embed : {author : {name : `r/DotA2 - ${args[1]}`, icon_url : this.config.images.redditdota2}, description : result, color : this.config.color}})
+      return reddit.posts(args[1],5,'dota2').then(result => {
+        return msg.reply({embed : {
+          author : {name : `r/DotA2 - ${args[1]}`, icon_url : this.config.images.redditdota2},
+          description : result,
+          color : this.config.color
+        }})
       }).catch(err => {
         this.discordLog.send('error',this.locale.getDevString('errorRedditPostsRequest',msg),this.locale.getUserString('errorRedditPostsRequest',msg),err,msg.channel)
       })
     }else{
       msg.channel.sendTyping();
-      reddit.post(args[1]).then(result => {
-        msg.reply({embed : {author : {name : result.title.slice(0,255), url : result.link, icon_url : this.config.images.reddit}, description : result.text, color : this.config.color, footer : {text : result.subreddit}}})
+      return reddit.post(args[1]).then(result => {
+        return msg.reply({embed : {author : {name : result.title.slice(0,255), url : result.link, icon_url : this.config.images.reddit},
+        description : result.text,
+        footer : {text : result.subreddit},
+        color : this.config.color
+      }})
       }).catch(err => {
         this.discordLog.send('error',this.locale.getDevString('errorRedditPostsRequest',msg),this.locale.getUserString('errorRedditPostsRequest',msg),err,msg.channel)
       })

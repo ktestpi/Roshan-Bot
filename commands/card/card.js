@@ -10,7 +10,7 @@ module.exports = new Command('idcard',{
     let self = this
     let user = msg.mentions.length ? msg.mentions[0] : msg.author
     const profile = this.cache.profiles.get(user.id)
-    if(!profile){if(user.id === msg.author.id){return basic.needRegister(msg,user.id)};}
+    if(!profile){if(user.id === msg.author.id){return basic.needRegister(msg)};}
     const lang = this.locale.getUserStrings(msg)
     // const lang = this.locale.getU
     // if(profile.card.heroes.split('').length < 1){return msg.reply(this.replace.do(lang.errorCardNoHeroes,{username : user.username, cmd : 'r!cardhelp'},true))}

@@ -8,8 +8,8 @@ module.exports = new Command('account',{
   function(msg, args, command){
     // let self = this
     const profile = this.cache.profiles.get(msg.author.id)
-    console.log(profile);
-    if(!profile){return basic.needRegister(msg,msg.author.id)}
+    console.log(profile)
+    if (!profile) { return basic.needRegister(msg)}
     const lang = this.locale.getUserStrings(msg)
     if(args.length < 2){
       msg.replyDM({

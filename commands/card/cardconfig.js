@@ -14,7 +14,7 @@ module.exports = new Command('idcardconfig',{
   category : 'Account', help : 'Configura la tarjeta de jugador@', args : ''},
   function(msg, args, command){
     const profile = this.cache.profiles.get(msg.author.id)
-    if(!profile){return basic.needRegister(msg,user.id)}
+    if(!profile){return basic.needRegister(msg)}
     let heroes = profile.card.heroes.split(',')
     const lang = this.locale.getUserStrings(msg)
     if(args.length > 1){
