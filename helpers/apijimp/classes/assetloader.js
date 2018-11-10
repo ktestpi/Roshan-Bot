@@ -15,7 +15,6 @@ class AssetLoader{
           if(route.conversor){file = route.conversor(file)}
         }
         if(!file){return null}
-        // console.log('Reading...',this._basePath+route.path+file+'.'+route.ext);
         // return this.read(this._basePath+route.path+file+'.'+route.ext)
         return AssetLoader.loadFile(this._basePath+route.path+file+'.'+route.ext)
       }

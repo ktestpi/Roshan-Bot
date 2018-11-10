@@ -2,13 +2,18 @@ const { Command } = require('aghanim')
 const { Markdown } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
 const basic = require('../../helpers/basic')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('steam',{
   category : 'Dota 2', help : 'Url de steam de un jugador', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.od.userID(msg, args)
-      .then(player => Promise.all([player, this.od.player_steam(player.data.profile.dota)]))
+    return this.plugins.Opendota.userID(msg, args)
+      .then(player => Promise.all([
+        player,
+        this.plugins.Opendota.player_steam(player.data.profile.dota)
+          .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
+      ]))
       .then(data => {
         const [player, results] = data
         const lang = this.locale.getUserStrings(msg)
@@ -21,5 +26,5 @@ module.exports = new Command('steam',{
             color: this.config.color
           }
         })
-      }).catch(err => this.od.error(msg, err))
+      })
   })

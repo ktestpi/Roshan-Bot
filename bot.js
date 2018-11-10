@@ -4,8 +4,12 @@ const path = require('path')
 const { Color } = require('erisjs-utils')
 const firebase = require('firebase-admin');
 const Locale = require('./classes/locale.js')
-// const { cmdLocalString } = require('../../helpers/localestrings')
+const { ErrorManager } = require('./classes/errormanager.js')
+const Notifier = require('./classes/notifier.js')
 
+// Eris.Client.prototype.hello = function(){
+//   console.log('Hello form Prototype')
+// }
 // Extends Eris Guild Structure
 // Eris.Guild.prototype.membersWithRole = function(roleName){
 //   const role = this.roles.find(r => r.name === roleName)
@@ -22,6 +26,7 @@ const firebaseConfig = {
   "token_uri": "https://accounts.google.com/o/oauth2/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
 };
+
 try{
   TOKEN = process.env.BOT_TOKEN;
   firebaseConfig.private_key = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
@@ -58,11 +63,8 @@ bot.config.colors.palette = {default : CONFIG.color}
 bot.envprod = ENVPROD
 bot.firebase = firebase;
 bot.db = firebase.database().ref();
-
-//Load events (not neccesary activate through command)
-bot.addEventDir(path.join(__dirname,'events'))
-//
-bot.addExtensionDir(path.join(__dirname,'extensions'))
+bot.errorManager = new ErrorManager(bot, bot.config.console)
+bot.notifier = new Notifier(bot, bot.config.notifier)
 
 //Define categories for commands
 bot.addCategory('General','Ayuda de general')
@@ -84,7 +86,7 @@ bot.addCommandDir(path.join(__dirname,'commands/dota2'))
 bot.addCommandDir(path.join(__dirname,'commands/card'))
 bot.addCommandDir(path.join(__dirname,'commands/artifact'))
 
-bot.locale = new Locale(path.join(__dirname,'locale'),{},{defaultLanguage : 'en', devLanguage : 'en'})
+// bot.locale = new Locale(path.join(__dirname,'locale'),{},{defaultLanguage : 'en', devLanguage : 'en'})
 // bot.db.child('profiles').once('value').then(snap => {
 //   if(!snap.exists()){return}
 //   snap = snap.val()
@@ -94,6 +96,8 @@ bot.locale = new Locale(path.join(__dirname,'locale'),{},{defaultLanguage : 'en'
 //     bot.db.child(`profiles/${profile._id}/profile`).update({dota : profile.profile.dotabuff})
 //   })
 // })
+
+bot.addPluginDir(path.join(__dirname, 'plugins'))
 
 function filterCommands(cmd,query,owner){
   if(query === 'owner'){
@@ -131,8 +135,77 @@ bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
   }
 }))
 
-bot.on('aghanim:messageCreate:error',function(ev,error,msg){
-  console.log(ev.name,'tuvo un error!',error)
+// bot.on('aghanim:command:error', function (error) {
+//   console.log('Aghanim COMMAND ERROR from Bot', error)
+//   // bot.emit('roshan:errorManager', error)
+
+// })
+
+// bot.on('aghanim:error', function(error){
+//   console.log('Aghanim ERROR from Bot',error)
+//   // bot.emit('roshan:errorManager', error)
+// })
+
+// bot.on('error',function(error){
+//   console.log('ERROR from Bot', error)
+//   // bot.emit('roshan:errorManager', error)
+// })
+
+
+process.on('unhandledRejection', (reason, p) => {
+  Promise.resolve(p).then((val) => {
+    bot.emit('error', new Error(`Unhandled Rejection at: ${val}\n${reason}`))
+  }).catch((err) => {
+    bot.emit('error', new Error(`Unhandled Rejection Rejected at: ${err.stack}\n${reason}`))
+  })
+  // application specific logging, throwing an error, or other logic here
 })
 
+process.on('unhandledRejection', r => console.log(r))
+
+Eris.Guild.prototype.membersWithRole = function (roleName) {
+  const role = this.roles.find(r => r.name === roleName)
+  return role ? this.members.filter(m => m.roles.includes(role.id)) : []
+}
+
+Eris.Message.prototype.addReactionSuccess = function () {
+  return this.addReaction(this._client.config.emojis.default.accept)
+}
+
+Eris.Message.prototype.addReactionFail = function () {
+  return this.addReaction(this._client.config.emojis.default.error)
+}
+
+Eris.Message.prototype.addReactionSending = function () {
+  return this.addReaction(this._client.config.emojis.default.envelopeIncoming)
+}
+
+Eris.Message.prototype.reply = function (message, file) {
+  return new Promise((resolve, reject) => {
+    this.channel.createMessage(message, file)
+      .then(m => resolve(m))
+      .catch(err => reject(err))
+  })
+}
+
+Eris.Message.prototype.replyDM = function (content, file) {
+  return new Promise((resolve, reject) => {
+    this.author.getDMChannel()
+      .then(channel => channel.createMessage(content, file))
+      .then(m => resolve(m))
+      .catch(err => reject(err))
+  })
+}
+
 bot.connect();
+
+
+// bot.addGame = function (game) {
+//   if (!this.games) { this.games = {} }
+//   this.games[game.name.toLowerCase()] = game
+//   this.addCategory(game.category, '')
+//   game.commands.forEach(cmd => { cmd.game = game; cmd.category = game.category; this.addCommand(cmd) })
+//   game.events.forEach(ev => { ev.game = game; ev.category = game.category; this.addEvent(ev) })
+//   // this.events.forEach(ev => bot.addEvent(ev))
+//   game.client = this
+// }

@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const util = require('erisjs-utils')
-const opendota = require('../../helpers/opendota')
 const basic = require('../../helpers/basic')
 
 module.exports = new Command('status',{subcommandFrom : 'bot',
@@ -20,12 +19,16 @@ module.exports = new Command('status',{subcommandFrom : 'bot',
     const status_modes = Object.keys(status_mode)
     let _status = args[2]
     if(!_status){
-      this.setStatus('online',null,null,null,true).then(() => this.discordLog.controlMessage('bot', `Status to default`)).catch(err => this.discordLog.controlMessage('error','Ha ocurrido un error al cambiar de estado', err))
+      this.setStatus('online',null,null,null,true)
+        .then(() => this.notifier.bot('Status to default'))
+        .catch(err => msg.addReactionFail())
     }else{
       _status = _status.toLowerCase()
       if(status_modes.includes(_status)){
         const status_save = status_mode[_status]
-        this.setStatus(null,status_save,null,null,true).then(() => this.discordLog.controlMessage('bot', `Status to ${status_save}`)).catch(err => this.discordLog.controlMessage('error','Ha ocurrido un error al cambiar de estado', err))
+        this.setStatus(null, status_save, null, null, true)
+          .then(() => this.notifier.bot(`Status to ${status_save}`))
+          .catch(err => msg.addReactionFail())
       }
     }
   })

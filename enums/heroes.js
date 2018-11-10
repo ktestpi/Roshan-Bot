@@ -125,7 +125,6 @@ const HEROES = {
   "121" : {"name" : "Grimstroke", "name_id" : "grimstroke", alias : ["grimstroke","gs"]}
 }
 const enumy = new SimpleEnums(HEROES)
-// console.log(enumy,enumy.getValue(44),enumy.getValue('44'));
 
 module.exports = enumy
 

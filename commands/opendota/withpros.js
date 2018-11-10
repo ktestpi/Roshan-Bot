@@ -1,13 +1,18 @@
 const { Command } = require('aghanim')
 const odutil = require('../../helpers/opendota-utils')
 const basic = require('../../helpers/basic')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('withpros',{
   category : 'Dota 2', help : 'Pros con los que has jugado', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.od.userID(msg, args)
-      .then(player => Promise.all([player, this.od.player_pros(player.data.profile.dota)]))
+    return this.plugins.Opendota.userID(msg, args)
+      .then(player => Promise.all([
+        player,
+        this.plugins.Opendota.player_pros(player.data.profile.dota)
+          .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
+      ]))
       .then(data => {
         const [player, results] = data
         const profile = player.data
@@ -36,5 +41,5 @@ module.exports = new Command('withpros',{
             color: this.config.color
           }
         })
-      }).catch(err => this.od.error(msg, err))
+      }).catch(err => this.plugins.Opendota.error(msg, err))
   })

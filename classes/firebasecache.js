@@ -5,12 +5,10 @@ class FirebaseCache extends Datatype.Collection{
     super(data)
     this.db = db
     this.path = path ? '/' + path : ''
-    // console.log('Caché created with',data);
   }
   modify(id,data){
     return new Promise((resolve, reject) => {
       this.mutate(id,(element) => {
-        // console.log(this);
         const newElement = Object.assign({},mergeObject(element,data))
         delete newElement._id
         this.db.child(id+this.path).update(newElement).then(() => resolve(newElement)).catch(err => console.log('ERROR',err))

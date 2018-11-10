@@ -5,7 +5,13 @@ const message = require('../../containers/messages.json').errors
 module.exports = new Command('errors',{
   category : 'General', help : 'Corrección de errores', args : ''},
   function(msg, args, command){
-    let embed = basic.replaceMessageFields(message,{},this.replace,(text) => basic.parseText(text,'nf'))
-    if(embed.color){embed.color = basic.replaceColor(embed.color,this.config.colors.palette)}
-    msg.reply({embed})
+    const lang = this.locale.getUserStrings(msg)
+    return msg.reply({ embed : {
+      title: lang.cmd_errors_title,
+      fields: [
+        { name: lang.cmd_errors_field0_name, value: lang.cmd_errors_field0_value, inline : false},
+        { name: lang.cmd_errors_field1_name, value: this.locale.replacer(lang.cmd_errors_field1_value), inline: false }
+      ],
+      color : this.config.color
+    }})
   })

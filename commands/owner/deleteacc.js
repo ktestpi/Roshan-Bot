@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const opendota = require('../../helpers/opendota')
 const { Datee } = require('erisjs-utils')
 
 module.exports = new Command('deleteacc',{
@@ -22,8 +21,8 @@ module.exports = new Command('deleteacc',{
       }
     }).then((m) => {
       msg.addReaction(this.config.emojis.default.envelopeIncoming);
-      this.discordLog.controlMessage('accountremove',user.username,'')
       return this.cache.profiles.erase(user.id).then(() => {
+        this.notifier.accountdelete(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
         m.addReaction(this.config.emojis.default.accept)
       })
     })

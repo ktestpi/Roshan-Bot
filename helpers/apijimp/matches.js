@@ -1,7 +1,6 @@
 const jimp = require('jimp')
 const util = require('erisjs-utils')
 const basic = require('../basic')
-const opendota = require('../opendota')
 const enumHeroes = require('../enums/heroes')
 const enumPlayerPos = require('../enums/player_positions')
 const enumItems = require('../enums/items')
@@ -12,7 +11,6 @@ const loader = require('./loader')
 const UNKNOWN = 'Unknown'
 
 module.exports.matches = function(data_info){
-  // console.log(data_info);
   var jimps = [loadAsset('0','match_template')]
   // var jimps = [new jimp(SIZE_IMAGE.w, SIZE_IMAGE.h)]
   const [player,matches] = data_info
@@ -25,7 +23,6 @@ module.exports.matches = function(data_info){
   jimps.push(jimp.loadFont(jimp.FONT_SANS_16_WHITE))
   jimps.push(jimp.loadFont(__dirname+'/fonts/open-sans-16-yellow/open-sans-16-yellow.fnt'))
   jimps.push(Promise.all([jimp.read(player.profile.avatarmedium),player.profile.personaname || UNKNOWN]))
-  // console.log(matches[0]);
   for (var i = 0; i < LIMIT_MATCHES; i++) {
     const match = matches[i]
     jimps.push(Promise.all([
@@ -39,9 +36,7 @@ module.exports.matches = function(data_info){
   return new Promise((resolve,reject) => {
     Promise.all(jimps).then(data => {
       for (var i = MATCHES_START_INDEX; i < jimps.length; i++) {
-        // const y = (i-1)*ITEM_HEIGHT + POSITION_Y_TABLE + (i > 5 ? POSITION_Y_SPACE_TEAMS : 0)
         const y = (i-MATCHES_START_INDEX)*HERO_HEIGHT + POSITION.TABLE.Y
-        // console.log('y',y);
         for (var j = 0; j < data[i].length; j++) {
           let x = POSITION.TABLE.X[j]
           if(data[i][j] instanceof jimp){data[0].composite(data[i][j],x,y)}
@@ -50,7 +45,6 @@ module.exports.matches = function(data_info){
             if(j === 3){texter = texter.alignH('right',null,7)}
             else if(j === 4){texter = texter.alignH('left')}
             else{texter = texter.centerX()}
-            // console.log('TEXTER',texter);
             data[0].print(data[1],texter.x,texter.y,texter.text)
           }
         }

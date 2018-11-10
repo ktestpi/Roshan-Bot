@@ -1,16 +1,16 @@
 const { Command } = require('aghanim')
 const basic = require('../../helpers/basic')
 const { Classes, Markdown } = require('erisjs-utils')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command(['competitive','comp'],{
   category : 'Dota 2', help : 'Últimos resultados de partidas competitivas', args : ''},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.od.competitive()
+    return this.plugins.Opendota.competitive()
       .then(results => {
         const spacesBoard = ['19f', '2f', '19f', '17f', '11f'];
         const lang = this.locale.getUserStrings(msg)
-
         let table = Classes.Table.renderRow([lang.radiant, lang.w, lang.dire, lang.league, lang.matchID], spacesBoard, '\u2002') + '\n';
         results[0].slice(0,8).forEach(match => {
           const victory = match.radiant_win ? '>>' : '<<'
@@ -23,5 +23,5 @@ module.exports = new Command(['competitive','comp'],{
             color: this.config.color
           }
         })
-      }).catch(err => this.od.error(msg, err))
+      }).catch(err => {throw new UserError('opendota', 'errorOpendotaRequest', err) })
   })

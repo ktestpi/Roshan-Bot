@@ -10,7 +10,7 @@ module.exports = new Command(['supp'],{
       const cmd = args[1]
       const members = msg.mentions.map(m => m.id)
       const regex = new RegExp('\\d+')
-      for (var i = 2; i < args.length; i++) {console.log(args[i],regex,regex.test(args[i]));
+      for (var i = 2; i < args.length; i++) {
         if(regex.test(args[i])){members.push(args[i])}
       }
       if(!members.length){return}

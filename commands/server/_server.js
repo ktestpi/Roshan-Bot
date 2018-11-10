@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const opendota = require('../../helpers/opendota')
 const basic = require('../../helpers/basic')
 const enumFeeds = require('../../enums/feeds')
 const on = 'on'

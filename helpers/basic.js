@@ -75,7 +75,6 @@ module.exports.getProPlayerDotaID = function(name){ //Promise
 }
 
 module.exports.socialLinks = function(links,mode,urls){
-  // console.log(links);
   const profile = Object.keys(links).filter(link => links[link]).map(link => ({type : link, link : module.exports.createProfileLink(links[link],link,urls)}))
   if(mode == 'inline'){
     return profile.map(link => util.Markdown.link(link.link,util.String.capitalize(link.type))).join(' / ')
@@ -109,10 +108,8 @@ module.exports.parseProfileURL = function(url,mode){
     if(dotabuff.length != data.length){data = false};
   }else if(mode == 'steam'){
     if(url.startsWith('http://steamcommunity.com/profiles/')){
-      console.log('hello');
       data = url.match(new RegExp('http://steamcommunity.com/profiles/([a-zA-Z0-9_\-]+)'))[1] //http://steamcommunity.com/profiles/(\\w*)
     }else if(url.startsWith('http://steamcommunity.com/id/')){
-      console.log('hi');
       data = url.match(new RegExp('http://steamcommunity.com/id/([a-zA-Z0-9_\-]+)'))[1]
     }
   }else if(mode == 'twitch'){

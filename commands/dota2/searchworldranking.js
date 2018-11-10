@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const { Classes } = require('erisjs-utils')
-const api = require('../../helpers/worldranking-api')
 
 module.exports = new Command(['searchworldranking','swr'],{
   category : 'Dota 2', help : 'Busca a un jugador por nombre en la clasificación mundial', args : '<búsqueda>'},
@@ -10,18 +9,16 @@ module.exports = new Command(['searchworldranking','swr'],{
     const query = args.from(1)
     const lang = this.locale.getUserStrings(msg)
     msg.channel.sendTyping();
-    api.searchPlayerInWorld(query).then(r => {
-      // console.log(r);
-      // throw new Error('TestingError')
+    return this.plugins.WorldRankingApi.searchPlayerInWorld(query).then(r => {
       const table = new Classes.Table([lang.region,lang.position],null,['8','8r'],'\u2002')
       r.forEach(d => table.addRow([d.division,d.pos]))
-      msg.reply({embed : {
+      return msg.reply({embed : {
         title : lang.worldboardSeachPlayer,
         description : lang.search + ': ' + `\`${query}\`\n\n${table.render()}`,
         color : this.config.color
       }})
     }).catch(err => {
-      this.discordLog.send('error',this.locale.replacer(this.locale.getDevString('errorWorldBoardSearchPlayer'),{query}),this.locale.replacer(lang.errorWorldBoardSearchPlayer,{query}),err,msg.channel)
+      throw new UserError('worldranking', 'errorWorldBoardSearchPlayer', err)
     })
   })
 

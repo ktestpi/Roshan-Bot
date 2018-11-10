@@ -7,8 +7,12 @@ module.exports = new Command(['withfriends','friends'],{
   category : 'Dota 2', help : 'Estadísticas de partidas jugadas con amig@s', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.od.userID(msg, args)
-      .then(player => Promise.all([player, this.od.player_friends(player.data.profile.dota)]))
+    return this.plugins.Opendota.userID(msg, args)
+      .then(player => Promise.all([
+        player,
+        this.plugins.Opendota.player_friends(player.data.profile.dota)
+          .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
+      ]))
       .then(data => {
         const [player, results] = data
         const profile = player.data
@@ -32,5 +36,5 @@ module.exports = new Command(['withfriends','friends'],{
             color: this.config.color
           }
         })
-      }).catch(err => this.od.error(msg, err))
+      }).catch(err => this.plugins.Opendota.error(msg, err))
   })

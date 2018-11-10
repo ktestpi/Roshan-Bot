@@ -8,7 +8,7 @@ module.exports = new Command('feeds',{
     const feeds = this.cache.feeds.order().slice(0,8)
     const description = feeds.map(feed => `\`${Datee.custom(parseInt(feed._id)*1000,'h:m D/M',true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + Markdown.link(feed.link,':link:') : ''}`).join('\n')
     const lang = this.locale.getUserStrings(msg)
-    msg.reply({
+    return msg.reply({
       embed : {
         title : lang.lastFeeds,
         description : description,

@@ -10,7 +10,7 @@ class Square{
   place(ref,mode,options){
     // if(!ref){throw new Error('Referencia no encontrada')}
     if(!ref){
-      console.log('Warning: Referencia no encontrada! => Ref = Self');
+      // console.log('Warning: Referencia no encontrada! => Ref = Self');
       ref = {x : this.x, y : this.y, w : this.w, h : this.h}
     }
     options = options || {x : 0, y : 0}
@@ -49,7 +49,6 @@ class Square{
     return this.add()
   }
   move(x,y,dx,dy){
-    // console.log('Moving:',this.name,x,y,dx,dy);
     this.x = x !== null ? x : this.x + dx
     this.y = y !== null ? y : this.y + dy
     return this
@@ -65,7 +64,6 @@ class Element extends Square{
     this.type = 'Element'
     this.name = name
     this.canvas = canvas
-    // console.log('CREATE ELEMENT,',this.name,!this.canvas);
     if(!this.canvas){console.log('Element NO BASE: ',this.name);}
   }
   log(){
@@ -75,7 +73,6 @@ class Element extends Square{
     return this
   }
   add(){
-    // console.log('ADDING:',this.name,!this.canvas);
     this.canvas.add(this)
     return this
   }
@@ -200,11 +197,9 @@ class Group extends Square{
     this.h = max.y - min.y
   }
   place(ref,mode,options){
-    // const dif = this.difOrigin(ref)
     const before = {x : this.x, y : this.y}
     const { x, y } = super.place(ref,mode,options)
     const dx = mode.includes('x') ? x - before.x : 0, dy = mode.includes('y') ? y - before.y : 0
-    // console.log('Dif',dif);
     this.move(null,null,dx,dy)
     return this
   }

@@ -4,7 +4,6 @@ class FireSetCache extends Set{
   constructor(db,data){
     super(data)
     this.db = db
-    // console.log('Caché created with',data);
   }
   save(id,value){
     return new Promise((resolve,reject) => {

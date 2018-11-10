@@ -5,10 +5,8 @@ module.exports = new Command('patchset',{
   ownerOnly : true},
   function(msg, args, command){
     const patch = args.from(1)
-    this.db.child('bot').update({patch : patch}).then(() => {
+    return this.db.child('bot').update({patch : patch}).then(() => {
       //TODO: Caché patch
-      msg.addReaction(this.config.emojis.default.accept)
-      // this.logger.add('game',`Patch: **${patch}**`,true)
-      this.discordLog.controlMessage('game',`Patch: **${patch}**`)
+      return msg.addReaction(this.config.emojis.default.accept)
     })
   })

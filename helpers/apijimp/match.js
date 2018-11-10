@@ -7,7 +7,6 @@ const loader = require('./loader')
 const UNKNOWN = 'Unknown'
 
 module.exports = function(data_info){
-  // console.log(data_info);
   const LINE_HEIGHT = 24, ITEM_WIDTH = 33, SPACE_TEAMS_Y = 10
   var jimps = [loader.matchTemplate('1')]
   const info = data_info.players.map(p => jimps.push(Promise.all([
@@ -31,7 +30,6 @@ module.exports = function(data_info){
   jimps[11] = loader.fontLoad('w16')//jimp.loadFont(jimp.FONT_SANS_16_WHITE)
   jimps[12] = loader.fontLoad('y16')//loadAsset('open-sans-yellow','font')//jimp.loadFont(__dirname+'/fonts/open-sans-16-yellow/open-sans-16-yellow.fnt')
   jimps[13]= loader.read('./img/templates/match/victory_' + (data_info.radiant_win ? 'radiant' : 'dire') + '.png')
-  // console.log(jimps);
 
   return new Promise((resolve,reject) => {
     return Promise.all(jimps).then(data => {
@@ -58,7 +56,6 @@ module.exports = function(data_info){
         }
         canvas.create('png').then(buff => resolve(buff)).catch(err => reject(err))
       }catch(err){
-        console.log(err);
         reject(err)
       }
     })

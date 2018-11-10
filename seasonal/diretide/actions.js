@@ -98,12 +98,10 @@ module.exports.rewardsUser = function(rewards){
 }
 
 module.exports.totalUserReqRew = function(cached,req,rew){
-  // console.log(user,req,rew);
   const user = deleteProps(cached,'_id')
   return keys(user).reduce((user,key) => {
     if(!isObject(user[key])){
       if(isNumber(user[key])){
-        // console.log(key,user[key],req[key],rew[key]);
         user[key] += (req[key] || 0) + (rew[key] || 0)
       }else if(isBoolean(user[key])){
         user[key] = !isUndefined(rew[key]) ? rew[key] : user[key]
@@ -118,9 +116,7 @@ module.exports.totalUserReqRew = function(cached,req,rew){
 module.exports.calcReqRew = function(user,req,rew){
   const result = {}
   result.requirements = this.actions.requirementsUser(req)
-  // console.log('REQ',requirements);
   result.rewards = this.actions.rewardsUser(rew)
-  // console.log('REW',rewards);
   const stats =
   result.total = this.actions.totalUserReqRew(user,result.requirements,result.rewards)
   delete result.total._id

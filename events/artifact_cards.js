@@ -1,7 +1,0 @@
-const { Event } = require('aghanim')
-const { Datee } = require('erisjs-utils')
-
-module.exports = new Event('parse_artifact_cards','messageCreate',{}, function(msg,bot){
-  // this.artifactCards.parseMessage(msg,this.locale)
-  this.artifact.parseMessage(msg, this.locale)
-})

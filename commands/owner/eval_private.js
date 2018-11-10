@@ -17,20 +17,20 @@ module.exports = new Command(['evalp','ep'],{
     if(toEval.includes('return')){toEval=`(function(){${toEval}})()`}
     try{
       let result = eval(toEval)
-      console.log(`EvalPrivate: ${toEval}`);
+      this.notifier.console('EvalPrivate',toEval)
       Promise.resolve(result).then(res => {
         if(typeof result === 'object'){
           result = inspect(result)
         }
         result = String(result).slice(0,1000)
-        console.log(`EvalP Result: ${result}`);
+        this.notifier.console('EvalP Result', result)
         bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
       }).catch(err => {
-        console.log(`EvalP Error: ${err}`);
+        this.notifier.console('EvalP Error', err)
         bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
       })
     }catch(err){
-      console.log(`Code Error: ${err.stack}`);
+      this.notifier.console('Code Error', err.stack)
       bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
   })

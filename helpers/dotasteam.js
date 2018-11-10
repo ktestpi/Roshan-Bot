@@ -15,7 +15,6 @@ util.steam.idToSteamID = function(id32){
 
   const cv64 = '76561197960265728';
   id32 = util.number.zerofication(id32,cv64.length);
-  //console.log('cv64length',cv64.length,id32.length);
   var result = [];
   var carry = 0;
   var sum1,sum2 = 0;
@@ -27,10 +26,8 @@ util.steam.idToSteamID = function(id32){
     sump = sum1 + sum2 + carry
     if(sump > 9){carry = 1;sump -= 10}else{carry = 0}
     result[i] = sump
-    //console.log(`${sum1} + ${sum2} = ${parseInt(sum1)+parseInt(sum2)} / ${result[i]}  con carry ${carry}`);
   }
   var total = result.join('')
-  //console.log('Total: ' + total)
   return total
   /*for (var i = id64.length - 1 ; i > 0; i--) {
     console.log(i + ':' + id64[i]);

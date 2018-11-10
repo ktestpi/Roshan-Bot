@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const opendota = require('../../helpers/opendota')
 const basic = require('../../helpers/basic')
 const { Markdown } = require('erisjs-utils')
 

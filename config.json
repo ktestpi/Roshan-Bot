@@ -3,7 +3,6 @@
     "prefix" : "r!",
     "helpMessage" : ":information_source: __**Ayuda de Roshan**__",
     "helpDM" : true,
-    "extensions" : ["eris/message"],
     "helpMessageAfterCategories" : "**Nota**: Usa `r!help <categoría>` para los comandos de esa categoría.\n\n:information_source: Cualquier duda o problema puedes pasarte por el **servidor de Roshan**: https://discord.gg/SxsYkgX",
     "devLogs" : false,
     "disableHelp" : true
@@ -27,13 +26,27 @@
       {"tag" : "error", "icon" : "❌", "level" : 1, "color" : "magenta"}
     ]
   },
-  "update" : "04/08/2018",
+  "notifier" : {
+    "channel" : "331547028826095617",
+    "ignore" : ["dev"],
+    "events" : {
+      "memberin" : "📥", "memberout" : "📤", "bot" : "🤖",
+      "accountnew" : "🤖📥", "accountmodify" : "🤖📝", "accountremove" : "🤖📤",
+      "guildnew" : "👥📥", "guildremove" : "👥📤",
+      "feed" : "📰", "notifications" : "🔔", "shout" : "📢",
+      "game" : "🎮", "error" : "❌", "dev" : "DEV"
+    }
+  },
+  "console" : {
+    "channel" : "509559847436419103"
+  },
+  "update" : "10/11/2018",
   "server" : "https://discord.gg/SxsYkgX",
+  "invite" : "https://discordapp.com/oauth2/authorize?client_id=324833828302749697&scope=bot&permissions=519232",
   "color" : "#007a00",
   "colors" : {"account" : {"register" : "#41ad49", "modify" : "#800080", "delete" : "#ff4723"}, "nextLvl" : "#ffbf00", "sendMsg" : {"owner" : "#003333", "server" : "#915300"}},
   "_othercolors" : {"lightblue" : "#2BC6CC", "darkred" : "#840000", "greenti8" : "#007a00"},
   "playing" : "r!help",
-  "invite" : "https://discordapp.com/oauth2/authorize?client_id=324833828302749697&scope=bot&permissions=519232",
   "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan", "betatester" : "Betatester", "supporter" : "Patron"},
   "switches" : {"welcome" : true, "wrongCmd" : true, "msgGuilds" : false, "feeds" : false, "leaderboardUpdate" : false, "backupdb" : false},
   "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10, "worldBoardTop" : 10, "heroes" : 120, "hoursLeaderboardUpdate" : 20},
@@ -62,7 +75,7 @@
     "raw" : {"cooldown" : "<:cooldown:469273616681533462>"},
     "bot" : {}
   },
-  "guild" : {"id" : "327603106257043456", "changelog": "327603215325462539", "feeds" : "342031271679098880", "feedsHidden" : "491295737251102733", "biblioteca" : "335100706975514635", "sendmessages" : "330646027965300736", "botadmin": "338316246686892032", "accounts" : "330949705389441024", "notifications" : "331547028826095617", "bugs" : "327605187663364098", "alphatest" : "327603261085581312", "backup" : "398485131003822080", "generated" : "441307771510456331"},
+  "guild" : {"id" : "327603106257043456", "changelog": "327603215325462539", "feeds" : "342031271679098880", "feedsHidden" : "491295737251102733", "biblioteca" : "335100706975514635", "sendmessages" : "330646027965300736", "botadmin": "338316246686892032", "accounts" : "330949705389441024", "notifications" : "331547028826095617", "console" : "509559847436419103", "bugs" : "327605187663364098", "alphatest" : "327603261085581312", "backup" : "398485131003822080", "generated" : "441307771510456331"},
   "webhooks" : {"feedsNotification" : "342031720155054080", "feeds" : "342055276536659969", "feedsHidden" : "491296306619482114", "feedsfromapp" : "446306133984935937", "fromapp" : "446303544245747732"},
   "guildID" : "327603106257043456",
   "communityTips" : {
@@ -70,5 +83,17 @@
     "waitTimeError" : 300,
     "delayDeleteMsg" : 5
   },
-  "images" : {"reddit" : "https://icon-icons.com/icons2/1195/PNG/512/1490889653-reddit_82537.png", "redditdota2" : "https://b.thumbs.redditmedia.com/F82n9T2HtoYxNmxbe1CL0RKxBdeUEw-HVyd-F-Lb91o.png", "redditartifact" : "https://b.thumbs.redditmedia.com/Y6ghcGFvvQjNAufIfckzmWEqwmhIsD7fqTC0sVvTMcc.png", "dota2" : "https://seeklogo.com/images/D/dota-2-logo-A8CAC9B4C9-seeklogo.com.png"}
+  "others" : {
+    "betatesters" : ["Breo","Shinigami","^Maik^"],
+    "complements" : [
+      {"tag" : "Artwork stickers", "author" : "Chroneco"}
+    ]
+  },
+  "images" : {
+    "reddit" : "https://icon-icons.com/icons2/1195/PNG/512/1490889653-reddit_82537.png",
+    "redditdota2" : "https://b.thumbs.redditmedia.com/F82n9T2HtoYxNmxbe1CL0RKxBdeUEw-HVyd-F-Lb91o.png",
+    "redditartifact" : "https://b.thumbs.redditmedia.com/Y6ghcGFvvQjNAufIfckzmWEqwmhIsD7fqTC0sVvTMcc.png",
+    "dota2" : "https://seeklogo.com/images/D/dota-2-logo-A8CAC9B4C9-seeklogo.com.png",
+    "mmrmaik" : "https://cdn.discordapp.com/attachments/327621996089180162/331619601639014400/mmr.png"
+  }
 }

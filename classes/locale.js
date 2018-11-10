@@ -30,7 +30,6 @@ module.exports = class Locale{
       result = result.replace(new RegExp(`<${str}>`,'g'),this.constants[str]) // Replace
     }
     for(let str in replacer){
-      // console.log(str,replacer[str]);
       result = result.replace(new RegExp(`<${str}>`,'g'),replacer[str]) // Replace
     }
     return result

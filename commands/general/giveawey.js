@@ -18,11 +18,11 @@ module.exports = new Command('giveaway',{
       }
       if(members.size){
         members = Array.from(members)
-        fn(msg,members,guild,roles,this)
+        return fn(msg,members,guild,roles,this)
       }
     }else{
       members = guild.members.map(m => m.id)
-      fn(msg,members,guild,roles,this)
+      return fn(msg,members,guild,roles,this)
     }
   })
 
@@ -43,7 +43,7 @@ function fn(msg,members,guild,roles,bot){
     }
   }
   if(roles.length){embed.embed.fields = [{name : 'Roles', value : roles.join(', '), inline : false}]}
-  msg.reply(`${title}...${roles.length ? `\nRoles: ${roles.join(', ')}` : ''}`)
+  return msg.reply(`${title}...${roles.length ? `\nRoles: ${roles.join(', ')}` : ''}`)
     .then(m => setTimeout(() => m.edit(embed)
       ,waittime))
 }

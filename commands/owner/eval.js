@@ -20,20 +20,20 @@ module.exports = new Command(['eval','e'],{
       const _message = msg
       const reply = msg.reply
       let result = eval(toEval)
-      console.log(`Eval: ${toEval}`);
+      this.notifier.console('Eval', toEval)
       Promise.resolve(result).then(res => {
         if(typeof result === 'object'){
           result = inspect(result)
         }
         result = String(result).slice(0,1000)
-        console.log(`Eval Resultado: ${result}`);
+        this.notifier.console('Eval Result', result)
         msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
       }).catch(err => {
-        console.log(`Eval Error: ${err}`);
+        this.notifier.console('Eval Error', err)
         msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
       })
     }catch(err){
-      console.log(`Code Error: ${err.stack}`);
+      this.notifier.console('Code Error', err.stack)
       msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
 

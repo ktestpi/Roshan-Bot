@@ -5,6 +5,7 @@ const basic = require('../../helpers/basic')
 const apijimp = require('../../helpers/apijimp')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('match+',{
   category : 'Dota 2', help : 'Estadísticas de una partida. R+', args : '<id>', cooldown : 60,
@@ -12,11 +13,11 @@ module.exports = new Command('match+',{
   function(msg, args, command){
     if (!args[1]) { return }
     msg.channel.sendTyping()
-    return this.od.match(args[1])
+    return this.plugins.Opendota.match(args[1])
       .then(results => {
         if (results[0].error) { return }
         const lang = this.locale.getUserStrings(msg)
-        if (results[0].game_mode === 19) { return msg.reply('matchEventNoInfo') } // TODO:
+        if (results[0].game_mode === 19) { return msg.reply(lang.matchEventNoInfo) }
 
         return apijimp.match(results[0])
           .then(buffer => this.createMessage(this.config.guild.generated, `**${msg.author.username}** pidió \`${args[1]}\``, { file: buffer, name: args[1] + ".jpg" }))
@@ -31,5 +32,5 @@ module.exports = new Command('match+',{
               }
             })
           })
-      }).catch(err => this.od.error(msg, err))
+      }).catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
   })

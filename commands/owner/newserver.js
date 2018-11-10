@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const opendota = require('../../helpers/opendota')
 const { Datee } = require('erisjs-utils')
 const { resetServerConfig } = require('../../helpers/basic.js')
 
@@ -19,5 +18,5 @@ module.exports = new Command('newserver',{
         color: this.config.color
       }
     })
-    resetServerConfig(this,guild).then(() => this.discordLog.controlMessage('guildnew',`**${guild.name}**`))
+    resetServerConfig(this,guild)
   })

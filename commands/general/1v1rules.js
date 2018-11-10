@@ -11,5 +11,5 @@ module.exports = new Command('1v1rules',{
     let query = args[0]
     if(args[1]){query += ' ' + args[1]}
     if(!rules[query]){return basic.wrongCmd(msg,rules,args.until(1))}
-    msg.reply(rules[query])
+    return msg.reply(rules[query])
   })

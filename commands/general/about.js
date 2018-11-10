@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const opendota = require('../../helpers/opendota')
 const basic = require('../../helpers/basic')
 const { Markdown } = require('erisjs-utils')
 
@@ -7,7 +6,7 @@ module.exports = new Command('about',{
   category : 'General', help : 'Información sobre el bot', args : '[errors,thanks]'},
   function(msg, args, command){
     const lang = this.locale.getUserStrings(msg)
-    msg.reply({
+    return msg.reply({
       embed : {
         title : this.locale.replacer(lang.aboutTitle),
         description : this.locale.replacer(lang.aboutDescription),

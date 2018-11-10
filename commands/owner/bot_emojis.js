@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const { Guild } = require('erisjs-utils')
-const opendota = require('../../helpers/opendota')
 const basic = require('../../helpers/basic')
 
 module.exports = new Command('emojis',{subcommandFrom : 'bot',

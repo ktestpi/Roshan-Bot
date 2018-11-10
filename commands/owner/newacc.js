@@ -1,10 +1,10 @@
 const { Command } = require('aghanim')
-const opendota = require('../../helpers/opendota')
 const basic = require('../../helpers/basic')
 const { Datee, Request } = require('erisjs-utils')
 
 module.exports = new Command('newacc',{
-  category : 'Owner', help : 'Registro en el bot', args : '<discordID> <dotaID> [steamID] [twitchID] [twitterID]'},
+  category : 'Owner', help : 'Registro en el bot', args : '<discordID> <dotaID> [steamID] [twitchID] [twitterID]',
+  ownerOnly : true},
   function(msg, args, command){
     // let self = this
     const server = this.config.guild;
@@ -33,7 +33,7 @@ module.exports = new Command('newacc',{
         msg.addReaction(this.config.emojis.default.envelopeIncoming);
         const newAccount = basic.newAccount({profile : account})
         this.cache.profiles.save(user.id,newAccount).then(() => {
-          this.discordLog.controlMessage('accountnew',user.username,'')
+          this.notifier.accountnew(`New account: **${msg.author.username}** (${msg.author.id})`)
           // msg.replyDM({
           //   embed : {
           //     title : this.replace.do('welcomeToRoshan'),

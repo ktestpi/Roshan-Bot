@@ -7,7 +7,7 @@ module.exports = new Command('tourneys',{
   function(msg, args, command){
     // const tourneys = this.cache.tourneys.order().slice(0,8)
     // const description = tourneys.map(tourney => tourney._id).join('\n')
-    const lang = this.locale.getUsetStrings(msg)
+    const lang = this.locale.getUserStrings(msg)
     if(!args[1]){
       let tourneys_playing = this.cache.tourneys.getPlaying()
       let tourneys_next = this.cache.tourneys.getNext()

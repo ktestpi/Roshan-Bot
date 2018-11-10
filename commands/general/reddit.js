@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const reddit = require('../../helpers/reddit.js')
 
 module.exports = new Command('reddit',{
   category : 'General', help : 'Información sobre reddit', args : '<idpost,top,hot,new>'},
@@ -8,18 +7,18 @@ module.exports = new Command('reddit',{
     if(!args[1]){return}
     if(['top','hot','new'].indexOf(args[1].toLowerCase()) > -1){
       msg.channel.sendTyping();
-      reddit.posts(args[1],5,'reddit').then(result => {
+      return this.plugins.RedditApi.posts(args[1],5,'reddit').then(result => {
         msg.reply({embed : {
           author : {name : `reddit - ${args[1]}`, icon_url : this.config.images.redditdota2},
           description : result,
           color : this.config.color
         }})
       }).catch(err => {
-        this.discordLog.send('error',this.locale.getDevString('errorRedditPostsRequest',msg),this.locale.getUserString('errorRedditPostsRequest',msg),err,msg.channel)
+        throw new UserError('reddit', 'errorRedditPostsRequest', err)
       })
     }else{
       msg.channel.sendTyping();
-      reddit.post(args[1]).then(result => {
+      return this.plugins.RedditApi.post(args[1]).then(result => {
         msg.reply({embed : {
           author : {name : result.title.slice(0,255), url : result.link, icon_url : this.config.images.reddit},
           description : result.text,
@@ -27,7 +26,7 @@ module.exports = new Command('reddit',{
           footer : {text : result.subreddit}
         }})
       }).catch(err => {
-        this.discordLog.send('error',this.locale.getDevString('errorRedditPostsRequest',msg),this.locale.getUserString('errorRedditPostsRequest',msg),err,msg.channel)
+        throw new UserError('reddit', 'errorRedditPostsRequest', err)
       })
     }
   })

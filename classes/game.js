@@ -12,7 +12,7 @@ module.exports = class RoshanGame extends Events{
     this.events = []
     this.actions = {}
     this.on('error', function(err){
-      console.log(this.name + ':ERROR:' + err);
+      console.log(this.name + ':ERROR:' + err)
     })
   }
   addCommandsDir(path){

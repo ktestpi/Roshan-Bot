@@ -28,7 +28,6 @@ module.exports = class StatusFirebase{
     let newStatus = this.status.mode
     while(newStatus === this.status.mode){
       newStatus = Math.floor(Math.random()*max)
-      console.log('nuevo estado',newStatus,this.status.mode);
     }
     return this.statusTo(newStatus)
   }
@@ -59,7 +58,6 @@ module.exports = class StatusFirebase{
   }
   randomSugarRush(intervalTime){
     const time = this.game.actions.intervalRandomNumber(intervalTime.map(v => v*3600))*1000 // TODO change 2 by 3600 to conver seconds interval in hours
-    console.log('Next SugarRush',time);
     this.timeouts.sugarrush = new Timeout(() => this.statusToSugarRush(),time)
   }
   nextSugarRush(){

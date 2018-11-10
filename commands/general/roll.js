@@ -18,8 +18,6 @@ module.exports = new Command('roll',{
     }else if(args.length == 3){
       args[1] = parseInt(args[1]);
       args[2] = parseInt(args[2]);
-      //console.log(args[1],typeof args[1]);
-      //console.log(args[2],typeof args[2]);
       if(typeof args[1] !== 'number' || isNaN(args[1]) || typeof args[2] !== 'number' || isNaN(args[2])){return};
       min = args[1];
       max = args[2];

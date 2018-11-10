@@ -93,9 +93,7 @@ module.exports.getMedal = function (rank, mode, replace) { //DEPRECATED
 }
 
 module.exports.titlePlayer = function (results, title, replace) {
-    // console.log(replace);console.log('*********************');
     const medal = enumMedal({ rank: results[0].rank_tier, leaderboard: results[0].leaderboard_rank })
-    // console.log(medal);
 
     return typeof results[0].profile.loccountrycode == 'string' ?
         replace.replacer(title, { user: module.exports.nameAndNick(results[0].profile), flag: results[0].profile.loccountrycode.toLowerCase(), medal: replace.replacer(medal.emoji) })

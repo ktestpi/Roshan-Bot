@@ -5,17 +5,18 @@ const basic = require('../../helpers/basic')
 const enumHeroes = require('../../enums/heroes')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command(['match','m'],{
   category : 'Dota 2', help : 'Estadísticas de una partida', args : '<id>'},
   function(msg, args, command){
     if(!args[1]){return}
     msg.channel.sendTyping()
-    return this.od.match(args[1])
+    return this.plugins.Opendota.match(args[1])
       .then(results => {
         if (results[0].error) { return }
         const lang = this.locale.getUserStrings(msg)
-        if (results[0].game_mode === 19) { return msg.reply('matchEventNoInfo') } // TODO:
+        if (results[0].game_mode === 19) { return msg.reply(lang.matchEventNoInfo) }
         
         const spacesBoard = ['19f', '8f', '8f', '6f', '5f', '4f', '17f'];
         let radiant = new util.Classes.Table([lang.hero, lang.kda, lang.gpmxpm, lang.lhd, lang.hdmg, lang.tdmg, lang.player], null, spacesBoard, { fill: '\u2002' });
@@ -48,5 +49,5 @@ module.exports = new Command(['match','m'],{
             color: this.config.color
           }
         })
-      }).catch(err => this.od.error(msg, err))
+      }).catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
   })

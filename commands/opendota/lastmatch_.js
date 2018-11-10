@@ -1,14 +1,19 @@
 const { Command } = require('aghanim')
 const basic = require('../../helpers/basic')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
-//TODO remove cooldownMessage
 module.exports = new Command('lastmatch+',{
   category : 'Dota 2', help : 'Última partida jugada. R+', args : '[mención/dotaID/pro]', cooldown : 60,
   cooldownMessage : function(msg,args,command,cooldown){return this.locale.getUserString('warningInCooldown',msg)}},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.od.userID(msg, args)
-      .then(player => Promise.all([player, this.od.player_lastmatch(player.data.profile.dota)]))
+    return this.plugins.Opendota.userID(msg, args)
+      .then(player => Promise.all([
+        player,
+        this.plugins.Opendota.player_lastmatch(player.data.profile.dota)
+          .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
+        ]
+      ))
       .then(data => {
         const [player, results] = data
 
@@ -20,5 +25,5 @@ module.exports = new Command('lastmatch+',{
         args[0] = cmd.name;
         args[1] = results[0][0].match_id
         return cmd.process.call(this, msg, args, command)
-      }).catch(err => this.od.error(msg, err))
+      })
   })

@@ -1,11 +1,10 @@
 const { Command } = require('aghanim')
 
+const modes = ['e','g','l']
+
 module.exports = new Command('tournament',{
   category : 'General', help : 'Sorteo inicial para torneos', args : '<modo: e,l,g[número grupos]> <opciones separadas por ,>'},
   function(msg, args, command){
-    let self = this
-    const modes = ['e','g','l']
-    // console.log(args);
     // if(!args[2]){util.fn.wrongCmd(msg,modes,{cmd : config.cmds.tournament.cmd,premsg : '__Comandos disponibles__\n\n',cmdprefix : config.prefix,charslimit : 500,dm : true});return};
     if(!args[1]){return}
     const mode = args[1].slice(0,1);

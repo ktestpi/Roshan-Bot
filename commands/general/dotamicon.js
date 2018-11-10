@@ -9,7 +9,7 @@ module.exports = new Command('dotamicon',{
     let embed = basic.replaceMessageFields(dotamicon[args[1]],{},this.replace,(text) => basic.parseText(text,'nf'))
     if(embed.color){embed.color = basic.replaceColor(embed.color,this.config.colors.palette)}
     if(embed.footer && embed.footer.icon_url){embed.footer.icon_url = replaceFooterIcon(embed.footer.icon_url)}
-    msg.reply({embed})
+    return msg.reply({embed})
   })
 
 function replaceFooterIcon(text){

@@ -2,6 +2,7 @@ const { Command } = require('aghanim')
 const { Markdown, Request } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
 const basic = require('../../helpers/basic')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('searchplayer',{
   category : 'Dota 2', help : 'Busca a un/a jugador/a', args : '[búsqueda]'},
@@ -11,11 +12,10 @@ module.exports = new Command('searchplayer',{
     const lang = this.locale.getUserStrings(msg)
     if(query.length < 2){return msg.reply(lang.errorSearchMinChars)}
     msg.channel.sendTyping()
-    this.od.getPlayersDotaName(query).then((players) => {
+    this.plugins.Opendota.getPlayersDotaName(query).then((players) => {
       if(players.length < 1){return};
       const playersTotal = players.length;
       const limit = 10;
-      // console.log('Players',players);
       // if(players.length > limit){
       //   players.sort(function() {
       //     return .5 - Math.random()});
@@ -36,6 +36,6 @@ module.exports = new Command('searchplayer',{
           footer : {text : this.locale.replacer(lang.searchplayerFooter,{match : playersShow !== playersTotal ? playersShow + "/" + playersTotal : playersShow}), icon_url : this.user.avatarURL},
           color : this.config.color
         }})
-      }).catch(err => this.od.error(msg, err))
+      }).catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
     })
   })
