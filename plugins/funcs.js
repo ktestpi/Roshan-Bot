@@ -2,6 +2,7 @@ const { Plugin } = require('aghanim')
 const util = require('erisjs-utils')
 const { Message, Guild } = require('erisjs-utils')
 const { resetServerConfig } = require('../helpers/basic.js')
+const enumFeeds = require('../enums/feeds')
 
 module.exports = class Funcs extends Plugin {
     constructor(client, options) {

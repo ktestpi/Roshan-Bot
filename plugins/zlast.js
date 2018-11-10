@@ -36,11 +36,11 @@ module.exports = class Last extends Plugin {
             this.client.config.status_msg = snap.status_msg
             this.client.setStatus(this.client.config.status_act, this.client.config.status, this.client.config.status_msg, this.client.config.status_url, false).then(() => this.client.notifier.console('Status setted'))
             this.client.emit('postready')
-        }).catch(err => { this.notifier.console('Error', err); this.client.emit('postready') })
+        }).catch(err => { this.client.notifier.console('Error', err); this.client.emit('postready') })
         
         
         this.client.on('postready', function () {
-            
+            // console.log(this)
             if (this.config.switches.backupdb) { //config.switches.backupdb
                 util.Firebase.backupDBfile(this.db, this, this.config.guild.backup, { filenameprefix: 'roshan_db_', messageprefix: '**Roshan Backup DB**' }).then(snap => {
                     this.notifier.console('Backup done!')
@@ -52,7 +52,7 @@ module.exports = class Last extends Plugin {
                     //Update leaderboard (Firebase) each this.client.config.hoursLeaderboardUpdate at least
                     if (this.config.switches.leaderboardUpdate
                         && (this.config.constants.hoursLeaderboardUpdate * 3600 + snap.leaderboard.updated) < new Date().getTime() / 1000) {
-                        updateLeaderboard(this.client, snap.profiles)
+                        updateLeaderboard(this, snap.profiles)
                     }
 
                     //Update public (Firebase)
