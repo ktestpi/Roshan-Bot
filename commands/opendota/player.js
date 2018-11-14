@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const odutil = require('../../helpers/opendota-utils')
-const basic = require('../../helpers/basic')
 const enumHeroes = require('../../enums/heroes')
 const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
@@ -12,7 +11,7 @@ module.exports = new Command(['player','p'],{
       // .then(player => Promise.all([player,this.plugins.Opendota.player(player.data.profile.dota)]))
       .then(player => Promise.all([
           player,
-          this.plugins.Opendota.player(player.data.profile.dota)
+          this.plugins.Opendota.player(player.data.dota)
             .catch(err => {throw new UserError('opendota', 'errorOpendotaRequest', err)})
           ]
         )
@@ -20,7 +19,6 @@ module.exports = new Command(['player','p'],{
       .then(data => {
         const [player, results] = data
         const profile = player.data
-        profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl, 'steam')
         const lang = this.locale.getUserStrings(msg)
         const top5Heroes = results[2].slice(0,5).reduce((sum, el) => {
           return sum
@@ -30,7 +28,7 @@ module.exports = new Command(['player','p'],{
         return msg.reply({
           embed: {
             title: odutil.titlePlayer(results, lang.playerProfile, this.locale),
-            description: basic.socialLinks(profile.profile, 'inline', this.config.links.profile) || '',
+            description: this.plugins.Account.socialLinks(profile),
             fields: [
               {
                 name: lang.wlr,

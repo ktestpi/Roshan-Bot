@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 const { Markdown } = require('erisjs-utils')
 
 module.exports = new Command('about',{

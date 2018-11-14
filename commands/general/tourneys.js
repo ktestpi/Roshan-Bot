@@ -1,6 +1,6 @@
 const { Command } = require('aghanim')
 const util = require('erisjs-utils')
-const { sortTourneys } = require('../../helpers/basic')
+const { sortTourneys } = require('../../helpers/sort')
 
 module.exports = new Command('tourneys',{
   category : 'General', help : 'Últimos torneos o muestra info sobre torneo', args : '[nombre torneo]'},

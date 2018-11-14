@@ -10,19 +10,23 @@ module.exports = class Cache extends Plugin {
         this.client.cache = {}
     }
     ready() {
-        this.update()
+        this.update().then(() => { this.client.emit('cache:init')})
     }
     update(){
-        this.client.cache = {}
-        if(this.client.envprod){
-            this.client.db.once('value').then(snap => {
-                if (!snap.exists()) { this.client.errorManager.emit(new ConsoleError('cacheReload', 'Error al recargar')) } else { snap = snap.val() }
-                this.updateWithSnap(snap)
-            })
-        }else{
-            this.updateFake()
-        }
-        this.updateTorneysFeeds()
+        return new Promise((res,rej) => {
+            this.client.cache = {}
+            this.updateTorneysFeeds()
+            if(this.client.envprod){
+                this.client.db.child().once('value').then(snap => {
+                    if (!snap.exists()) { this.client.errorManager.emit(new ConsoleError('cacheReload', 'Error al recargar')) } else { snap = snap.val() }
+                    this.updateWithSnap(snap)
+                    res()
+                })
+            }else{
+                this.updateFake()
+                res()
+            }
+        })
     }
     updateWithSnap(snap){
         this.client.cache.profiles = new FirebaseCache(this.client.db.child('profiles'), Object.keys(snap.profiles).map(profile => [profile, snap.profiles[profile]]));
@@ -32,7 +36,7 @@ module.exports = class Cache extends Plugin {
         this.client.notifier.console('Cache from DB')
     }
     updateFake(){
-        this.client.cache.profiles = new FirebaseCache(this.client.db.child('profiles'), { "189996884322942976": { lang: 'en', card: { bg: '0', pos: 'all', heroes: '1,2,3' }, profile: { dota: '112840925', steam: '76561198073106653', twitch: '', twitter: '' } } });
+        this.client.cache.profiles = new FirebaseCache(this.client.db.child('profiles'), { "189996884322942976": { lang: 'en', card: { bg: '0', pos: 'all', heroes: '1,2,3' }, dota: '112840925',steam: '76561198073106653' } });
         this.client.cache.servers = new FirebaseCache(this.client.db.child('servers'), {
             "327603106257043456": { lang: 'es', notifications: { enable: true, channel: "491295737251102733" }, feeds: { enable: true, channel: "491295737251102733", subs: "1,2,3" } },
             "332023803691532289": { lang: 'es', notifications: { enable: true, channel: "332023803691532289" }, feeds: { enable: true, channel: "332023803691532289", subs: "1,2,3" } }

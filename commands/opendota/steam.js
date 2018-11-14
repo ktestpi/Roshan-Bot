@@ -1,7 +1,6 @@
 const { Command } = require('aghanim')
 const { Markdown } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
-const basic = require('../../helpers/basic')
 const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('steam',{
@@ -11,7 +10,7 @@ module.exports = new Command('steam',{
     return this.plugins.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_steam(player.data.profile.dota)
+        this.plugins.Opendota.player_steam(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
       ]))
       .then(data => {

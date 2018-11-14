@@ -1,5 +1,6 @@
 const { Plugin } = require('aghanim')
 const packageInfo = require('../package.json')
+const util = require('erisjs-utils')
 
 module.exports = class Last extends Plugin {
     constructor(client, options) {
@@ -34,7 +35,7 @@ module.exports = class Last extends Plugin {
             this.client.config.status_act = snap.status_act;
             this.client.config.status_url = snap.status_url
             this.client.config.status_msg = snap.status_msg
-            this.client.setStatus(this.client.config.status_act, this.client.config.status, this.client.config.status_msg, this.client.config.status_url, false).then(() => this.client.notifier.console('Status setted'))
+            this.client.plugins.Bot.setStatus(this.client.config.status_act, this.client.config.status, this.client.config.status_msg, this.client.config.status_url, false).then(() => this.client.notifier.console('Status setted'))
             this.client.emit('postready')
         }).catch(err => { this.client.notifier.console('Error', err); this.client.emit('postready') })
         

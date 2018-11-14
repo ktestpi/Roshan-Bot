@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const util = require('erisjs-utils')
-const basic = require('../../helpers/basic')
 
 module.exports = new Command('status',{subcommandFrom : 'bot',
   category : 'Owner', help : 'Establece el estado de conexión a mostrar', args : '<0,online,1,idle,2,dnd,3,invisible>',

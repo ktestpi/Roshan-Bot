@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const util = require('erisjs-utils')
-const basic = require('../../helpers/basic')
 const { inspect } = require('util')
 
 module.exports = new Command(['evalp','ep'],{

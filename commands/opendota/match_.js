@@ -1,7 +1,6 @@
 const { Command } = require('aghanim')
 const { Datee, Markdown } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
-const basic = require('../../helpers/basic')
 const apijimp = require('../../helpers/apijimp')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
@@ -25,7 +24,7 @@ module.exports = new Command('match+',{
             return msg.reply({
               embed: {
                 title: this.locale.replacer(lang.matchTitle, { victory: lang.victory, team: odutil.winnerTeam(results[0]) }),
-                description: (results[0].league ? ' :trophy: ' + results[0].league.name : enumLobbyType.getValue(results[0].lobby_type) + ' ' + (enumSkill.getValue(results[0].skill) || '')) + ' `' + lang.matchID + ': ' + results[0].match_id + '` ' + Markdown.link(this.config.links.profile.dotabuff.slice(0, -8) + 'matches/' + results[0].match_id, lang.moreInfo) + '\n' + this.locale.replacer(lang.matchTime, { duration: basic.durationTime(results[0].duration), time: Datee.custom(results[0].start_time * 1000, 'h:m D/M/Y', true) }),
+                description: (results[0].league ? ' :trophy: ' + results[0].league.name : enumLobbyType.getValue(results[0].lobby_type) + ' ' + (enumSkill.getValue(results[0].skill) || '')) + ' `' + lang.matchID + ': ' + results[0].match_id + '` ' + Markdown.link(this.config.links.profile.dotabuff.slice(0, -8) + 'matches/' + results[0].match_id, lang.moreInfo) + '\n' + this.locale.replacer(lang.matchTime, { duration: odutil.durationTime(results[0].duration), time: Datee.custom(results[0].start_time * 1000, 'h:m D/M/Y', true) }),
                 image: { url: m.attachments[0].url },
                 footer: { text: lang.roshanPlus, icon_url: this.user.avatarURL },
                 color: this.config.color

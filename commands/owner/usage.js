@@ -1,6 +1,6 @@
 const { Command } = require('aghanim')
-const { Os } = require('erisjs-utils')
-const basic = require('../../helpers/basic')
+const { Os, Number } = require('erisjs-utils')
+const util = require('erisjs-utils')
 const os = require('os')
 
 module.exports = new Command('usage',{
@@ -15,8 +15,17 @@ module.exports = new Command('usage',{
           {name : 'RAM', value : `${Os.bytesConvert(os.totalmem()-os.freemem(),'MB')} / ${Os.bytesConvert(os.totalmem(),'MB')} MB`, inline : true}
           // {name : , value : , inline : true}
         ],
-        footer : {text : `Despierto ${basic.secondsTohms(Math.floor(process.uptime()))}`, icon_url : this.user.avatarURL},
+        footer : {text : `Despierto ${secondsTohms(Math.floor(process.uptime()))}`, icon_url : this.user.avatarURL},
         color : this.config.color
       }})
     })
   })
+
+
+function secondsTohms(seconds) {
+  let hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+  let minutes = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+  return `${Number.zerofication(hours)}:${Number.zerofication(minutes)}:${Number.zerofication(seconds)}`
+}

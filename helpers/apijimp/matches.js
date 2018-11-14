@@ -1,6 +1,6 @@
 const jimp = require('jimp')
 const util = require('erisjs-utils')
-const basic = require('../basic')
+const odutil = require('../opendota-util')
 const enumHeroes = require('../enums/heroes')
 const enumPlayerPos = require('../enums/player_positions')
 const enumItems = require('../enums/items')
@@ -29,7 +29,7 @@ module.exports.matches = function(data_info){
       loadAsset(match.hero_id,'hero'),
       opendota.util.winOrLose(matches[i].radiant_win,matches[i].player_slot).slice(0,1),
       match.kills + ' / ' + match.deaths + ' / ' + match.assists,
-      basic.durationTime(matches[i].duration),
+      odutil.durationTime(matches[i].duration),
       match.match_id
     ]))
   }
@@ -49,8 +49,8 @@ module.exports.matches = function(data_info){
           }
         }
       }
-      // const footerInfo = `Duración: ${basic.durationTime(data_info.duration)}  -  ID: ${data_info.match_id}  -  Jugada: ${util.date(data_info.start_time*1000,'hm/DMY')}`
-      // basic.durationTime(results[0].duration), time : util.date(results[0].start_time*1000,'hm/DMY')},true),
+      // const footerInfo = `Duración: ${odutil.durationTime(data_info.duration)}  -  ID: ${data_info.match_id}  -  Jugada: ${util.date(data_info.start_time*1000,'hm/DMY')}`
+      // odutil.durationTime(results[0].duration), time : util.date(results[0].start_time*1000,'hm/DMY')},true),
       // data[0].print(data[11],textCenter('ID: ' + data_info.match_id,350),POSITION_Y_MATCH_ID,'ID: ' + data_info.match_id)
       // data[0].print(data[11],textCenter(footerInfo,350),POSITION_Y_MATCH_ID,footerInfo)
       // data[0].write('test.jpg')

@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const { Datee } = require('erisjs-utils')
-const basic = require('../../helpers/basic')
 
 module.exports = new Command('addfeed',{
   category : 'Owner', help : 'Añade un feed', args : '"título" "descripción" "link"',

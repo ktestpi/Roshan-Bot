@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const enumPlayerPos = require('../../enums/player_positions')
 
-module.exports = new Command('idcardhelp',{
+module.exports = new Command('cardhelp',{
   category : 'Account', help : 'Ayuda de la tarjeta de jugador@', args : ''},
   function(msg, args, command){
     const lang = this.locale.getUserStrings(msg)

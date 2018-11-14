@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 const enumHeroes = require('../../enums/heroes')
 const enumPlayerPos = require('../../enums/player_positions')
 
@@ -10,7 +9,7 @@ enumHeroes.getKeyByAlias = function(tag){
   return undefined
 }
 
-module.exports = new Command('idcardconfig',{
+module.exports = new Command('cardconfig',{
   category : 'Account', help : 'Configura la tarjeta de jugador@', args : ''},
   function(msg, args, command){
     return this.plugins.Opendota.userID(msg, args)

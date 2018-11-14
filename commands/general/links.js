@@ -1,13 +1,13 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 const { Markdown } = require('erisjs-utils')
 const links = require('../../containers/links.json')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('links',{
   category : 'General', help : 'Enlaces interesantes sobre el juego', args : '<categoría>'},
   function(msg, args, command){
     const query = args.after
-    if(!links[query]){return basic.wrongCmd(msg,links,args.until(1))};
+    if (!links[query]) { throw new UserError('wrongCmdArg', 'wrongCmdArg', { options: Object.keys(links).join(', '), cmd: args.until(1) })}
     let textLinks = '';
     let textFields = [];
     let arrayFields = links[query].fields.reverse();

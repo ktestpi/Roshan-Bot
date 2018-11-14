@@ -34,7 +34,7 @@ module.exports = class StatusFirebase{
   statusTo(mode,doing = 0){
     mode = parseInt(mode)
     return this.save({mode}).then((status) => Promise.all([
-      this.game.client.setStatus(doing,statusBot[status.mode],this.statusMsg(status.mode)),
+      this.game.client.plugins.Bot.setStatus(doing,statusBot[status.mode],this.statusMsg(status.mode)),
       this.game.log(this.embed({description : `Roshan status changed to ${enumStatus[status.mode]}`}))
     ]))
   }

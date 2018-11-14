@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const odutil = require('../../helpers/opendota-utils')
-const basic = require('../../helpers/basic')
 const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('withpros',{
@@ -10,14 +9,13 @@ module.exports = new Command('withpros',{
     return this.plugins.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_pros(player.data.profile.dota)
+        this.plugins.Opendota.player_pros(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
       ]))
       .then(data => {
         const [player, results] = data
         const profile = player.data
         const lang = this.locale.getUserStrings(msg)
-        profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl, 'steam')
         const resultsTotal = results[1].length;
         results[1].sort(function () { return .5 - Math.random() });
         let resultsShow = 0;
@@ -25,8 +23,8 @@ module.exports = new Command('withpros',{
         results[1].forEach(pro => {
           if (description.length > this.config.constants.descriptionChars) { return }
           if (pro.team_tag != null) {
-            description += '**' + basic.parseText(pro.name, 'nf') + '** (' + basic.parseText(pro.team_tag, 'nf') + '), ';
-          } else { description += '**' + basic.parseText(pro.name, 'nf') + '**, '; }
+            description += '**' + this.plugins.Bot.parseText(pro.name, 'nf') + '** (' + this.plugins.Bot.parseText(pro.team_tag, 'nf') + '), ';
+          } else { description += '**' + this.plugins.Bot.parseText(pro.name, 'nf') + '**, '; }
           resultsShow++
         })
         description = description.slice(0, -2)
@@ -41,5 +39,5 @@ module.exports = new Command('withpros',{
             color: this.config.color
           }
         })
-      }).catch(err => this.plugins.Opendota.error(msg, err))
+      })
   })

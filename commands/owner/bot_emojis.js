@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const { Guild } = require('erisjs-utils')
-const basic = require('../../helpers/basic')
 
 module.exports = new Command('emojis',{subcommandFrom : 'bot',
   category : 'Owner', help : 'Resetea y muestra los emojis del bot', args : '<reset,show>',

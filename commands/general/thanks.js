@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 const message = require('../../containers/messages.json').thanks
 
 module.exports = new Command('thanks',{

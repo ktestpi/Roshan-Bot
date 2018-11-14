@@ -1,5 +1,4 @@
 const jimp = require('jimp')
-const basic = require('../basic')
 const enumHeroes = require('../../enums/heroes')
 const enumPlayerPos = require('../../enums/player_positions')
 const enumItems = require('../../enums/items')

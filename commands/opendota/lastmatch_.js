@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('lastmatch+',{
@@ -10,7 +9,7 @@ module.exports = new Command('lastmatch+',{
     return this.plugins.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_lastmatch(player.data.profile.dota)
+        this.plugins.Opendota.player_lastmatch(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
         ]
       ))

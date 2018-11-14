@@ -20,7 +20,7 @@
             tag = null
         }
         const date = new Date()
-        console.log(`${tag ? tag + ' ' : ''}<${date}> - ${message}`)
+        console.log(`<${date}> ${tag ? '[' + tag + '] ' : ''}- ${message}`)
     }
     info(tag,message){
         this.console('INFO',message)

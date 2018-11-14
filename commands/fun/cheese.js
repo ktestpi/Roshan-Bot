@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 
 module.exports = new Command('cheese',{
   category : 'Fun', help : 'Da 1 <cheesed2>!', args : '<mención>'},

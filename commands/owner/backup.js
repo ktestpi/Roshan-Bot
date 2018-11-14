@@ -1,6 +1,5 @@
 const { Command } = require('aghanim')
 const { Firebase } = require('erisjs-utils')
-const basic = require('../../helpers/basic')
 
 module.exports = new Command('backup',{
   category : 'Owner', help : 'Realiza una copia de seguridad', args : '',

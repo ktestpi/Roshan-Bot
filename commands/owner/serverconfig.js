@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 const enumFeeds = require('../../enums/feeds')
 
 module.exports = new Command('serverconfig',{

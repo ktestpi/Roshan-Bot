@@ -1,7 +1,6 @@
 const { Plugin } = require('aghanim')
 const CustomPlugin = require('../classes/custom-plugin.js')
-const { Request } = require('erisjs-utils')
-const { accountSchema } = require('../helpers/basic.js')
+const { Request, Markdown } = require('erisjs-utils')
 const { UserError, ConsoleError } = require('../classes/errormanager.js')
 
 module.exports = class Opendota extends Plugin {
@@ -43,8 +42,8 @@ module.exports = class Opendota extends Plugin {
         this._calls += add || 0
         return this.save(this._calls)
     }
-    needRegister(msg, profile) {
-        return !profile.data.profile.dota ? true : false
+    needRegister(msg, account) {
+        return !account.data.dota ? true : false
     }
     userID(msg, args) {
         return new Promise((res, rej) => {
@@ -61,6 +60,7 @@ module.exports = class Opendota extends Plugin {
                 }
             } else {
                 const profile = this.baseProfile(msg.author.id)
+                console.log(profile, this.needRegister(msg, profile))
                 if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'needRegister') }
                 res(profile)
             }
@@ -68,8 +68,8 @@ module.exports = class Opendota extends Plugin {
     }
     baseProfile(discordID, dotaID) {
         const cache = this.client.cache.profiles.get(discordID)
-        const data = cache || accountSchema()
-        if (dotaID) { data.profile.dota = dotaID }
+        const data = cache || this.client.plugins.Account.schema()
+        if (dotaID) { data.dota = dotaID }
         return { discordID, cached: cache ? true : false, data }
     }
     error(msg, err) {
@@ -106,7 +106,6 @@ module.exports = class Opendota extends Plugin {
         })
     }
 }
-
 
 const baseURL = 'https://api.opendota.com/api/'
 

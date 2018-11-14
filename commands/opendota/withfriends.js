@@ -1,7 +1,6 @@
 const { Command } = require('aghanim')
 const { Classes } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
-const basic = require('../../helpers/basic')
 
 module.exports = new Command(['withfriends','friends'],{
   category : 'Dota 2', help : 'Estadísticas de partidas jugadas con amig@s', args : '[mención/dotaID/pro]'},
@@ -10,17 +9,16 @@ module.exports = new Command(['withfriends','friends'],{
     return this.plugins.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_friends(player.data.profile.dota)
+        this.plugins.Opendota.player_friends(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
       ]))
       .then(data => {
         const [player, results] = data
         const profile = player.data
         const lang = this.locale.getUserStrings(msg)
-        profile.profile.steam = basic.parseProfileURL(results[0].profile.profileurl, 'steam')
         results[1] = results[1].filter(friend => friend.with_games > 0)
         const spacesBoard = ['25f', '3cf', '6cf'];
-        let table = Classes.Table.renderRow([basic.parseText(lang.player, 'nf'), lang.games.slice(0, 1), lang.gamesWR], spacesBoard, '\u2002') + '\n';
+        let table = Classes.Table.renderRow([this.plugins.Bot.parseText(lang.player, 'nf'), lang.games.slice(0, 1), lang.gamesWR], spacesBoard, '\u2002') + '\n';
         if (results[1].length > 0) {
           results[1].forEach(friend => {
             if (table.length > this.config.constants.descriptionChars) { return }
@@ -36,5 +34,5 @@ module.exports = new Command(['withfriends','friends'],{
             color: this.config.color
           }
         })
-      }).catch(err => this.plugins.Opendota.error(msg, err))
+      })
   })

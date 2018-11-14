@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 const enumFeeds = require('../../enums/feeds')
 const FirebaseArraySet = require('../../classes/firebasearrayset')
 
@@ -21,7 +20,8 @@ module.exports = new Command(['unsubscribe','unsub'],{subcommandFrom : 'server',
       if(s){serversSubs.deleteVal(s);subsKey.push(s)}
     })
     if(!subsKey.length){return}
-    return this.cache.servers.modify(msg.channel.guild.id,{feeds : {subs : serversSubs.tostring}}).then(() =>
+    return this.cache.servers.modify(msg.channel.guild.id,{feeds : {subs : serversSubs.tostring}}).then(() => {
+      msg.addReactionSuccess()
       msg.reply(this.locale.replacer(this.locale.getChannelString('serverUnSubscription',msg),{subs : subsKey.map(s => `**${enumFeeds.getValue(s)}**`).join(', ')}))
-    )
+    })
   })

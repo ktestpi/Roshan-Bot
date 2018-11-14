@@ -1,5 +1,4 @@
 const util = require('erisjs-utils')
-const basic = require('./basic.js')
 const enumMedal = require('../enums/medals')
 
 const VICTORY = 'Victory'
@@ -99,4 +98,11 @@ module.exports.titlePlayer = function (results, title, replace) {
         replace.replacer(title, { user: module.exports.nameAndNick(results[0].profile), flag: results[0].profile.loccountrycode.toLowerCase(), medal: replace.replacer(medal.emoji) })
         : util.String.replace(title, { '<user>': module.exports.nameAndNick(results[0].profile), ':flag_<flag>:': ' ', '<medal>': replace.replacer(medal.emoji) }, false)
 
+}
+
+module.exports.durationTime = function (time) {
+    time = parseInt(time)
+    let m = Math.floor(time / 60)
+    let s = time % 60
+    return util.Number.zerofication(m) + ':' + util.Number.zerofication(s)
 }

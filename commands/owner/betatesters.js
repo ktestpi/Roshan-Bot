@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const basic = require('../../helpers/basic')
 
 module.exports = new Command(['beta'],{
   category : 'Owner', help : 'Betatesters', args : '[<add/remove> <mención>]',

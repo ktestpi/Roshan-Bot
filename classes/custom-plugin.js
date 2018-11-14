@@ -15,5 +15,15 @@ module.exports = function CustomPlug(...load){
         ready() {
             this.require(...load)
         }
+        waitOn(event, func){
+            this.client.on(event, (...args) => {
+                func(...args)
+            })
+        }
+        waitOnce(event, func){
+            this.client.once(event, (...args) => {
+                func(...args)
+            })
+        }
     }
 }

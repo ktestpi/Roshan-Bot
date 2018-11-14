@@ -20,7 +20,9 @@ module.exports = new Command(['subscribe','sub'],{subcommandFrom : 'server',
       if(s){serversSubs.addVal(s);subsKey.push(s)}
     })
     if(!subsKey.length){return}
-    return this.cache.servers.modify(msg.channel.guild.id,{feeds : {subs : serversSubs.tostring}}).then(() =>
-      msg.reply(this.replace.do('serverSubscription',{subs : subsKey.map(s => `**${enumFeeds.getValue(s)}**`).join(', ')},true))
+    return this.cache.servers.modify(msg.channel.guild.id,{feeds : {subs : serversSubs.tostring}}).then(() => {
+      msg.addReactionSuccess()
+      msg.reply(this.locale.replacer(this.locale.getChannelString('serverSubscription',msg),{subs : subsKey.map(s => `**${enumFeeds.getValue(s)}**`).join(', ')}))
+    }
     )
   })

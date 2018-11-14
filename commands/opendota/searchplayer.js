@@ -1,7 +1,6 @@
 const { Command } = require('aghanim')
 const { Markdown, Request } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
-const basic = require('../../helpers/basic')
 const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('searchplayer',{
@@ -29,7 +28,7 @@ module.exports = new Command('searchplayer',{
       const playersShow = players.length;
       const urls = players.map(player => 'https://api.opendota.com/api/players/' + player.account_id);
       return Request.getJSONMulti(urls).then((player_profiles) => {
-        const text = player_profiles.map((player) => player.profile).map((player) => `**${basic.parseText(odutil.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
+        const text = player_profiles.map((player) => player.profile).map((player) => `**${this.plugins.Bot.parseText(odutil.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
         return msg.reply({embed : {
           title : lang.searchplayerTitle,
           description : this.locale.replacer(lang.searchplayerDescription,{query : query, text : text}),
