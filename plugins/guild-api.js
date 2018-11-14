@@ -1,20 +1,23 @@
 const { Plugin } = require('aghanim')
+const CustomPlugin = require('../classes/custom-plugin')
 const { Datee, Member } = require('erisjs-utils')
 const util = require('erisjs-utils')
 const { UserError, ConsoleError } = require('../classes/errormanager.js')
 
-module.exports = class Guild extends Plugin {
+module.exports = class Guild extends CustomPlugin() {
     constructor(client, options) {
         super(client)
     }
     ready(){
-        this.client.guilds.forEach(guild => {
-            this.get(guild.id).then(data => {
-                if(!data){
-                    this.create(guild.id).then(() => {
-                        this.client.notifier.guildnew(`**${guild.name}**`)
-                    })
-                } 
+        this.waitOnce('cache:init').then(() => {
+            this.client.guilds.forEach(guild => {
+                this.get(guild.id).then(data => {
+                    if(!data){
+                        this.createProcess(guild).then(() => {
+                            this.client.notifier.bot(`**${g.name}** servidor encontrado. Registrado en el bot.`)
+                        })
+                    } 
+                })
             })
         })
     }

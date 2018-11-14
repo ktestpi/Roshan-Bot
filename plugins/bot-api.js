@@ -58,11 +58,11 @@ module.exports = class Bot extends CustomPlugin() {
                         this.client.db.child('public').update(data_public).then(() => this.client.notifier.console('Update public Info'))
 
                         // Check guilds config setted
-                        this.client.guilds.forEach(g => {
-                            if (!this.client.cache.servers.get(g.id)) {
-                                this.plugins.Guild.createProcess(g).then(() => this.client.notifier.bot(`${g.name} encontrado. Registrado en el bot.`))
-                            }
-                        })
+                        // this.client.guilds.forEach(g => {
+                        //     if (!this.client.cache.servers.get(g.id)) {
+                        //         this.plugins.Guild.createProcess(g).then(() => this.client.notifier.bot(`${g.name} encontrado. Registrado en el bot.`))
+                        //     }
+                        // })
                     })
                 }
             })
