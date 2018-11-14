@@ -9,7 +9,7 @@ module.exports = class Guild extends CustomPlugin() {
         super(client)
     }
     ready(){
-        this.waitOnce('cache:init').then(() => {
+        this.waitOnce('cache:init', () => {
             this.client.guilds.forEach(guild => {
                 this.get(guild.id).then(data => {
                     if(!data){

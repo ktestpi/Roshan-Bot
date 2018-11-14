@@ -13,7 +13,7 @@ module.exports = class Bot extends CustomPlugin() {
     }
     ready() {
         this.client.plugins.Bot.loadLastPatchNotes()
-        this.waitOnce('cache:init',() => {
+        this.waitOnce('cache:init', () => {
             this.dbOnce('bot').then(snap => {
                 this.client.config.switches = snap.switches
                 if (!this.client.envprod) {
