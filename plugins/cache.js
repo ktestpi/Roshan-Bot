@@ -17,7 +17,7 @@ module.exports = class Cache extends Plugin {
             this.client.cache = {}
             this.updateTorneysFeeds()
             if(this.client.envprod){
-                this.client.db.child().once('value').then(snap => {
+                this.client.db.once('value').then(snap => {
                     if (!snap.exists()) { this.client.errorManager.emit(new ConsoleError('cacheReload', 'Error al recargar')) } else { snap = snap.val() }
                     this.updateWithSnap(snap)
                     res()
