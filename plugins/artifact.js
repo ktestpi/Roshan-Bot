@@ -106,7 +106,6 @@ module.exports = class Artifact extends Plugin {
                         // console.log(card)
                     })
                 })
-                console.log('Total cards:',this.cards.length)
                 this.cards = this.cards.map(card => {
                     if (card.signatureCardFor){
                         const heroCard = this.getCardByName(card.signatureCardFor.english)
@@ -116,6 +115,7 @@ module.exports = class Artifact extends Plugin {
                     }
                     return card
                 })
+                console.log('Total cards:',this.cards.length)
         })
     }
     getCardByID(id){
@@ -149,6 +149,7 @@ module.exports = class Artifact extends Plugin {
         const data = Artifact.getCardByID(id, dataset)
     }
     static getReferenceAbilities(data, dataset){
+        return [] // Removed Abilities to show
         const abilities = Artifact.parseReferences(data, ['active_ability','passive_ability'])
         return abilities.map(ability => {
             const abilityCard = Artifact.getCardByID(ability.card_id, dataset)
@@ -209,15 +210,22 @@ module.exports = class Artifact extends Plugin {
             .replace(new RegExp(`<span style='font-weight:bold;color:#2f7492;'>`,'g'),'')
             .replace(new RegExp(`<span style='font-weight:bold;color:#736e80;'>`,'g'),'')
             .replace(new RegExp('</span>','g'),'')
-            .replace(new RegExp('<BR>','g'),'\n')
-            .replace(new RegExp('<br/>','g'),'\n')
+            .replace(new RegExp('<BR>','gi'),'\n')
+            .replace(new RegExp('<br/>','gi'),'\n')
+            .replace(new RegExp('\n\n','g'),'\n')
+    }
+    static removeTextWithAbilities(data){
+        // if (data.references.filter(r => ['active_ability','passive_ability'].includes(r.ref_type)).length){
+        //     return {}
+        // }
+        return Artifact.clearHTMLTagsObj(data.card_text)
     }
     static createCard(data, dataset){
         return {
             id: data.card_id,
             cardType: Artifact.cardType(data),
             name: data.card_name,
-            text: Artifact.clearHTMLTagsObj(data.card_text),
+            text: Artifact.removeTextWithAbilities(data),
             imageMini: data.mini_image,
             imageLarge: data.large_image,
             imageIngame: data.ingame_image,
@@ -276,8 +284,6 @@ module.exports = class Artifact extends Plugin {
         }, []).forEach(card => this.renderCard(msg, card, replacer))
     }
     renderCard(msg, card, replacer) {
-        console.log(card)
-        console.log(Artifact.getCardTypeUrl(card))
         return msg.reply({
             embed: {
                 // title : card.name,
