@@ -8,14 +8,6 @@ module.exports = class Events extends Plugin {
     }
     ready() {
     }
-    messageCreate(msg){
-        if (this.client.config.guild.feedsHidden === msg.channel.id
-        && this.client.config.switches.feeds
-        && this.client.config.webhooks.feedsHidden === msg.author.id) { // AutoFeeds
-            this.client.plugins.Guild.messageAllGuilds(msg, false, 'feeds')
-            msg.addReaction(this.client.config.emojis.default.feeds)
-        }
-    }
     messageReactionAdd(msg, emoji, userID){
         if (userID === this.client.owner.id && msg.channel.guild && msg.channel.guild.id === this.client.config.guild.id) {
             if (emoji.name === this.client.config.emojis.default.notification) {

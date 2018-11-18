@@ -2,6 +2,7 @@ const { Plugin } = require('aghanim')
 const CustomPlugin = require('../classes/custom-plugin')
 const { Datee, Member } = require('erisjs-utils')
 const util = require('erisjs-utils')
+const enumFeeds = require('../enums/feeds')
 const { UserError, ConsoleError } = require('../classes/errormanager.js')
 
 module.exports = class Guild extends CustomPlugin() {
@@ -20,6 +21,14 @@ module.exports = class Guild extends CustomPlugin() {
                 })
             })
         })
+    }
+    messageCreate(msg) {
+        if (this.client.config.guild.feedsHidden === msg.channel.id
+            && this.client.config.switches.feeds
+            && this.client.config.webhooks.feedsHidden === msg.author.id) { // AutoFeeds
+            this.messageAllGuilds(msg, false, 'feeds')
+            msg.addReaction(this.client.config.emojis.default.feeds)
+        }
     }
     guildCreate(guild) {
         return this.createProcess(guild)
@@ -94,37 +103,37 @@ module.exports = class Guild extends CustomPlugin() {
         })
     }
     messageAllGuilds(msg, all, mode) {
-        if (!this.config.switches.msgGuilds) { return }
-        const message = mode !== 'feeds' ? msg.content : `${this.config.emojis.default.feeds} **${msg.author.username}**: ${msg.content}`;
+        if (!this.client.config.switches.msgGuilds) { return }
+        const message = mode !== 'feeds' ? msg.content : `${this.client.config.emojis.default.feeds} **${msg.author.username}**: ${msg.content}`;
         const author = enumFeeds.getKey(msg.author.username);
-        const servers = this.guilds.map(g => g)//this.cache.servers.getall()
+        const servers = this.client.guilds.map(g => g)//this.cache.servers.getall()
         if (!servers) { return };
         if (msg.attachments.length < 1) {
             servers.forEach(server => {
-                const cached = this.cache.servers.get(server.id)
-                if (!cached) { return this.createProcess(server).then(() => this.notifier.guildnew(`**${server.name}**`)).catch(err => this.errorManager.emit(new ConsoleError('guildsaving', `Error creating config for **${server.name}** (${server.id})`))) }
+                const cached = this.client.cache.servers.get(server.id)
+                if (!cached) { return this.createProcess(server).then(() => this.client.notifier.guildnew(`**${server.name}**`)).catch(err => this.errorManager.emit(new ConsoleError('guildsaving', `Error creating config for **${server.name}** (${server.id})`))) }
                 if (!all && cached && !cached[mode].enable) { return };
-                const channel = cached ? cached[mode].channel : util.Guild.getDefaultChannel(server, this, true).id
+                const channel = cached ? cached[mode].channel : util.Guild.getDefaultChannel(server, this.client, true).id
                 if (mode === 'feeds' && !cached.feeds.subs.split(',').includes(author)) { return }
                 // TODO: Use Client.channelGuildMap
-                this.createMessage(channel, { content: message, embed: msg.embeds.length > 0 ? msg.embeds[0] : {}, disableEveryone: false }).catch(err => {
+                this.client.createMessage(channel, { content: message, embed: msg.embeds.length > 0 ? msg.embeds[0] : {}, disableEveryone: false }).catch(err => {
                     // Create the message to defaultChannel of guild (not cofigurated)
                     // this.createMessage(util.Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false})
-                    this.errorManager.emit(new ConsoleError('guildmessage', `Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`))
+                    this.client.errorManager.emit(new ConsoleError('guildmessage', `Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`))
                 })
             })
         } else {
             Message.sendImage(msg.attachments[0].url).then(buffer => {
                 servers.forEach(server => {
-                    const cached = this.cache.servers.get(server.id)
-                    if (!cached) { return this.createProcess(server).then(() => this.notifier.guildnew(`**${server.name}**`)).catch(err => this.errorManager.emit(new ConsoleError('guildsaving', `Error creating config for **${server.name}** (${server.id})`))) }
+                    const cached = this.client.cache.servers.get(server.id)
+                    if (!cached) { return this.createProcess(server).then(() => this.client.notifier.guildnew(`**${server.name}**`)).catch(err => this.errorManager.emit(new ConsoleError('guildsaving', `Error creating config for **${server.name}** (${server.id})`))) }
                     if (!all && cached && !cached[mode].enable) { return };
-                    const channel = cached ? cached[mode].channel : util.Guild.getDefaultChannel(server, this, true).id
+                    const channel = cached ? cached[mode].channel : util.Guild.getDefaultChannel(server, this.client, true).id
                     if (mode === 'feeds' && !cached.feeds.subs.split(',').includes(author)) { return }
-                    this.createMessage(channel, { content: message, embed: msg.embeds.length > 0 ? msg.embeds[0] : {}, disableEveryone: false }, { file: results, name: msg.attachments[0].filename }).catch(err => {
+                    this.client.createMessage(channel, { content: message, embed: msg.embeds.length > 0 ? msg.embeds[0] : {}, disableEveryone: false }, { file: results, name: msg.attachments[0].filename }).catch(err => {
                         // Create the message to defaultChannel of guild (not cofigurated)
                         // this.createMessage(Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false},{file : results, name : msg.attachments[0].filename})
-                        this.errorManager.emit(new ConsoleError(`Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`))
+                        this.client.errorManager.emit(new ConsoleError('guildmessage', `Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`))
                     })
                 })
             })

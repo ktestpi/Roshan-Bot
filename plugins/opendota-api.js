@@ -45,6 +45,13 @@ module.exports = class Opendota extends Plugin {
     needRegister(msg, account) {
         return !account.data.dota ? true : false
     }
+    existsAuthor(msg){
+        return new Promise((res,rej) => {
+            const profile = this.baseProfile(msg.author.id)
+            if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'needRegister') }
+            res(profile)
+        })
+    }
     userID(msg, args) {
         return new Promise((res, rej) => {
             if (msg.mentions.length > 0) {
@@ -60,7 +67,6 @@ module.exports = class Opendota extends Plugin {
                 }
             } else {
                 const profile = this.baseProfile(msg.author.id)
-                console.log(profile, this.needRegister(msg, profile))
                 if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'needRegister') }
                 res(profile)
             }

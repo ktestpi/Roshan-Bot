@@ -1,74 +1,74 @@
 {
     "Melee Creep Radiant": {
-        "Alias": [
+        "alias": [
             "Radiant Creep"
         ]
     },
     "Melee Creep Dire": {
-        "Alias": [
+        "alias": [
             "Dire Creep"
         ]
     },
     "Bounty Hunter": {
-        "Alias": [
+        "alias": [
             "Bounty",
             "BH"
         ]
     },
     "Crystal Maiden": {
-        "Alias": [
+        "alias": [
             "Crystal",
             "Maiden",
             "CM"
         ]
     },
     "Drow Ranger": {
-        "Alias": [
+        "alias": [
             "Drow"
         ]
     },
     "Fahrvhan the Dreamer": {
-        "Alias": [
+        "alias": [
             "Fahvrhan"
         ]
     },
     "J'Muy the Wise": {
-        "Alias": [
+        "alias": [
             "Jmuy"
         ]
     },
     "Keefe the Bold": {
-        "Alias": [
+        "alias": [
             "Keefe"
         ]
     },
     "Legion Commander": {
-        "Alias": [
+        "alias": [
             "LC"
         ]
     },
     "Phantom Assassin": {
-        "Alias": [
+        "alias": [
             "PA"
         ]
     },
     "Debbi the Cunning": {
-        "Alias": [
+        "alias": [
             "Debbi"
         ]
     },
     "Sorla Khan": {
-        "Alias": [
+        "alias": [
             "Sorla"
         ]
     },
     "Winter Wyvern": {
-        "Alias": [
+        "alias": [
             "WW"
         ]
     },
     "Bolt of Damocles": {
-        "Alias": [
+        "alias": [
             "BoD",
             "Damocles"
         ]

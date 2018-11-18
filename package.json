@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "aghanim": "github:desvelao/aghanim#dev",
-    "artifact-database": "github:desvelao/artifact-database",
+    "artifact-api": "github:openartifact/artifact-api",
     "erisjs-utils": "github:desvelao/erisjs-utils#dev",
     "firebase-admin": "^5.11.0",
     "glob": "^7.1.2",

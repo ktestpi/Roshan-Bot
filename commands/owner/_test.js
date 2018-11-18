@@ -19,7 +19,7 @@ module.exports = new Command('tes',{
     //   return new Error('error in TES')
     // })
     // throw new Error('Holaaaaa')
-    throw new ConsoleError('opendota','errorOpendotaRequest', new Error('Hola'))
+    console.log(this.plugins.Artifact.deckDecode('ADCJWkTZX05uwGDCRV4XQGy3QGLmqUBg4GQJgGLGgO7AaABR3JlZW4vQmxhY2sgRXhhbXBsZQ__'))
     // return Promise.reject(new Error('blbablaslasa'))
     // throw new Error(`Error creating config for **${msg.author.username}** (${msg.author.id})`)
     // setTimeout(() => { throw }, 2000)

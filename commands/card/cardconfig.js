@@ -12,12 +12,13 @@ enumHeroes.getKeyByAlias = function(tag){
 module.exports = new Command('cardconfig',{
   category : 'Account', help : 'Configura la tarjeta de jugador@', args : ''},
   function(msg, args, command){
-    return this.plugins.Opendota.userID(msg, args)
+    return this.plugins.Account.exists(msg.author.id)
       // .then(player => Promise.all([player,this.plugins.Opendota.player(player.data.profile.dota)]))
       .then(player => {
-        if(player.discordID !== msg.author.id){return command.error()}
-        const profile = player.data
-        let heroes = profile.card.heroes.split(',')
+        console.log('Player',player)
+        if(player._id !== msg.author.id){return command.error()}
+        console.log('After check')
+        let heroes = player.card.heroes.split(',')
         const lang = this.locale.getUserStrings(msg)
         if (args.length > 1) {
           let _heroes = [], _pos = []
@@ -40,6 +41,7 @@ module.exports = new Command('cardconfig',{
           if (_heroes.length) { update.heroes = _heroes.join(',') }
           if (_pos.length) { update.pos = _pos.join(',') }
           if (!Object.keys(update).length) { return }
+          console.log('Update',update)
           return this.cache.profiles.modify(msg.author.id, { card: update }).then(() => msg.addReaction(this.config.emojis.default.accept))
         } else {
           return msg.reply({
@@ -47,8 +49,8 @@ module.exports = new Command('cardconfig',{
               title: this.locale.replacer(lang.playerCard, { username: msg.author.username }),
               thumbnail: { url: msg.author.avatarURL, width: 40, height: 40 },
               fields: [
-                { name: lang.highlightsHeroes, value: `\`\`\`${profile.card.heroes ? heroes.map(h => enumHeroes.getValue(h).name).join(', ') : this.locale.replace('errorCardNoHeroesConfig', msg, { cmd: 'r!cardhelp' })}\`\`\``, inline: false },
-                { name: lang.position, value: `\`\`\`${enumPlayerPos.getValue(profile.card.pos)}\`\`\``, inline: false }
+                { name: lang.highlightsHeroes, value: `\`\`\`${player.card.heroes ? heroes.map(h => enumHeroes.getValue(h).name).join(', ') : this.locale.replace('errorCardNoHeroesConfig', msg, { cmd: 'r!cardhelp' })}\`\`\``, inline: false },
+                { name: lang.position, value: `\`\`\`${enumPlayerPos.getValue(player.card.pos)}\`\`\``, inline: false }
               ],
               footer: { text: lang.roshanCard, icon_url: this.user.avatarURL },
               color: this.config.color
