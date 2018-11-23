@@ -1,4 +1,4 @@
-const Collection = require('./Collection')
+const Collection = require('./collection')
 
 module.exports = class FirebaseCollection extends Collection{
     constructor(obj,db){
