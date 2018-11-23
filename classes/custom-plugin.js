@@ -1,6 +1,5 @@
 const { Plugin } = require('aghanim')
 
-
 module.exports = function CustomPlug(...load){
     return class CustomPlugin extends Plugin {
         constructor(client, options) {

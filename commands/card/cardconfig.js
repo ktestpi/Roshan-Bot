@@ -2,12 +2,6 @@ const { Command } = require('aghanim')
 const enumHeroes = require('../../enums/heroes')
 const enumPlayerPos = require('../../enums/player_positions')
 
-enumHeroes.getKeyByAlias = function(tag){
-  for (let [key,val] of this) {
-    if(val.alias.includes(tag)){return key}
-  }
-  return undefined
-}
 
 module.exports = new Command('cardconfig',{
   category : 'Account', help : 'Configura la tarjeta de jugador@', args : ''},
@@ -42,7 +36,7 @@ module.exports = new Command('cardconfig',{
           if (_pos.length) { update.pos = _pos.join(',') }
           if (!Object.keys(update).length) { return }
           console.log('Update',update)
-          return this.cache.profiles.modify(msg.author.id, { card: update }).then(() => msg.addReaction(this.config.emojis.default.accept))
+          return this.cache.profiles.save(msg.author.id, { card: update }).then(() => msg.addReaction(this.config.emojis.default.accept))
         } else {
           return msg.reply({
             embed: {

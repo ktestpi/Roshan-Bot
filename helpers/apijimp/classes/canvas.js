@@ -156,7 +156,7 @@ class Canvas extends Square{
     })
     return new Promise((resolve,reject) => {
       // this.base.getBuffer(jimp.MIME_JPEG,function(err,buffer){resolve(buffer)})
-      this.base.getBuffer(format === 'png' ? jimp.MIME_PNG : jimp.MIME_JPG,function(err,buffer){
+      this.base.getBuffer(format === 'png' ? jimp.MIME_PNG : jimp.MIME_JPEG,function(err,buffer){
         if(err){reject(err)}
         resolve(buffer)
       })

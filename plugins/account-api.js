@@ -51,10 +51,10 @@ module.exports = class Account extends CustomPlugin() {
 			.then(() => this.client.notifier.console('userToLeaderboard', `${discordID}`))
 	}
 	modify(discordID,data){
-		return this.client.cache.profiles.modify(discordID, data)
+		return this.client.cache.profiles.save(discordID, data)
 	}
 	delete(discordID){
-		return this.client.cache.profiles.erase(discordID)
+		return this.client.cache.profiles.remove(discordID)
 			.then(() => this.deleteAccountLeaderboard(discordID))
 			.then(() => this.client.notifier.console('userDelLeaderboard', `${discordID}`))
 	}

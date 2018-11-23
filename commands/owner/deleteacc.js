@@ -21,7 +21,7 @@ module.exports = new Command('deleteacc',{
       }
     }).then((m) => {
       msg.addReaction(this.config.emojis.default.envelopeIncoming);
-      return this.cache.profiles.erase(user.id).then(() => {
+      return this.cache.profiles.remove(user.id).then(() => {
         this.notifier.accountdelete(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
         m.addReaction(this.config.emojis.default.accept)
       })

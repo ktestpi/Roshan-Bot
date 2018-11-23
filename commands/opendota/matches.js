@@ -22,7 +22,7 @@ module.exports = new Command('matches',{
         let table = util.Classes.Table.renderRow([lang.wl, lang.hero, lang.kda, lang.duration.slice(0, 3), lang.matchID], spacesBoard, '\u2002') + '\n';
         results[1].slice(0,8).forEach(match => {
           if (!match) { return };
-          table += util.Classes.Table.renderRow([odutil.winOrLose(match.radiant_win, match.player_slot).slice(0, 1), enumHeroes.getValue(match.hero_id).name, match.kills + '/' + match.deaths + '/' + match.assists, odutil.durationTime(match.duration)], spacesBoard, '\u2002')
+          table += util.Classes.Table.renderRow([odutil.winOrLose(match.radiant_win, match.player_slot).slice(0, 1), enumHeroes.getValue(match.hero_id).localized_name, match.kills + '/' + match.deaths + '/' + match.assists, odutil.durationTime(match.duration)], spacesBoard, '\u2002')
             + '    ' + util.Markdown.link('https://www.dotabuff.com/matches/' + match.match_id, match.match_id) + '\n';
         })
         return msg.reply({

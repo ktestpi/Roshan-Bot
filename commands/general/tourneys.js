@@ -43,7 +43,7 @@ module.exports = new Command('tourneys',{
     }else{
       const search = args.from(1)
       if(!search){return}
-      const tourney = this.cache.tourneys.bucket.find(t => t._id.toLowerCase() === search.toLowerCase())
+      const tourney = this.cache.tourneys.find(t => t._id.toLowerCase() === search.toLowerCase())
       if(!tourney){return msg.reply(this.locale.replacer(lang.errorTourneysSearch,{search}))}
       let fields = []
       if(tourney.start){fields.push({name : lang.tourneysBegin, value : util.Date.custom(parseInt(tourney.start)*1000,'D/M',true), inline : true})}

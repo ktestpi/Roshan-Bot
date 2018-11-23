@@ -22,7 +22,7 @@ module.exports = new Command(['player','p'],{
         const lang = this.locale.getUserStrings(msg)
         const top5Heroes = results[2].slice(0,5).reduce((sum, el) => {
           return sum
-            + this.locale.replacer(lang.top5Heroes, { hero: enumHeroes.getValue(el.hero_id).name, wr: odutil.winratio(el.win, el.games - el.win), games: el.games }) + '\n'
+            + this.locale.replacer(lang.top5Heroes, { hero: enumHeroes.getValue(el.hero_id).localized_name, wr: odutil.winratio(el.win, el.games - el.win), games: el.games }) + '\n'
         },'')
         const kda = odutil.kda(results[3][0].sum, results[3][1].sum, results[3][2].sum)
         return msg.reply({

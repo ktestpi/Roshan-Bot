@@ -7,10 +7,10 @@ const enumMedals = require('../../enums/medals')
 const AssetLoader = require('./classes/assetloader')
 
 const loader = new AssetLoader('./img/',{
-  hero : {path : 'heroes', ext : 'jpg', conversor : (input) => enumHeroes.getValue(input).name_id},
+  hero : {path : 'heroes', ext : 'png', conversor : (input) => enumHeroes.getValue(input).name_id},
   minihero : {path : 'miniheroes', ext : 'png', conversor : (input) => enumHeroes.getValue(input).name_id},
   logo : {path : 'logos', ext : 'png'},
-  item : {path : 'items', ext : 'jpg', conversor : (input) => enumItems.getValue(input)},
+  item: { path: 'items', ext: 'png', conversor: (input) => {const result = enumItems.getValue(input); return result ? result.name_id : undefined}},
   cardBG : {path : 'cards', ext : 'jpg', conversor : (input) => enumCardBG.getValue(input)},
   cardTemplate : {path : 'templates/card', ext : 'png', default : 'default'},
   matchTemplate : {path : 'templates/match', ext : 'jpg', default : '1'},

@@ -2,7 +2,7 @@ const { SimpleEnums } = require('../classes/enums')
 
 //TODO Mirar name_id en idcardconfig
 const HEROES = {
-  "1" : {"name" : "Anti-Mage", "name_id" : "anti-mage", alias : ["antimage","am"]},
+  "1" : {"name" : "Anti-Mage", "name_id" : "antimage", alias : ["antimage","am"]},
   "2" : {"name" : "Axe", "name_id" : "axe", alias : ["axe"]},
   "3" : {"name" : "Bane", "name_id" : "bane", alias : ["bane"]},
   "4" : {"name" : "BloodSeeker", "name_id" : "bloodseeker", alias : ["bloodseeker","bs"]},
@@ -23,7 +23,7 @@ const HEROES = {
   "19" : {"name" : "Tiny", "name_id" : "tiny", alias : ["tiny"]},
   "20" : {"name" : "Vengeful Spirit", "name_id" : "vengeful_spirit", alias : ["vengeful","vg"]},
   "21" : {"name" : "Windranger", "name_id" : "windranger", alias : ["windranger","wr"]},
-  "22" : {"name" : "Zeus", "name_id" : "zeus", alias : ["zeus"]},
+  "22" : {"name" : "Zeus", "name_id" : "zuus", alias : ["zeus"]},
   "23" : {"name" : "Kunkka", "name_id" : "kunkka", alias : ["kunkka"]},
   "24" : {"name" : "", "name_id" : "", "alias" : []},
   "25" : {"name" : "Lina", "name_id" : "lina", alias : ["lina"]},
@@ -43,7 +43,7 @@ const HEROES = {
   "39" : {"name" : "Queen of Pain", "name_id" : "queen_of_pain", alias : ["queenofpain","queen"]},
   "40" : {"name" : "Venomancer", "name_id" : "venomancer", alias : ["venomancer"]},
   "41" : {"name" : "Faceless Void", "name_id" : "faceless_void", alias : ["void"]},
-  "42" : {"name" : "Wraith King", "name_id" : "wraith_king", alias : ["wk"]},
+  "42" : {"name" : "Wraith King", "name_id" : "skeleton_king", alias : ["wk"]},
   "43" : {"name" : "Death Prophet", "name_id" : "death_prophet", alias : ["deathprophet","dp"]},
   "44" : {"name" : "Phantom Assassin", "name_id" : "phantom_assassin", alias : ["phantomassasin","pa"]},
   "45" : {"name" : "Pugna", "name_id" : "pugna", alias : ["pugna"]},
@@ -54,8 +54,8 @@ const HEROES = {
   "50" : {"name" : "Dazzle", "name_id" : "dazzle", alias : ["dazzle"]},
   "51" : {"name" : "Clockwerk", "name_id" : "clockwerk", alias : ["clockwerk","clock"]},
   "52" : {"name" : "Leshrac", "name_id" : "leshrac", alias : ["leshrac","lesh"]},
-  "53" : {"name" : "Nature's Prophet", "name_id" : "natures_prophet", alias : ["nature","np"]},
-  "54" : {"name" : "Lifestealer", "name_id" : "lifestealer", alias : ["lifestealer","ls"]},
+  "53" : {"name" : "Nature's Prophet", "name_id" : "furion", alias : ["nature","np"]},
+  "54" : {"name" : "Lifestealer", "name_id" : "life_stealer", alias : ["lifestealer","ls"]},
   "55" : {"name" : "Dark Seer", "name_id" : "dark_seer", alias : ["darkseer","ds"]},
   "56" : {"name" : "Clinkz", "name_id" : "clinkz", alias : ["clinz"]},
   "57" : {"name" : "Omniknight", "name_id" : "omniknight", alias : ["omni"]},
@@ -92,7 +92,7 @@ const HEROES = {
   "88" : {"name" : "Nyx Assassin", "name_id" : "nyx_assassin", alias : ["nyx"]},
   "89" : {"name" : "Naga Siren", "name_id" : "naga_siren", alias : ["naga","siren"]},
   "90" : {"name" : "Keeper of the Light", "name_id" : "keeper_of_the_light", alias : ["kotl","keeper"]},
-  "91" : {"name" : "Io", "name_id" : "io", alias : ["io","wisp"]},
+  "91" : {"name" : "Io", "name_id" : "wisp", alias : ["io","wisp"]},
   "92" : {"name" : "Visage", "name_id" : "visage", alias : ["visage"]},
   "93" : {"name" : "Slark", "name_id" : "slark", alias : ["slark"]},
   "94" : {"name" : "Medusa", "name_id" : "medusa", alias : ["medusa"]},
@@ -124,10 +124,37 @@ const HEROES = {
   "120" : {"name" : "Pangolier", "name_id" : "pangolier", alias : ["pango"]},
   "121" : {"name" : "Grimstroke", "name_id" : "grimstroke", alias : ["grimstroke","gs"]}
 }
-const enumy = new SimpleEnums(HEROES)
 
-module.exports = enumy
+const { heroes, hero_abilities, abilities } = require('dotaconstants')
 
+for (const key in heroes) {
+  heroes[key].name_id = heroes[key].name.replace('npc_dota_hero_', '')
+  heroes[key].alias = HEROES[key].alias
+  heroes[key].abilities = hero_abilities[heroes[key].name].abilities.filter(ability => ability !== 'generic_hidden').map(ability => abilities[ability].dname)
+  // heroes[key].talents = hero_abilities[heroes[key].name].talents.map(talent => ({dname : talent.name, level : talent.level}))
+}
+
+const enumHeroes = new SimpleEnums(heroes)
+
+enumHeroes.getKeyByAlias = function (tag) {
+  for (let [key, val] of this) {
+    if (val.alias.includes(tag)) { return key }
+  }
+  return undefined
+}
+
+enumHeroes.getValueByAlias = function (tag) {
+  for (let [key, val] of this) {
+    if ([val.localized_name,...val.alias].map(v => v.toLowerCase()).includes(tag.toLowerCase())) { return val }
+  }
+  return undefined
+}
+
+enumHeroes.apiURL = 'https://api.opendota.com'
+enumHeroes.dotaCdnURL = 'http://cdn.dota2.com'
+enumHeroes.dotaWikiURL = 'http://dota2.gamepedia.com/'
+
+module.exports = enumHeroes
 // module.exports.heroes = HEROES
 // module.exports.heroesArray = Object.keys(HEROES).map(k => Object.assign({},{_id : k},HEROES[k]))
 //

@@ -51,7 +51,8 @@ for(cat in CONFIG.colors){
 //Initialize Firebase
 firebase.initializeApp({
   credential: firebase.credential.cert(firebaseConfig),
-  databaseURL: "https://roshan-bot.firebaseio.com"
+  databaseURL: "https://roshan-bot.firebaseio.com",
+  storageBucket: "roshan-bot.appspot.com"
 });
 
 //Initialize Bot with Aghanim Command Client
@@ -62,7 +63,8 @@ bot.config = CONFIG
 bot.config.colors.palette = {default : CONFIG.color}
 bot.envprod = ENVPROD
 bot.firebase = firebase;
-bot.db = firebase.database().ref();
+bot.storage = firebase.storage().bucket()
+bot.db = firebase.database().ref()
 bot.errorManager = new ErrorManager(bot, bot.config.console)
 bot.notifier = new Notifier(bot, bot.config.notifier)
 
@@ -114,7 +116,7 @@ bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
   if(query === 'owner' && !owner){return}
   let helpMessage = lang.helpMessage +'\n\n'
   if(categories.includes(query)){
-    const cmds = this.getCommandsFromCategories(query)
+    const cmds = this.getCommandsFromCategories(query).sort((a, b) => a.name > b.name ? 1 : -1)
     const prefix = this.defaultPrefix
     if(!cmds){helpMessage += this.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${this.defaultPrefix}help ${c.name.toLowerCase()}\` - ${this.locale.getCat(c.name,msg)}`).join('\n') + '\n\n' + lang.helpMessageAfterCategories}//// TODO:
     else{

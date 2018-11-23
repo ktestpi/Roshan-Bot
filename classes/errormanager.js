@@ -142,50 +142,6 @@ class UserSilentError extends BaseError {
 module.exports.UserError = UserError
 module.exports.ConsoleError = ConsoleError
 module.exports.UserSilentError = UserSilentError
-// module.exports.UserError = class UserError extends BaseError{
-//     constructor(type, string, ctx = {}){
-//         super(type, ctx)
-//         this.for = 'user'
-//         this.message = ctx.msg._client.locale.replacer(ctx.msg._client.locale.getUserString(string, ctx.msg),ctx.replacer)
-//         this.messageDev = ctx.msg._client.locale.replacer(ctx.msg._client.locale.getDevString(string), ctx.replacer)
-//         this.author = { name: ctx.msg.author.username, iconURL: ctx.msg.author.avatarURL, id : ctx.msg.author.id}
-//         this.channel = { id : ctx.msg.channel.id, name: ctx.msg.channel.name, type: ctx.msg.channel.type }
-//         this.cmd = ctx.command.name
-//         this.err = ctx.err || ''
-//     }
-//     get toEmbed(){
-//         const embed = {
-//             author : { name: `${this.author.name} - ${this.author.id}`, icon_url: this.author.iconURL },
-//             description : this.messageDev,
-//             footer: { text: `Error: ${this.type || 'ND'} - ${this.cmd || ''}` }
-//         }
-//         if (this.err) {
-//             embed.fields = [{ name: 'Stack', value: toCode(this.err.stack), inline: false }]
-//         }
-//         return { embed }
-//     }
-// }
-
-// module.exports.ConsoleError = class ConsoleError extends BaseError {
-//     constructor(type, message, ctx = {}) {
-//         super(type,ctx)
-//         this.for = 'console'
-//         this.message = message
-//         this.messageDev = message
-//         this.err = ctx.err || ''
-//     }
-//     get toEmbed(){
-//         const embed = {
-//             description : this.messageDev,
-//             footer: { text: `Error: ${this.type || 'ND'} - ${this.for || ''}` }
-//         }
-//         if (this.err) {
-//             embed.fields = [{ name: 'Stack', value: toCode(this.err.stack), inline: false }]
-//         }
-//         return { embed }
-//     }
-// }
-
 
 function toCode(string){
     return `\`\`\`${string}\`\`\``

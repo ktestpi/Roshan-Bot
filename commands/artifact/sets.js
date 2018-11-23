@@ -8,13 +8,13 @@ module.exports = new Command('sets',{
       const set = this.plugins.Artifact.getSet(query)
       if(!set){return func(msg,this)}
       return msg.reply({embed : {
-        title : 'Set info - ' + set.Name,
-        description : set.description,
-        thumbnail : {url : set.Image, height : 40, width : 40},
+        title : 'Set info - ' + set.name.english,
+        // description : set.description,
+        // thumbnail : {url : set.Image, height : 40, width : 40},
         fields : [
-          {name : 'Summary', value : `**Hero:** ${set.Summary.Hero}\n**Creep:** ${set.Summary.Creep}\n**Spell:** ${set.Summary.Spell}\n**Improvement:** ${set.Summary.Improvement}\n**Weapon:** ${set.Summary.Weapon}\n**Armor:** ${set.Summary.Armor}\n**Accessory:** ${set.Summary.Accessory}\n**Consumible:** ${set.Summary.Consumible}\n`, inline : false},
+          {name : 'Summary', value : `**Hero:** ${set.summary.hero}\n**Creep:** ${set.summary.creep}\n**Spell:** ${set.summary.spell}\n**Improvement:** ${set.summary.improvement}\n**Weapon:** ${set.summary.weapon}\n**Armor:** ${set.summary.armor}\n**Accessory:** ${set.summary.accessory}\n**Consumible:** ${set.summary.consumable}\n`, inline : false},
         ],
-        footer : {text : `${set.TotalCards} cards - Realease at ${set.Release}`},
+        footer: { text: `${set.totalCards} cards ` }, /*- Realease at ${set.Release}*/
         color : this.config.color
       }})
     }else{
@@ -26,8 +26,8 @@ module.exports = new Command('sets',{
 function func(msg,bot){
   return msg.reply({embed : {
     title : 'Sets info',
-    description : bot.plugins.Artifact.sets.map(s => `**${s.Name}** - ${s.TotalCards} cards`).join('\n'),
-    footer : {text : `${bot.plugins.Artifact.sets.reduce((s,v) => s+v.TotalCards,0)} cards`},
+    description : bot.plugins.Artifact.sets.map(s => `**${s.name.english}** - ${s.totalCards} cards`).join('\n'),
+    footer : {text : `${bot.plugins.Artifact.sets.reduce((s,v) => s+v.totalCards,0)} cards`},
     color : bot.config.color
   }})
 }

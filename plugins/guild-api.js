@@ -72,10 +72,10 @@ module.exports = class Guild extends CustomPlugin() {
         return this.client.cache.servers.save(guildID,schema)
     }
     modify(guildID,data){
-        return this.client.cache.modify(guildID,data)
+        return this.client.cache.servers.save(guildID,data)
     }
     delete(guildID){
-        return this.client.cache.erase(guildID)
+        return this.client.cache.servers.remove(guildID)
     }
     createProcess(guild){
         this.client.createMessage(this.client.config.guild.notifications, {

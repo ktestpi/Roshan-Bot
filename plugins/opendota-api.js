@@ -2,6 +2,10 @@ const { Plugin } = require('aghanim')
 const CustomPlugin = require('../classes/custom-plugin.js')
 const { Request, Markdown } = require('erisjs-utils')
 const { UserError, ConsoleError } = require('../classes/errormanager.js')
+// const enumHeroes = require('../../enums/heroes')
+
+// const items = require('dotaconstants').items
+// items = Object.keys(heroes).map(key => items[key])
 
 module.exports = class Opendota extends Plugin {
     constructor(client, options) {
@@ -9,6 +13,7 @@ module.exports = class Opendota extends Plugin {
         this.baseURL = baseURL
         this._calls = 0
         this.db = this.client.db.child('botstats')
+        // this.heroes = heroes
         Object.keys(urls).forEach(key => {
             this[key] = decorator(this.request.bind(this), urls[key].map(url => this.baseURL + url))
         })

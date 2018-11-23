@@ -22,9 +22,9 @@ module.exports = new Command(['match','m'],{
         let dire = new util.Classes.Table([lang.hero, lang.kda, lang.gpmxpm, lang.lhd, lang.hdmg, lang.tdmg, lang.player], null, spacesBoard, { fill: '\u2002' });
         results[0].players.forEach((player, index) => {
           if (index < 5) {
-            radiant.addRow([enumHeroes.getValue(player.hero_id).name, player.kills + '/' + player.deaths + '/' + player.assists, player.gold_per_min + '/' + player.xp_per_min, player.last_hits + '/' + player.denies, util.Number.tok(player.hero_damage) + lang.k, util.Number.tok(player.tower_damage) + lang.k, player.name ? this.plugins.Bot.parseText(player.name, 'nf') : this.plugins.Bot.parseText(player.personaname || lang.unknown, 'nf')]);
+            radiant.addRow([enumHeroes.getValue(player.hero_id).localized_name, player.kills + '/' + player.deaths + '/' + player.assists, player.gold_per_min + '/' + player.xp_per_min, player.last_hits + '/' + player.denies, util.Number.tok(player.hero_damage) + lang.k, util.Number.tok(player.tower_damage) + lang.k, player.name ? this.plugins.Bot.parseText(player.name, 'nf') : this.plugins.Bot.parseText(player.personaname || lang.unknown, 'nf')]);
           } else {
-            dire.addRow([enumHeroes.getValue(player.hero_id).name, player.kills + '/' + player.deaths + '/' + player.assists, player.gold_per_min + '/' + player.xp_per_min, player.last_hits + '/' + player.denies, util.Number.tok(player.hero_damage) + lang.k, util.Number.tok(player.tower_damage) + lang.k,
+            dire.addRow([enumHeroes.getValue(player.hero_id).localized_name, player.kills + '/' + player.deaths + '/' + player.assists, player.gold_per_min + '/' + player.xp_per_min, player.last_hits + '/' + player.denies, util.Number.tok(player.hero_damage) + lang.k, util.Number.tok(player.tower_damage) + lang.k,
             player.name ? this.plugins.Bot.parseText(player.name, 'nf') : this.plugins.Bot.parseText(player.personaname || lang.unknown, 'nf')]);
           }  
         })

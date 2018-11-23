@@ -40,7 +40,7 @@ module.exports = function(data_info){
         const infoMatch = canvas.write('infoMatch',footerInfo,'w16').set(canvas,'cxgyb',{ x : 0, y : 10})
         const refTable = canvas.ref('refTable',{x : 12 , y : 40})
         for (var i = 1; i < 11; i++) {
-          const minihero = canvas.paint('minihero'+i,data[i][0]).set(refTable,'rxty',{ x : 0, y : (i-1)*LINE_HEIGHT + (i > 5 ? SPACE_TEAMS_Y : 0)})
+          const minihero = canvas.paint('minihero'+i,data[i][0].resize(43,jimp.AUTO)).set(refTable,'rxty',{ x : 0, y : (i-1)*LINE_HEIGHT + (i > 5 ? SPACE_TEAMS_Y : 0)})
           const playername = canvas.write('playername'+i,data[i][1],'w16').sliceUntil(15).set(minihero,'rxcy',{ x : 4, y : 0 })
           const k = canvas.write('k'+i,data[i][2],'w16',{x : 202, y : playername.y}).set(null,'csx')
           const d = canvas.write('k'+i,data[i][3],'w16',{x : 222, y : playername.y}).set(null,'csx')
@@ -50,7 +50,7 @@ module.exports = function(data_info){
           const lhd = canvas.write('lhd'+i,data[i][7],'w16',{x : 366, y : playername.y}).set(null,'csx')
           const hdtd = canvas.write('hdtd'+i,data[i][8],'w16',{x : 443, y : playername.y}).set(null,'csx')
           data[i][9].filter(i => i).forEach((item,itemIndex) => {
-            canvas.paint('player'+i+'item'+itemIndex,item,{x : 493 + itemIndex*ITEM_WIDTH, y : minihero.y}).add()
+            canvas.paint('player' + i + 'item' + itemIndex, item.resize(33, jimp.AUTO),{x : 493 + itemIndex*ITEM_WIDTH, y : minihero.y}).add()
           })
           // console.log('Hi'+i);
         }
