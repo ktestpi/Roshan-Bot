@@ -419,7 +419,7 @@
   "cmd_setlang_help" : "Set account language",
   "cmd_serverlang_args" : "<language>",
   "cmd_serverlang_help" : "Set server language",
-  "cmd_deck_args" : "<deck/web url code>",
+  "cmd_deck_args" : "<deck/web url code> [new deck name]",
   "cmd_deck_help" : "Generate a deck from a code",
   "cmd_searchdeck_args" : "<search>",
   "cmd_searchdeck_help" : "Search a deck by name",

@@ -2,6 +2,9 @@ module.exports = class Collection extends Map{
     constructor(obj = {}){
         super(Object.keys(obj).map(k => {obj[k]._id = k; return [k,obj[k]]}))
     }
+    get keysID(){
+        return this.toArray().map(k => k._id)
+    }
     toArray(){
         const array = []
         for (let item of this.values()) {

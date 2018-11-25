@@ -20,7 +20,10 @@ class Artifact extends Plugin {
         this.apiURL = 'https://playartifact.com/cardset/'
         this.storareDecksURL = 'https://storage.googleapis.com/roshan-bot.appspot.com/decks%2F'
         this.setsIDs = ['00','01']
-        this.deckCodeBaseUrl = `https://playartifact.com/d/`
+        this.deckCodeBaseUrl = `https://www.playartifact.com/d/`
+        this.deckCodeBaseUrlReduced = `https://playartifact.com/d/`
+        this.deckCodeBaseUrlArtibuff = `https://www.artibuff.com/decks/`
+        this.deckCodeBaseUrlArtibuffReduced = `https://artibuff.com/decks/`
         this.deckCodeStartsWith = 'ADC'
         this.pathStorageDecks = 'decks'
         this.configDeckDecoder = {
@@ -28,9 +31,13 @@ class Artifact extends Plugin {
             rowHeight : 28,
             imageMiniSize : 24,
             space4 : 4,
+            space5: 5,
             space6 : 6,
             space10 : 10,
+            space12 : 12,
+            space14 : 14,
             space24 : 24,
+            space28 : 28,
             imageTypeCardSize : 16,
             heroSigSize : 20,
         }
@@ -163,7 +170,7 @@ class Artifact extends Plugin {
         // return `https://github.com/Open-Artifact/artifactdb-set-${setID}/blob/master/assets/sets/set-${setID}/symbol/${rarity.toLowerCase()}.png?raw=true`
     }
     static getAlias(data, dataset, modifiers){
-        const re = /['`\.]/g
+        const re = /['!`\.]/g
         const alias = []
         if (modifiers[data.card_name.english] && modifiers[data.card_name.english].alias){
             modifiers[data.card_name.english].alias.forEach(a => alias.push(a))
@@ -278,7 +285,7 @@ class Artifact extends Plugin {
     }
     generateElementsDeckCode(code){
         const decoded = this.deckDecode(code)
-        ;[decoded.heroes]
+        // ;[decoded.heroes]
     }
     deckCodeUrl(code){
         return `${this.deckCodeBaseUrl}${code}`
@@ -308,12 +315,20 @@ class Artifact extends Plugin {
 //     { count: 3, id: 10322 },
 //     { count: 3, id: 10354 }]
 // }
-    generateDeck(code){
+    generateDeck(code, alias){
         try{
             const mainDeckTypes = ['Creep', 'Spell', 'Improvement']
             const itemDeckTypes = ['Weapon', 'Armor', 'Accessory', 'Consumable']
-            const decoded = this.deckDecode(code)
-            // console.log(decoded)
+            let decoded = this.deckDecode(code)
+            if(!decoded){ throw new Error(`Error in decoding deck: ${code}`)}
+            if(alias && decoded.name !== alias){
+                decoded.name = alias
+                const oldcode = code
+                code = this.deckEncode(decoded)
+                if (!code) { throw new Error(`Error in new code: ${oldcode}`) }
+                decoded = this.deckDecode(code)
+                if (!decoded) { throw new Error(`Error in decoding deck: ${code}`) }
+            }
             const cardsDeck = [...decoded.heroes.sort((a, b) => a.turn - b.turn), ...decoded.cards, ...decoded.heroes.map(card => ({ id : this.cards.find(signatureCard => signatureCard.name.english === this.getCardByID(card.id).signatureCard.english).id , count : 3}))]
                 .map(card => ({ card: this.getCardByID(card.id), turn : card.turn || 0, count : card.count || 1})) // Todo ordenar por coste y colores
             
@@ -369,15 +384,15 @@ class Artifact extends Plugin {
                 data[3].forEach((el,index) => {
                     const ref = canvas.ref('row' + index, { x: 0, y: index * this.configDeckDecoder.rowHeight, w: this.configDeckDecoder.width, h: this.configDeckDecoder.rowHeight})
                     const cardBg = canvas.paint(`bg${index}`, data[2][Object.keys(Artifact.hexColors).indexOf(el[8])]).set(ref, 'cy')
-                    const imageMini = canvas.paint(`icon${index}`, el[0].resize(this.configDeckDecoder.imageMiniSize, jimp.AUTO)).place(ref, 'cy').set(ref, 'lx', { x: this.configDeckDecoder.space4})
+                    const imageMini = canvas.paint(`icon${index}`, el[0].resize(this.configDeckDecoder.rowHeight, jimp.AUTO)).place(ref, 'cy').set(ref, 'lx', { x: 0 })//.set(ref, 'lx', { x: this.configDeckDecoder.space4})
                     // const costCard = canvas.write('costCard',el[5],'w16').place(imageMini,'rx',{x : 10}).set(ref,'cy')
-                    const imageTypeCard = canvas.paint(`cardtype${index}`, el[5].resize(this.configDeckDecoder.imageTypeCardSize, jimp.AUTO)).set(imageMini, 'rxcy', { x: this.configDeckDecoder.space6})
+                    const imageTypeCard = canvas.paint(`cardtype${index}`, el[5].resize(this.configDeckDecoder.imageTypeCardSize, jimp.AUTO)).set(imageMini, 'rxcy', { x: this.configDeckDecoder.space4})
                     const cardName = canvas.write('cardName', el[1], 'w16').place(imageTypeCard, 'rx', { x: this.configDeckDecoder.space24}).set(ref,'cy')
                     if(index < 5){
                         const heroTurn = canvas.write('heroTurn', `R${el[3]}`, 'w16').set(ref, 'gxrcy', { x: this.configDeckDecoder.space4 })
                         // const cardSymbol = canvas.paint(`cardSymbol${index}`, el[6].resize(12, jimp.AUTO)).set(heroTurn, 'gxlcy', {x : -16})
                     }else if( index > 4){
-                        const cardCost = canvas.write('cardCost', `${el[7]}`, 'w16').place(imageTypeCard, 'rxcy', { x: this.configDeckDecoder.space10}).set(null,'csx')
+                        const cardCost = canvas.write('cardCost', `${el[7]}`, 'w16').place(imageTypeCard, 'rxcy', { x: this.configDeckDecoder.space12}).set(null,'csx')
                         const cardCount = canvas.write('cardCount', `x${el[4]}`, 'w16').set(ref, 'gxrcy', { x: this.configDeckDecoder.space4 })
                         if(el[9]){
                             // console.log(el[9])
@@ -456,7 +471,13 @@ class Artifact extends Plugin {
     isValidDeckCode(string){
         if(string.startsWith(this.deckCodeBaseUrl)){
             return string.replace(this.deckCodeBaseUrl,'')
-        }else if(string.startsWith(this.deckCodeStartsWith)){
+        } else if (string.startsWith(this.deckCodeBaseUrlReduced)) {
+            return string.replace(this.deckCodeBaseUrlReduced, '')
+        } else if (string.startsWith(this.deckCodeBaseUrlArtibuff)) {
+            return string.replace(this.deckCodeBaseUrlArtibuff, '')
+        } else if (string.startsWith(this.deckCodeBaseUrlArtibuffReduced)) {
+            return string.replace(this.deckCodeBaseUrlArtibuffReduced, '')
+        } else if(string.startsWith(this.deckCodeStartsWith)){
             return string
         }
         return false
@@ -496,6 +517,9 @@ class Artifact extends Plugin {
     }
     uploadDeckAndCache(buffer,code,name,author){
         return this.uploadBufferDeck(buffer, code).then(url => this.saveDeckIntoCache(code,name,author,url))
+    }
+    uploadDeckAndCacheDiscord(msg,code,name,author,url){
+        
     }
     getCachedDeck(search){
         return this.client.cache.decks.find(deck => [deck._id,deck.name].map(s => s.toLowerCase()).includes(search.toLowerCase()))

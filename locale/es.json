@@ -419,7 +419,7 @@
   "cmd_setlang_help" : "Establece el idioma de la cuenta",
   "cmd_serverlang_args" : "<idioma>",
   "cmd_serverlang_help" : "Establece el idioma del servidor",
-  "cmd_deck_args": "<código de mazo/web url>",
+  "cmd_deck_args": "<código de mazo/web url> [nuevo nombre de mazo]",
   "cmd_deck_help": "Genera un mazo a partir de un código",
   "cmd_searchdeck_args": "<búsqueda>",
   "cmd_searchdeck_help": "Busca un mazo por nombre",

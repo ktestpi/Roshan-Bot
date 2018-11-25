@@ -100,7 +100,7 @@ module.exports = class Bot extends CustomPlugin() {
     }
     updateLeaderboard(snap) {
         if(snap){
-            return Object.keys(snap).map(p => ({ discord_id: p, dota_id: snap[p].profile.dota }))
+            return Object.keys(snap).map(p => ({ discord_id: p, dota_id: snap[p].dota }))
                 .filter(player => player.dota_id)
                 .map(player => {
                     const guild = this.client.guilds.find(g => g.members.get(player.discord_id))
