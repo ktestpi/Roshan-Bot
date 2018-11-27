@@ -68,7 +68,7 @@ module.exports = class Account extends CustomPlugin() {
 			return this.client.createMessage(this.client.config.guild.accounts,{
 				embed :{
 					title: this.client.locale.replacer(devLang.registerAccountTitle, { id: msg.author.id }),
-					description: this.client.locale.replacer(devLang.registerAccountDesc, { guildName, guildID, dotaID: dotaID, steamID: data.profile.account_id}),
+					description: this.client.locale.replacer(devLang.registerAccountDesc, { guildName, guildID, dotaID: dotaID, steamID: data.profile.steamid}),
 					//thumbnail : {url : config.icon, height : 40, width : 40},
 					footer: { text: msg.author.username + ' | ' + msg.author.id + ' | ' + Datee.custom(msg.timestamp, 'D/M/Y h:m:s'), icon_url: msg.author.avatarURL },
 					color: this.client.config.colors.account.register
@@ -118,7 +118,7 @@ module.exports = class Account extends CustomPlugin() {
 				// TODO: Remove Leaderboard
 				this.client.notifier.accountremove(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
 				return msg.reply(this.client.locale.replacer(lang.accountDeleted))
-					.then(() => m.addReactionSucess())
+					.then(() => m.addReactionSuccess())
 			})
 		})
 	}
