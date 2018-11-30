@@ -5,6 +5,7 @@ const modifiers = require('../containers/artifact_cards_modifiers.json')
 const { encode , decode } = require('artifact-api')
 const Canvas = require('../helpers/apijimp/classes/canvas')
 const jimp = require('jimp')
+const steamprice = require('steam-price-api')
 
 class Artifact extends Plugin {
     constructor(client, options) {
@@ -26,6 +27,7 @@ class Artifact extends Plugin {
         this.deckCodeBaseUrlArtibuffReduced = `https://artibuff.com/decks/`
         this.deckCodeStartsWith = 'ADC'
         this.pathStorageDecks = 'decks'
+        this.appID = 583950
         this.configDeckDecoder = {
             width : 280,
             rowHeight : 28,
@@ -267,7 +269,7 @@ class Artifact extends Plugin {
             return cards
         }, []).forEach(card => this.renderCard(msg, card, replacer))
     }
-    renderCard(msg, card, replacer) {
+    renderCardMessage(msg, card, replacer, data){
         return msg.reply({
             embed: {
                 // title : card.name,
@@ -276,12 +278,17 @@ class Artifact extends Plugin {
                     icon_url: Artifact.getCardTypeUrl(card),
                     url: card.imageLarge.default
                 },
-                description: `${card.abilities.length ? card.abilities.map(s => `${s.name.english ? '**' + s.name.english + '** ' : ''}(${s.type}${s.type === "Active" ? ' CD: ' + s.cooldown : ''}) - *${s.text.english}*`).join('\n') + '\n' : ''}${card.text.english ? '*' + card.text.english + '*\n' : ''}${card.signatureCard && card.cardType === "Hero" ? '__**Signature Card:**__ ' + card.signatureCard.english + '\n' : ''}${card.signatureCardFor && card.cardType !== 1 ? '__**Signature Card for:**__ ' + card.signatureCardFor.english + '\n' : ''}${Artifact.iconsCardString(card, replacer)}${[...card.alias, ...card.aliasExtended].length ? '\n**Alias:** ' + [...card.alias, ...card.aliasExtended].map(a => a).join(', ') + '\n' : ''}`, //.filter(a => !a.includes(_sig))
+                description: `${card.abilities.length ? card.abilities.map(s => `${s.name.english ? '**' + s.name.english + '** ' : ''}(${s.type}${s.type === "Active" ? ' CD: ' + s.cooldown : ''}) - *${s.text.english}*`).join('\n') + '\n' : ''}${card.text.english ? '*' + card.text.english + '*\n' : ''}${card.signatureCard && card.cardType === "Hero" ? '__**Signature Card:**__ ' + card.signatureCard.english + '\n' : ''}${card.signatureCardFor && card.cardType !== 1 ? '__**Signature Card for:**__ ' + card.signatureCardFor.english + '\n' : ''}${Artifact.iconsCardString(card, replacer)}${[...card.alias, ...card.aliasExtended].length ? '\n**Alias:** ' + [...card.alias, ...card.aliasExtended].map(a => a).join(', ') + '\n' : ''}${data ? `\n[:moneybag:](https://steamcommunity.com/market/listings/${this.appID}/1${card.id}) ${data.body.lowest_price}`: ``}`, //.filter(a => !a.includes(_sig))
                 thumbnail: { url: card.imageLarge.default, height: 40, width: 40 },
                 footer: { icon_url: Artifact.getCardRarityUrl(card), text: `Set: ${card.setName.english} - ${card.rarity}` },
                 color: Artifact.cardColor(card)
             }
         })
+    }
+    renderCard(msg, card, replacer) {
+        return this.getCardPrice(card.name.english)
+            .then(data => this.renderCardMessage(msg,card,replacer,data))
+            .catch(err => this.renderCardMessage(msg, card, replacer))
     }
     generateElementsDeckCode(code){
         const decoded = this.deckDecode(code)
@@ -529,6 +536,15 @@ class Artifact extends Plugin {
     }
     findAllCachedDeckByName(search) {
         return this.client.cache.decks.filter(deck => deck.name.toLowerCase().includes(search.toLowerCase()))
+    }
+    getCardPrice(cardname){
+        return new Promise((res, rej) => {
+            const card = this.getCardByName(cardname)
+            if(!card){rej(new Error(`Card doesn't exist: ${cardname}`))}
+            steamprice.getprice(this.appID, `1${card.id}`, (err, data) => {
+                !err ? res(data) : rej(err)
+            } , 3) // 1 = USD, 2 = GB, 3 = EUR
+        })
     }
 }
 

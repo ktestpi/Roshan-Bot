@@ -15,8 +15,8 @@ module.exports = class Funcs extends Plugin {
         this.repeatEach = 7200
     }
     ready(){
-        const starterTimer = this.remaining() % this.repeatEach
-        this.setTimeout(starterTimer)
+        // const starterTimer = this.remaining() % this.repeatEach
+        // this.setTimeout(starterTimer)
     }
     setTimeout(time = 7200){
         this.timer = new Timeout(() => this.func(), time * 1000)
