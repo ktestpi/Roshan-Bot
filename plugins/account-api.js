@@ -155,7 +155,7 @@ module.exports = class Account extends CustomPlugin() {
 		if (tag === 'dota') {
 			link = `https://www.dotabuff.com/players/${id}`
 		} else {
-			link = `http://www.steamcommunity.com/id/${id}`
+			link = `http://www.steamcommunity.com/profiles/${id}`
 		}
 		return Markdown.link(link, tag, show)
 	}

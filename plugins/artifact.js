@@ -219,7 +219,7 @@ class Artifact extends Plugin {
             rarity: data.rarity || '',
             color: Artifact.getCardColor(data),
             attack: data.attack || 0,
-            armor: data.amor || 0,
+            armor: data.armor || 0,
             health: data.hit_points || 0,
             abilities: Artifact.getReferenceAbilities(data, dataset.card_list),
             alias: Artifact.getAlias(data, dataset.card_list, modifiers),
