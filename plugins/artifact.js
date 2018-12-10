@@ -153,9 +153,12 @@ class Artifact extends Plugin {
     static getReferenceSignatureCardFor(data, dataset) {
         const parseSignatureCardFor = Artifact.parseReferences(data, ['references'])
         if (!parseSignatureCardFor.length) { return }
-        const signatureCardFor = Artifact.getCardByID(parseSignatureCardFor[0].card_id, dataset)
-        if (!signatureCardFor || signatureCardFor.card_type !== 'Hero'){ return }
-        return signatureCardFor.card_name
+        const signatureCardFor = parseSignatureCardFor.find(c => {
+            const card = Artifact.getCardByID(c.card_id, dataset)
+            return card ? card.card_type === 'Hero' : false
+        })
+        if (!signatureCardFor){ return }
+        return Artifact.getCardByID(signatureCardFor.card_id, dataset).card_name
     }
     static getAliasExtended(data, dataset){
         const aliasExtended = []
@@ -520,6 +523,7 @@ class Artifact extends Plugin {
         })
     }
     saveDeckIntoCache(code,name,author,url){
+        // return { name, author, url, ts: new Date(), _id: code}
         return this.client.cache.decks.save(code, { name, author, url, ts : new Date() })
     }
     uploadDeckAndCache(buffer,code,name,author){

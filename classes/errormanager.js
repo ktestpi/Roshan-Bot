@@ -6,6 +6,7 @@ module.exports.ErrorManager = class ErrorManager{
         // Object.keys(options.errors).forEach(tagerror => {
         //     this.errors[tagerror] = {}
         // })
+        this.eventEmit = 'error'
         this.icons = {
             opendota: '🎮❌'
         }

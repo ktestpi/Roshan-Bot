@@ -111,7 +111,7 @@ module.exports = class Guild extends CustomPlugin() {
         if (msg.attachments.length < 1) {
             servers.forEach(server => {
                 const cached = this.client.cache.servers.get(server.id)
-                if (!cached) { return this.createProcess(server).then(() => this.client.notifier.guildnew(`**${server.name}**`)).catch(err => this.errorManager.emit(new ConsoleError('guildsaving', `Error creating config for **${server.name}** (${server.id})`))) }
+                if (!cached) { return this.createProcess(server).then(() => this.client.notifier.guildnew(`**${server.name}**`)).catch(err => this.errorManager.emit(new ConsoleError('guildsaving', `Error creating config for **${server.name}** (${server.id})`, err))) }
                 if (!all && cached && !cached[mode].enable) { return };
                 const channel = cached ? cached[mode].channel : util.Guild.getDefaultChannel(server, this.client, true).id
                 if (mode === 'feeds' && !cached.feeds.subs.split(',').includes(author)) { return }
@@ -119,21 +119,21 @@ module.exports = class Guild extends CustomPlugin() {
                 this.client.createMessage(channel, { content: message, embed: msg.embeds.length > 0 ? msg.embeds[0] : {}, disableEveryone: false }).catch(err => {
                     // Create the message to defaultChannel of guild (not cofigurated)
                     // this.createMessage(util.Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false})
-                    this.client.errorManager.emit(new ConsoleError('guildmessage', `Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`))
+                    this.client.errorManager.emit(new ConsoleError('guildmessage', `Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`, err))
                 })
             })
         } else {
             Message.sendImage(msg.attachments[0].url).then(buffer => {
                 servers.forEach(server => {
                     const cached = this.client.cache.servers.get(server.id)
-                    if (!cached) { return this.createProcess(server).then(() => this.client.notifier.guildnew(`**${server.name}**`)).catch(err => this.errorManager.emit(new ConsoleError('guildsaving', `Error creating config for **${server.name}** (${server.id})`))) }
+                    if (!cached) { return this.createProcess(server).then(() => this.client.notifier.guildnew(`**${server.name}**`)).catch(err => this.errorManager.emit(new ConsoleError('guildsaving', `Error creating config for **${server.name}** (${server.id})`, err))) }
                     if (!all && cached && !cached[mode].enable) { return };
                     const channel = cached ? cached[mode].channel : util.Guild.getDefaultChannel(server, this.client, true).id
                     if (mode === 'feeds' && !cached.feeds.subs.split(',').includes(author)) { return }
                     this.client.createMessage(channel, { content: message, embed: msg.embeds.length > 0 ? msg.embeds[0] : {}, disableEveryone: false }, { file: results, name: msg.attachments[0].filename }).catch(err => {
                         // Create the message to defaultChannel of guild (not cofigurated)
                         // this.createMessage(Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false},{file : results, name : msg.attachments[0].filename})
-                        this.client.errorManager.emit(new ConsoleError('guildmessage', `Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`))
+                        this.client.errorManager.emit(new ConsoleError('guildmessage', `Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`, err))
                     })
                 })
             })
