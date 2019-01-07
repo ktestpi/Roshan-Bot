@@ -6,7 +6,7 @@ module.exports = new Command(['searchdeck','sdeck'], {
     function (msg, args, command) {
         if (!args[1]) { throw new UserError('artifact', 'cmd_searchdeck_error_need_arg'); return }
         const search = args.from(1)
-        const decks = this.plugins.Artifact.findAllCachedDeckByName(search)
+        const decks = this.components.Artifact.findAllCachedDeckByName(search)
         if (!decks.length) { throw new UserError('artifact', 'cmd_searchdeck_error_no_decks_found', {search}); return }
         return msg.reply({embed : {
             title : 'Searching Decks',

@@ -9,9 +9,9 @@ module.exports = new Command('searchpro',{
     const query = args.slice(1).join(' ')
     const lang = this.locale.getUserStrings(msg)
     if(query.length < 2){return msg.reply(lang.errorSearchMinChars)}
-    return this.plugins.Opendota.getProPlayersDotaName(query)
+    return this.components.Opendota.getProPlayersDotaName(query)
       .then((players) => {
-        const text = players.map((player) => `**${this.plugins.Bot.parseText(odutil.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
+        const text = players.map((player) => `**${this.components.Bot.parseText(odutil.nameOrNick(player),'nf')}** ${Markdown.link(this.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
         msg.reply({embed : {
           title : lang.searchproTitle,
           description : this.locale.replacer(lang.searchproDescription,{query : query, text : text}),

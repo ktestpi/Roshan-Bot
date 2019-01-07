@@ -21,7 +21,8 @@ module.exports.ErrorManager = class ErrorManager{
             } else if (error instanceof ConsoleError){
                 this.console(error.toConsole(msg, args, command))
             }else{
-                this.errorToConsole(error)
+                this.console(new CommandError('Command', error).toConsole(msg, args, command)) 
+                // this.errorToConsole(error)
             }
         })
 
@@ -91,7 +92,8 @@ class UserError extends BaseError {
     }
     toConsole(msg, args, command){
         const embed = {
-            author: { name: `${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.iconURL },
+            title: `User Error: ${command.name}`,
+            author: { name: `${command.name} - ${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.avatarURL },
             description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
             footer: { text: `Error: ${this.type || 'ND'} - ${command.name || ''}` }
         }
@@ -102,6 +104,25 @@ class UserError extends BaseError {
     }
     reply(msg){
         return msg._client.locale.replacer(msg._client.locale.getUserString(this.message, msg), this.replacer)
+    }
+}
+
+class CommandError extends BaseError {
+    constructor(type, err) {
+        super(type, err.message, null, err)
+    }
+    toConsole(msg, args, command) {
+        const embed = {
+            title: `:x: Command Error: ${command.name}`,
+            description: this.err.message,
+            author: { name: `${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.avatarURL },
+            // description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
+            footer: { text: `Error: ${this.type || 'ND'} - ${command.name || ''}` }
+        }
+        if (this.err) {
+            embed.fields = [{ name: 'Stack', value: toCode(this.err.stack), inline: false }]
+        }
+        return { embed }
     }
 }
 

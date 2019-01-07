@@ -6,8 +6,8 @@ const enumPlayerPos = require('../../enums/player_positions')
 module.exports = new Command('cardconfig',{
   category : 'Account', help : 'Configura la tarjeta de jugador@', args : ''},
   function(msg, args, command){
-    return this.plugins.Account.exists(msg.author.id)
-      // .then(player => Promise.all([player,this.plugins.Opendota.player(player.data.profile.dota)]))
+    return this.components.Account.exists(msg.author.id)
+      // .then(player => Promise.all([player,this.components.Opendota.player(player.data.profile.dota)]))
       .then(player => {
         console.log('Player',player)
         if(player._id !== msg.author.id){return command.error()}

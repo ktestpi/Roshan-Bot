@@ -8,10 +8,10 @@ module.exports = new Command('matches',{
   category : 'Dota 2', help : 'Últimas partidas jugadas', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.plugins.Opendota.userID(msg, args)
+    return this.components.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_matches(player.data.dota)
+        this.components.Opendota.player_matches(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
       ]))
       .then(data => {
@@ -28,7 +28,7 @@ module.exports = new Command('matches',{
         return msg.reply({
           embed: {
             title: odutil.titlePlayer(results, lang.playerProfile, this.locale),
-            description: this.plugins.Account.socialLinks(profile),
+            description: this.components.Account.socialLinks(profile),
             fields: [
               {
                 name: lang.recentMatches + ' > ' + util.Date.custom(results[1][0].start_time * 1000, '[D/M/Y h:m:s]'),

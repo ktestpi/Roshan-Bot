@@ -12,7 +12,7 @@ module.exports = new Command('match+',{
   function(msg, args, command){
     if (!args[1]) { return }
     msg.channel.sendTyping()
-    return this.plugins.Opendota.match(args[1])
+    return this.components.Opendota.match(args[1])
       .then(results => {
         if (results[0].error) { return }
         const lang = this.locale.getUserStrings(msg)

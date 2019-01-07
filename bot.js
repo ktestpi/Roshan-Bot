@@ -99,7 +99,7 @@ bot.addCommandDir(path.join(__dirname,'commands/artifact'))
 //   })
 // })
 
-bot.addPluginDir(path.join(__dirname, 'plugins'))
+bot.addComponentDir(path.join(__dirname, 'components'))
 
 function filterCommands(cmd,query,owner){
   if(query === 'owner'){
@@ -189,6 +189,8 @@ Eris.Message.prototype.reply = function (message, file) {
       .catch(err => reject(err))
   })
 }
+
+console.log(Eris.Message.prototype)
 
 Eris.Message.prototype.replyDM = function (content, file) {
   return new Promise((resolve, reject) => {

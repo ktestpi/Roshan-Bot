@@ -1,8 +1,8 @@
-const { Plugin } = require('aghanim')
+const { Component } = require('aghanim')
 const { Datee, Guild, Member } = require('erisjs-utils')
 const { UserError, ConsoleError } = require('../classes/errormanager.js')
 
-module.exports = class Events extends Plugin {
+module.exports = class Events extends Component {
     constructor(client, options) {
         super(client)
     }
@@ -11,11 +11,11 @@ module.exports = class Events extends Plugin {
     messageReactionAdd(msg, emoji, userID){
         if (userID === this.client.owner.id && msg.channel.guild && msg.channel.guild.id === this.client.config.guild.id) {
             if (emoji.name === this.client.config.emojis.default.notification) {
-                msg.channel.getMessage(msg.id).then(m => { this.client.plugins.Guild.messageAllGuilds(m, false, 'notifications') })
+                msg.channel.getMessage(msg.id).then(m => { this.client.components.Guild.messageAllGuilds(m, false, 'notifications') })
             } else if (emoji.name === this.client.config.emojis.default.loudspeaker) {
-                msg.channel.getMessage(msg.id).then(m => { this.client.plugins.Guild.messageAllGuilds(m, true, 'notifications') })
+                msg.channel.getMessage(msg.id).then(m => { this.client.components.Guild.messageAllGuilds(m, true, 'notifications') })
             } else if (emoji.name == this.client.config.emojis.default.feeds) {
-                msg.channel.getMessage(msg.id).then(m => { this.client.plugins.Guild.messageAllGuilds(m, false, 'feeds') })
+                msg.channel.getMessage(msg.id).then(m => { this.client.components.Guild.messageAllGuilds(m, false, 'feeds') })
             }
         } else if (userID === this.client.owner.id && emoji.name === this.client.config.emojis.default.trophy) {
             // && msg.author.id === this.client.user.id && msg.embeds[0] && msg.embeds[0].title === 'Nuevo torneo'

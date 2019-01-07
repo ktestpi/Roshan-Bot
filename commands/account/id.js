@@ -4,7 +4,7 @@ module.exports = new Command('id',{
   category : 'Account', help : 'Enlaces a Dotabuff, Steam, Twitch y Twitter', args : '[mención]'},
   function(msg, args, command){
     // let self = this
-    return this.plugins.Account.existsAny(msg)
+    return this.components.Account.existsAny(msg)
       .then(account => {
         console.log(account)
         // if (player.data._id !== msg.author.id) { return command.error() }
@@ -16,7 +16,7 @@ module.exports = new Command('id',{
             fields: [
               {
                 name: lang.userInfoIDTitle,
-                value: this.plugins.Account.socialLinks(account, 'vertical', 'embed+link'),
+                value: this.components.Account.socialLinks(account, 'vertical', 'embed+link'),
                 inline: true
               }],
             thumbnail: { url: user.avatarURL, height: 40, width: 40 },

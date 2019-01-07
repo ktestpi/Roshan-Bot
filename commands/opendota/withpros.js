@@ -6,10 +6,10 @@ module.exports = new Command('withpros',{
   category : 'Dota 2', help : 'Pros con los que has jugado', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.plugins.Opendota.userID(msg, args)
+    return this.components.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_pros(player.data.dota)
+        this.components.Opendota.player_pros(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
       ]))
       .then(data => {
@@ -23,8 +23,8 @@ module.exports = new Command('withpros',{
         results[1].forEach(pro => {
           if (description.length > this.config.constants.descriptionChars) { return }
           if (pro.team_tag != null) {
-            description += '**' + this.plugins.Bot.parseText(pro.name, 'nf') + '** (' + this.plugins.Bot.parseText(pro.team_tag, 'nf') + '), ';
-          } else { description += '**' + this.plugins.Bot.parseText(pro.name, 'nf') + '**, '; }
+            description += '**' + this.components.Bot.parseText(pro.name, 'nf') + '** (' + this.components.Bot.parseText(pro.team_tag, 'nf') + '), ';
+          } else { description += '**' + this.components.Bot.parseText(pro.name, 'nf') + '**, '; }
           resultsShow++
         })
         description = description.slice(0, -2)

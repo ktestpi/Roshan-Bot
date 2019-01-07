@@ -7,10 +7,10 @@ module.exports = new Command('steam',{
   category : 'Dota 2', help : 'Url de steam de un jugador', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.plugins.Opendota.userID(msg, args)
+    return this.components.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_steam(player.data.dota)
+        this.components.Opendota.player_steam(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
       ]))
       .then(data => {

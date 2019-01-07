@@ -7,11 +7,11 @@ module.exports = new Command(['player','p'],{
   category : 'Dota 2', help : 'Información sobre un/a jugador/a', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.plugins.Opendota.userID(msg, args)
-      // .then(player => Promise.all([player,this.plugins.Opendota.player(player.data.profile.dota)]))
+    return this.components.Opendota.userID(msg, args)
+      // .then(player => Promise.all([player,this.components.Opendota.player(player.data.profile.dota)]))
       .then(player => Promise.all([
           player,
-          this.plugins.Opendota.player(player.data.dota)
+          this.components.Opendota.player(player.data.dota)
             .catch(err => {throw new UserError('opendota', 'errorOpendotaRequest', err)})
           ]
         )
@@ -28,7 +28,7 @@ module.exports = new Command(['player','p'],{
         return msg.reply({
           embed: {
             title: odutil.titlePlayer(results, lang.playerProfile, this.locale),
-            description: this.plugins.Account.socialLinks(profile),
+            description: this.components.Account.socialLinks(profile),
             fields: [
               {
                 name: lang.wlr,

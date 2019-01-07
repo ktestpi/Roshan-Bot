@@ -6,10 +6,10 @@ module.exports = new Command('lastmatch+',{
   cooldownMessage : function(msg,args,command,cooldown){return this.locale.getUserString('warningInCooldown',msg)}},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.plugins.Opendota.userID(msg, args)
+    return this.components.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_lastmatch(player.data.dota)
+        this.components.Opendota.player_lastmatch(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
         ]
       ))

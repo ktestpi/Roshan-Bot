@@ -6,10 +6,10 @@ module.exports = new Command(['withfriends','friends'],{
   category : 'Dota 2', help : 'Estadísticas de partidas jugadas con amig@s', args : '[mención/dotaID/pro]'},
   function(msg, args, command){
     msg.channel.sendTyping()
-    return this.plugins.Opendota.userID(msg, args)
+    return this.components.Opendota.userID(msg, args)
       .then(player => Promise.all([
         player,
-        this.plugins.Opendota.player_friends(player.data.dota)
+        this.components.Opendota.player_friends(player.data.dota)
           .catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err) })
       ]))
       .then(data => {
@@ -18,7 +18,7 @@ module.exports = new Command(['withfriends','friends'],{
         const lang = this.locale.getUserStrings(msg)
         results[1] = results[1].filter(friend => friend.with_games > 0)
         const spacesBoard = ['25f', '3cf', '6cf'];
-        let table = Classes.Table.renderRow([this.plugins.Bot.parseText(lang.player, 'nf'), lang.games.slice(0, 1), lang.gamesWR], spacesBoard, '\u2002') + '\n';
+        let table = Classes.Table.renderRow([this.components.Bot.parseText(lang.player, 'nf'), lang.games.slice(0, 1), lang.gamesWR], spacesBoard, '\u2002') + '\n';
         if (results[1].length > 0) {
           results[1].forEach(friend => {
             if (table.length > this.config.constants.descriptionChars) { return }

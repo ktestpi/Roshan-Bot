@@ -5,7 +5,7 @@ module.exports = new Command('sets',{
   function(msg, args, command){
     if(args[1]){
       const query = args.from(1).toLowerCase()
-      const set = this.plugins.Artifact.getSet(query)
+      const set = this.components.Artifact.getSet(query)
       if(!set){return func(msg,this)}
       return msg.reply({embed : {
         title : 'Set info - ' + set.name.english,
@@ -26,8 +26,8 @@ module.exports = new Command('sets',{
 function func(msg,bot){
   return msg.reply({embed : {
     title : 'Sets info',
-    description : bot.plugins.Artifact.sets.map(s => `**${s.name.english}** - ${s.totalCards} cards`).join('\n'),
-    footer : {text : `${bot.plugins.Artifact.sets.reduce((s,v) => s+v.totalCards,0)} cards`},
+    description : bot.components.Artifact.sets.map(s => `**${s.name.english}** - ${s.totalCards} cards`).join('\n'),
+    footer : {text : `${bot.components.Artifact.sets.reduce((s,v) => s+v.totalCards,0)} cards`},
     color : bot.config.color
   }})
 }

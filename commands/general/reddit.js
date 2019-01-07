@@ -7,7 +7,7 @@ module.exports = new Command('reddit',{
     if(!args[1]){return}
     if(['top','hot','new'].indexOf(args[1].toLowerCase()) > -1){
       msg.channel.sendTyping();
-      return this.plugins.RedditApi.posts(args[1],5,'reddit').then(result => {
+      return this.components.RedditApi.posts(args[1],5,'reddit').then(result => {
         msg.reply({embed : {
           author : {name : `reddit - ${args[1]}`, icon_url : this.config.images.redditdota2},
           description : result,
@@ -18,7 +18,7 @@ module.exports = new Command('reddit',{
       })
     }else{
       msg.channel.sendTyping();
-      return this.plugins.RedditApi.post(args[1]).then(result => {
+      return this.components.RedditApi.post(args[1]).then(result => {
         msg.reply({embed : {
           author : {name : result.title.slice(0,255), url : result.link, icon_url : this.config.images.reddit},
           description : result.text,

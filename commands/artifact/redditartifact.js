@@ -9,7 +9,7 @@ module.exports = new Command(['redditartifact','reddita'],{
     const lang = this.locale.getChannelStrings(msg)
     if(['top','hot','new'].indexOf(args[1].toLowerCase()) > -1){
       msg.channel.sendTyping();
-      return this.plugins.RedditApi.posts(args[1],5,'artifact').then(result => {
+      return this.components.RedditApi.posts(args[1],5,'artifact').then(result => {
         return msg.reply({embed : {
           author : {name : `r/Artifact - ${args[1]}`, icon_url : this.config.images.redditartifact},
           description : result,
@@ -20,7 +20,7 @@ module.exports = new Command(['redditartifact','reddita'],{
       })
     }else{
       msg.channel.sendTyping();
-      return this.plugins.RedditApi.post(args[1]).then(result => {
+      return this.components.RedditApi.post(args[1]).then(result => {
         return msg.reply({embed : {
           author : {name : result.title.slice(0,255), url : result.link, icon_url : this.config.images.reddit},
           description : result.text,

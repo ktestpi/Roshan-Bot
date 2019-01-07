@@ -12,11 +12,11 @@ module.exports = new Command('register',{
       if(args[1].length < 1 ){return msg.addReaction(this.config.emojis.default.error)}
       const server = this.config.guild
       const dotaID = args[1]
-      return this.plugins.Account.get(msg.author.id)
+      return this.components.Account.get(msg.author.id)
         .then(account => {
           if (account) { return msg.reply(lang.errorProfileRegisteredAlready) }
-          return this.plugins.Account.createProcess(msg.author.id, dotaID, msg)
-          // return this.plugins.Opendota.account(dotaID).then((data) => {
+          return this.components.Account.createProcess(msg.author.id, dotaID, msg)
+          // return this.components.Opendota.account(dotaID).then((data) => {
           //   const [ result ] = data
           //   if (!result.profile) { return msg.reply(this.locale.replacer(lang.errorDotaIDNotValid, { id: dotaID })) };
           // })

@@ -6,7 +6,7 @@ module.exports = new Command(['searchcard','scard'],{
   function(msg, args, command){
     const query = args.from(1)
     if(!query){return}
-    const filtered = this.plugins.Artifact.searchCard(query)
+    const filtered = this.components.Artifact.searchCard(query)
     const lang = this.locale.getUserStrings(msg)
     if(!filtered.length){return msg.reply(this.locale.replacer(lang.searchCardNoFound,{query}))}
     const reduced = reduceWithCount(filtered.map(c => c.name.english),max)

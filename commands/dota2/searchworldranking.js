@@ -9,7 +9,7 @@ module.exports = new Command(['searchworldranking','swr'],{
     const query = args.from(1)
     const lang = this.locale.getUserStrings(msg)
     msg.channel.sendTyping();
-    return this.plugins.WorldRankingApi.searchPlayerInWorld(query).then(r => {
+    return this.components.WorldRankingApi.searchPlayerInWorld(query).then(r => {
       const table = new Classes.Table([lang.region,lang.position],null,['8','8r'],'\u2002')
       r.forEach(d => table.addRow([d.division,d.pos]))
       return msg.reply({embed : {

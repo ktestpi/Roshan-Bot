@@ -5,7 +5,7 @@ module.exports = new Command('account',{
   category : 'Account', help : 'Muestra/modifica tu cuenta', args : '[dotaID] [steamID] [twithID] [twitterID]'},
   function(msg, args, command){
     // let self = this
-    return this.plugins.Account.exists(msg.author.id)
+    return this.components.Account.exists(msg.author.id)
       .then(account => {
         if(!account){return command.error()}
         const lang = this.locale.getUserStrings(msg)
