@@ -190,8 +190,6 @@ Eris.Message.prototype.reply = function (message, file) {
   })
 }
 
-console.log(Eris.Message.prototype)
-
 Eris.Message.prototype.replyDM = function (content, file) {
   return new Promise((resolve, reject) => {
     this.author.getDMChannel()

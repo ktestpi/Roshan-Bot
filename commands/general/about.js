@@ -11,10 +11,10 @@ module.exports = new Command('about',{
         description : this.locale.replacer(lang.aboutDescription),
         fields : [
           {name : lang.invite,
-          value : Markdown.link(lang.invitation,this.config.invite,true),
+          value : Markdown.link(lang.invitation,this.config.invite),
           inline : false},
           {name : lang.devServer,
-          value : Markdown.link(lang.discord,this.config.server,true),
+          value : Markdown.link(lang.discord,this.config.server),
           inline : false},
           {name : lang.patreon,
           value : this.locale.replacer(lang.patreonDesc,{link : this.config.links.patreon}),

@@ -4,7 +4,7 @@
   "description": "Discord bot about Dota 2 and Artifact written in ErisJS using Aghanim command client",
   "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/jest",
     "dev": "./node_modules/.bin/nodemon bot.js",
     "eslint": "./node_modules/.bin/eslint bot.js",
     "heroku-postbuild": "npm i Desvelao/artifact-database Desvelao/aghanim#dev",
@@ -35,6 +35,11 @@
     "eslint": "^4.19.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.9.0",
+    "firebase-mock": "^2.2.10",
+    "jest": "^23.6.0",
     "nodemon": "^1.18.3"
+  },
+  "jest": {
+    "testRegex": "__tests__/.*\\.(js|jsx)$"
   }
 }

@@ -9,9 +9,7 @@ module.exports = new Command('cardconfig',{
     return this.components.Account.exists(msg.author.id)
       // .then(player => Promise.all([player,this.components.Opendota.player(player.data.profile.dota)]))
       .then(player => {
-        console.log('Player',player)
         if(player._id !== msg.author.id){return command.error()}
-        console.log('After check')
         let heroes = player.card.heroes.split(',')
         const lang = this.locale.getUserStrings(msg)
         if (args.length > 1) {
@@ -43,7 +41,7 @@ module.exports = new Command('cardconfig',{
               title: this.locale.replacer(lang.playerCard, { username: msg.author.username }),
               thumbnail: { url: msg.author.avatarURL, width: 40, height: 40 },
               fields: [
-                { name: lang.highlightsHeroes, value: `\`\`\`${player.card.heroes ? heroes.map(h => enumHeroes.getValue(h).name).join(', ') : this.locale.replace('errorCardNoHeroesConfig', msg, { cmd: 'r!cardhelp' })}\`\`\``, inline: false },
+                { name: lang.highlightsHeroes, value: `\`\`\`${player.card.heroes ? heroes.map(h => enumHeroes.getValue(h).localized_name).join(', ') : this.locale.replace('errorCardNoHeroesConfig', msg, { cmd: 'r!cardhelp' })}\`\`\``, inline: false },
                 { name: lang.position, value: `\`\`\`${enumPlayerPos.getValue(player.card.pos)}\`\`\``, inline: false }
               ],
               footer: { text: lang.roshanCard, icon_url: this.user.avatarURL },
