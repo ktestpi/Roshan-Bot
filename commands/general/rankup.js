@@ -12,5 +12,4 @@ module.exports = new Command('rankup',{
     msg.channel.sendTyping()
     return readFile(path.join(__dirname, '../..', '/img/rankup.png'))
       .then(data => msg.reply('RankUp', {file : data, name :'rankup.png'}))
-      .catch(err => console.log(err))
   })

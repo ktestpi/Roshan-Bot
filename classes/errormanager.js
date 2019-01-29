@@ -114,13 +114,16 @@ class CommandError extends BaseError {
     toConsole(msg, args, command) {
         const embed = {
             title: `:x: Command Error: ${command.name}`,
-            description: this.err.message,
+            // description: `**Command Content:** ${msg.content}`,
             author: { name: `${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.avatarURL },
+            fields: [
+                { name: 'Command Content', value: toCode(msg.content), inline: false },
+                { name: 'Error Message', value: toCode(this.err.message), inline : false}],
             // description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
             footer: { text: `Error: ${this.type || 'ND'} - ${command.name || ''}` }
         }
         if (this.err) {
-            embed.fields = [{ name: 'Stack', value: toCode(this.err.stack), inline: false }]
+            embed.fields.push({ name: 'Stack', value: toCode(this.err.stack), inline: false })
         }
         return { embed }
     }

@@ -8,5 +8,5 @@ module.exports = new Command('tes',{
   ownerOnly : true, hide : true},
   function(msg, args, command){
     console.log(msg.constructor.prototype)
-    throw new UserError('artifact', 'cmd_deck_error_need_arg_or_valid_code')
+    throw new Error('artifact')
   })
