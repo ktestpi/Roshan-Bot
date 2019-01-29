@@ -131,9 +131,9 @@ bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
     helpMessage += this.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${this.defaultPrefix}help ${c.name.toLowerCase()}\` - ${this.locale.getCat(c.name,msg)}`).join('\n') + '\n\n' + lang.helpMessageAfterCategories
   }
   if(!this.setup.helpDM){
-    msg.reply(helpMessage)
+    return msg.reply(helpMessage)
   }else{
-    msg.replyDM(helpMessage)
+    return msg.replyDM(helpMessage)
   }
 }))
 

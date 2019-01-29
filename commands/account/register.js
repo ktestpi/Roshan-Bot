@@ -2,7 +2,7 @@ const { Command } = require('aghanim')
 const { Datee, Request } = require('erisjs-utils')
 
 module.exports = new Command('register',{
-  category : 'Account', help : 'Registro en el bot', args : '[dotaID] [steamID] [twitchID] [twitterID]'},
+  category : 'Account', help : 'Registro en el bot', args : '<dotaID>'},
   function(msg, args, command){
     // let self = this
     const lang = this.locale.getUserStrings(msg)

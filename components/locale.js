@@ -22,7 +22,7 @@ module.exports = class Locale extends Component {
             channel_foso: "<#" + this.client.config.guild.id + ">",
             server: this.client.config.server,
             version: packageInfo.version,
-            update: this.client.config.update
+            update: packageInfo.version_date
         })
         this.client.locale.addConstants(this.client.config.emojis.bot)
         this.client.notifier.console('Locale','Ready')

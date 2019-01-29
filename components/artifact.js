@@ -48,7 +48,7 @@ class Artifact extends Component {
         this.sets = []
         this.cards = []
         const areCards = ['Hero','Creep','Spell','Improvement','Item']
-        Promise.all(this.setsIDs.map(id => Request.getJSON(this.apiURL + id)
+        return Promise.all(this.setsIDs.map(id => Request.getJSON(this.apiURL + id)
             .then(response => Request.getJSON((response.cdn_root + response.url).replace('\\','')))))
             .then(responses => {
                 responses.forEach(response => {
@@ -100,6 +100,7 @@ class Artifact extends Component {
                     return card
                 })
                 console.log('Total cards:',this.cards.length)
+                return `Total cards: ${this.cards.length}`
         })
     }
     getCardByID(id){

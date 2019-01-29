@@ -1,7 +1,8 @@
 {
   "name": "Roshan",
   "version": "0.3.5",
-  "description": "Discord bot about Dota 2 and Artifact written in ErisJS using Aghanim command client",
+  "version_date": "29/01/19",
+  "description": "Discord bot about Dota 2 and Artifact written in ErisJS using Aghanim Command Client",
   "main": "bot.js",
   "scripts": {
     "test": "./node_modules/.bin/jest",
@@ -23,7 +24,6 @@
   "license": "MIT",
   "dependencies": {
     "aghanim": "github:desvelao/aghanim#dev",
-    "artifact-api": "github:openartifact/artifact-api",
     "dotaconstants": "^6.9.0",
     "erisjs-utils": "github:desvelao/erisjs-utils#dev",
     "firebase-admin": "^5.11.0",

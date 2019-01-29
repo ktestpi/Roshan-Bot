@@ -429,6 +429,8 @@
   "cmd_item_help": "Información sobre objeto",
   "cmd_hero_args": "<nombre héroe>",
   "cmd_hero_help": "Información sobre héroe",
+  "cmd_rankup_args": "",
+  "cmd_rankup_help": "Sube de rango",
   "cat_general_help" : "Ayuda de general",
   "cat_dota 2_help" : "Ayuda de Dota 2",
   "cat_account_help" : "Ayuda para la gestión de la cuenta en Roshan",

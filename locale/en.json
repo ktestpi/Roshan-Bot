@@ -429,6 +429,8 @@
   "cmd_item_help" : "Info about item",
   "cmd_hero_args" : "<hero name>",
   "cmd_hero_help" : "Info about hero",
+  "cmd_rankup_args": "",
+  "cmd_rankup_help": "Rank up",
   "cat_general_help" : "General help",
   "cat_dota 2_help" : "Dota 2 help",
   "cat_account_help" : "Roshan account management help",
