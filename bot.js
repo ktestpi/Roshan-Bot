@@ -1,21 +1,12 @@
 const Aghanim = require('aghanim')
-const Eris = require('eris')
+// const Eris = require('aghanim/node_modules/eris')
+const { Eris } = require('aghanim')
 const path = require('path')
 const { Color } = require('erisjs-utils')
 const firebase = require('firebase-admin');
 const Locale = require('./classes/locale.js')
 const { ErrorManager } = require('./classes/errormanager.js')
 const Notifier = require('./classes/notifier.js')
-
-// Eris.Client.prototype.hello = function(){
-//   console.log('Hello form Prototype')
-// }
-// Extends Eris Guild Structure
-// Eris.Guild.prototype.membersWithRole = function(roleName){
-//   const role = this.roles.find(r => r.name === roleName)
-//   return role ? this.members.filter(m => m.roles.includes(role.id)) : []
-// }
-//
 
 let TOKEN, ENVPROD = false;
 const firebaseConfig = {
@@ -57,6 +48,11 @@ firebase.initializeApp({
 
 //Initialize Bot with Aghanim Command Client
 const bot = new Aghanim(TOKEN,CONFIG.setup)
+
+bot.commandArgsMiddleware = function(args,msg){
+  args.hello = text => msg.reply(text)
+  msg.hic = text => msg.reply(`HIC:${text}`)
+}
 
 //Add keys to bot
 bot.config = CONFIG

@@ -13,7 +13,7 @@ module.exports.ErrorManager = class ErrorManager{
         this.config = {userSilent : true}
 
         this.client.on('aghanim:command:error', (error, msg, args, command) => {
-            console.log(error)
+            // console.log(error)
             if (error instanceof UserError) {
                 this.send(msg.channel.id, error.reply(msg))
                 if(this.config.userSilent && !error.err){return}
@@ -26,8 +26,12 @@ module.exports.ErrorManager = class ErrorManager{
             }
         })
 
+        this.client.on('aghanim:component:error', (error, component) => {
+            this.console(new ComponentError('Component', error).toConsole(component))
+        })
+
         this.client.on('aghanim:error:', (error) => {
-            console.log(error)
+            // console.log(error)
             this.errorToConsole(error)    
         })
 
@@ -121,6 +125,28 @@ class CommandError extends BaseError {
                 { name: 'Error Message', value: toCode(this.err.message), inline : false}],
             // description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
             footer: { text: `Error: ${this.type || 'ND'} - ${command.name || ''}` }
+        }
+        if (this.err) {
+            embed.fields.push({ name: 'Stack', value: toCode(this.err.stack), inline: false })
+        }
+        return { embed }
+    }
+}
+
+class ComponentError extends BaseError {
+    constructor(type, err) {
+        super(type, err.message, null, err)
+    }
+    toConsole(component) {
+        const embed = {
+            title: `:x: Component Error: ${component.constructor.name}`,
+            // description: `**Command Content:** ${msg.content}`,
+            // author: { name: `${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.avatarURL },
+            fields: [
+                // { name: 'Command Content', value: toCode(msg.content), inline: false },
+                { name: 'Error Message', value: toCode(this.err.message), inline: false }],
+            // description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
+            footer: { text: `Error: ${this.type || 'ND'} - ${component.constructor.name || ''}` }
         }
         if (this.err) {
             embed.fields.push({ name: 'Stack', value: toCode(this.err.stack), inline: false })

@@ -13,10 +13,12 @@ module.exports = class Funcs extends Component {
         }
         this.channel = '474935110567985152'
         this.repeatEach = 7200
+        this.enable = false
     }
     ready(){
         // const starterTimer = this.remaining() % this.repeatEach
         // this.setTimeout(starterTimer)
+        // throw new Error('ERROR en componente')
     }
     setTimeout(time = 7200){
         this.timer = new Timeout(() => this.func(), time * 1000)

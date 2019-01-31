@@ -1,4 +1,12 @@
- module.exports = class Notifier{
+const { Logger } = require('aghanim')
+const logger = new Logger({
+    label: 'Roshan',
+    timestamps: true,
+    levels: { dev: { style: 'magenta' } },
+    // ignoredLevels: [this.devLogs ? '' : 'dev']
+})
+
+module.exports = class Notifier{
     constructor(client,options){
         this.client = client
         this.channel = options.channel
@@ -19,13 +27,20 @@
             message = tag
             tag = null
         }
-        const date = new Date()
-        console.log(`<${date}> ${tag ? '[' + tag + '] ' : ''}- ${message}`)
+        // const date = new Date()
+        // console.log(`<${date}> ${tag ? '[' + tag + '] ' : ''}- ${message}`)
+        if(tag === 'INFO'){
+            logger.log(`${ tag ? '[' + tag + '] ' : ''} - ${message}`)
+        } else if (tag === 'WARN'){
+            logger.warn(`${ tag ? '[' + tag + '] ' : ''} - ${message}`)
+        } else{
+            logger.log(`${ tag ? '[' + tag + '] -' : '-'} ${ message }`)
+        }
     }
-    info(tag,message){
+    info(message){
         this.console('INFO',message)
     }
-    warn(tag, message) {
+    warn(message) {
         this.console('WARN', message)
     }
 }

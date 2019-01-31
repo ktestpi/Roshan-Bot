@@ -99,7 +99,7 @@ class Artifact extends Component {
                     }
                     return card
                 })
-                console.log('Total cards:',this.cards.length)
+                this.client.notifier.console('Artifact Component',`Total cards: ${this.cards.length}`)
                 return `Total cards: ${this.cards.length}`
         })
     }
