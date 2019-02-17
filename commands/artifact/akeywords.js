@@ -1,26 +1,37 @@
 const { Command } = require('aghanim')
+const EmbedBuilder = require('../../classes/embed-builder.js')
+
+const embedKeyword = new EmbedBuilder({
+  title: '<_keyword_name><_keyword_alias>',
+  descrition: '<_keyword_text>',
+  thumbnail: {url : '<_keyword_image>'},
+  footer : {text : 'Artifact keyword', icon_url : '<_artifact_logo>'}
+})
+
+const embedKeywords = new EmbedBuilder({
+  title : 'Artifact Keywords',
+  description: '<_keywords>',
+  footer : {text : 'Artifact Keywords', icon_url : '<_artifact_logo>'}
+})
 
 module.exports = new Command('akey',{
   category : 'Artifact', help : 'Información sobre las palabras clave del juego', args : '[palabra clave]'},
-  function(msg, args, command){
+  async function(msg, args, client){
     const query = args.from(1).toLowerCase()
-    const keyword = this.components.Artifact.keywords.find(k => [k.name.toLowerCase(),...k.alias.map(a => a.toLowerCase())].includes(query))
+    const keyword = client.components.Artifact.keywords.find(k => [k.name.toLowerCase(),...k.alias.map(a => a.toLowerCase())].includes(query))
     if (keyword){
-      return msg.reply({embed : {
-        title : keyword.name + (keyword.alias.length ? ' (' + keyword.alias.map(a => a).join(', ') + ')' : ''),
-        description : keyword.text,
-        thumbnail : {url : keyword.image, height : 40, width : 40},
-        footer : {text : 'Artifact keyword', icon_url : this.components.Artifact.logo},
-        color : this.config.color
-      }})
+      return msContentScript.reply(embedKeyword,{
+        _keyword_text: keyword.text,
+        _keyword_alias: keyword.alias.length ? ' (' + keyword.alias.map(a => a).join(', ') + ')' : '',
+        _keyword_image: keyword.image,
+        _artifact_logo: client.components.Artifact.logo
+      })
     }else{
-      return msg.reply({
-        embed: {
-          title: 'Artifact Keywords',
-          description: this.components.Artifact.keywords.map(k => k.name).join(', '),
-          footer: { text: 'Artifact keywords', icon_url: this.components.Artifact.logo },
-          color: this.config.color
-        }
+      return msg.reply(embedKeywords,{
+        _keywords: client.components.Artifact.keywords.map(k => k.name).join(', '),
+        _artifact_logo: client.components.Artifact.logo
       })
     }
   })
+
+  //TODO langstring

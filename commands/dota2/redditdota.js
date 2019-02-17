@@ -1,30 +1,43 @@
 const { Command } = require('aghanim')
 const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const EmbedBuilder = require('../../classes/embed-builder.js')
+
+const embedPosts = new EmbedBuilder({
+  author: { name: 'r/Dota2 - <_category>', icon_url: '<_reddit_icon_artifact>' },
+  description: '<_message>'
+})
+
+const embedPost = new EmbedBuilder({
+  author: { name: '<_post_title>', url: '<_post_url>', icon_url: '<_reddit_icon>' },
+  description: '<_post_text>',
+  footer: { text: '<_post_subreddit>' }
+})
 
 module.exports = new Command(['redditdota','redditd'],{
   category : 'Dota 2', help : 'Información sobre reddit', args : '[idpost,top,hot,new]'},
-  function(msg, args, command){
-    // let self = this
-    if(!args[1]){return}
+  async function(msg, args, client){
+    if(!args[1]){args[1] = 'top'}
     if(['top','hot','new'].indexOf(args[1].toLowerCase()) > -1){
       msg.channel.sendTyping();
-      return this.components.RedditApi.posts(args[1],5,'dota2').then(result => {
-        return msg.reply({embed : {
-          author : {name : `r/DotA2 - ${args[1]}`, icon_url : this.config.images.redditdota2},
-          description : result,
-          color : this.config.color
-        }})
+      return client.components.RedditApi.posts(args[1],5,'dota2').then(result => {
+        return msg.reply(embedPosts,{
+          _category: args[1],
+          _reddit_icon_artifact: client.config.images.redditdota2,
+          _message: result
+        })
       }).catch(err => {
         throw new UserError('reddit', 'errorRedditPostsRequest', err)
       })
     }else{
       msg.channel.sendTyping();
-      return this.components.RedditApi.post(args[1]).then(result => {
-        return msg.reply({embed : {author : {name : result.title.slice(0,255), url : result.link, icon_url : this.config.images.reddit},
-        description : result.text,
-        footer : {text : result.subreddit},
-        color : this.config.color
-      }})
+      return client.components.RedditApi.post(args[1]).then(result => {
+        return msg.reply(embedPost,{
+          _post_title: result.title.slice(0, 255),
+          _post_url: result.link,
+          _reddit_icon: client.config.images.reddit,
+          _post_text: result.text,
+          _post_subreddit: resutl.subreddit
+        })
       }).catch(err => {
         throw new UserError('reddit', 'errorRedditPostsRequest', err)
       })

@@ -5,7 +5,7 @@ const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 module.exports = new Command('links',{
   category : 'General', help : 'Enlaces interesantes sobre el juego', args : '<categoría>'},
-  function(msg, args, command){
+  async function(msg, args, client){
     const query = args.after
     if (!links[query]) { throw new UserError('wrongCmdArg', 'wrongCmdArg', { options: Object.keys(links).join(', '), cmd: args.until(1) })}
     let textLinks = '';
@@ -38,9 +38,9 @@ module.exports = new Command('links',{
         },
         footer : {
           text : links[query].footer.text,
-          icon_url : links[query].footer.icon || this.user.avatarURL
+          icon_url : links[query].footer.icon || client.user.avatarURL
         },
-        color : this.config.color
+        color : client.config.color
       }
     })
   })

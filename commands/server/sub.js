@@ -5,13 +5,12 @@ const FirebaseArraySet = require('../../classes/firebasearrayset')
 module.exports = new Command(['subscribe','sub'],{subcommandFrom : 'server',
   category : 'Server', help : 'Subscripción de feeds', args : '<feeds separados por un espacio>',
   rolesCanUse: 'aegis'},
-  function(msg, args, command){
-    // let self = this
+  async function(msg, args, client){
     const content = args.from(2)
     if(!content){return}
     const subs = content.split(' ')
     if(!subs.length){return}
-    const server = this.cache.servers.get(msg.channel.guild.id)
+    const server = client.cache.servers.get(msg.channel.guild.id)
     if(!server){return}
     const serversSubs = new FirebaseArraySet(server.feeds.subs,enumFeeds.toArray().map(e => e.key))
     const subsKey = []
@@ -20,9 +19,9 @@ module.exports = new Command(['subscribe','sub'],{subcommandFrom : 'server',
       if(s){serversSubs.addVal(s);subsKey.push(s)}
     })
     if(!subsKey.length){return}
-    return this.cache.servers.save(msg.channel.guild.id,{feeds : {subs : serversSubs.tostring}}).then(() => {
+    return client.cache.servers.save(msg.channel.guild.id,{feeds : {subs : serversSubs.tostring}}).then(() => {
       msg.addReactionSuccess()
-      msg.reply(this.locale.replacer(this.locale.getChannelString('serverSubscription',msg),{subs : subsKey.map(s => `**${enumFeeds.getValue(s)}**`).join(', ')}))
+      return msg.reply('server.subscription',{subs : subsKey.map(s => `**${enumFeeds.getValue(s)}**`).join(', ')})
     }
     )
   })

@@ -3,23 +3,17 @@ const { Datee, Request } = require('erisjs-utils')
 
 module.exports = new Command('register',{
   category : 'Account', help : 'Registro en el bot', args : '<dotaID>'},
-  function(msg, args, command){
-    // let self = this
-    const lang = this.locale.getUserStrings(msg)
+  async function(msg, args, client){
     if(args.length < 2){
-      return msg.replyDM(this.locale.replacer(lang.registerHelp))
+      return msg.replyDM('register.help')
     }else{
-      if(args[1].length < 1 ){return msg.addReaction(this.config.emojis.default.error)}
-      const server = this.config.guild
+      if(args[1].length < 1 ){return msg.addReactionFail()}
+      const server = client.config.guild
       const dotaID = args[1]
       return this.components.Account.get(msg.author.id)
         .then(account => {
-          if (account) { return msg.reply(lang.errorProfileRegisteredAlready) }
-          return this.components.Account.createProcess(msg.author.id, dotaID, msg)
-          // return this.components.Opendota.account(dotaID).then((data) => {
-          //   const [ result ] = data
-          //   if (!result.profile) { return msg.reply(this.locale.replacer(lang.errorDotaIDNotValid, { id: dotaID })) };
-          // })
+          if (account) { return msg.reply('register.alreadyregistered') }
+          return client.components.Account.createProcess(msg.author.id, dotaID, msg)
         })
     }
 })

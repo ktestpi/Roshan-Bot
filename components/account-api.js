@@ -2,6 +2,7 @@ const CustomComponent = require('../classes/custom-component.js')
 const odutil = require('../helpers/opendota-utils')
 const { Datee, Markdown } = require('erisjs-utils')
 const { UserError, ConsoleError } = require('../classes/errormanager.js')
+const EmbedBuilder = require('../classes/embed-builder.js')
 
 module.exports = class Account extends CustomComponent() {
 	constructor(client, options) {
@@ -26,7 +27,7 @@ module.exports = class Account extends CustomComponent() {
 	}
 	exists(discordID){
 		return this.get(discordID).then((account) => {
-			if (!account) { throw new UserError('account', 'needRegister')}
+			if (!account) { throw new UserError('account', 'bot.needRegister')}
 			return Promise.resolve(account)
 		}).catch(err => Promise.reject(err))
 	}
@@ -35,8 +36,8 @@ module.exports = class Account extends CustomComponent() {
 			const discordID = msg.mentions.length ? msg.mentions[0].id : msg.author.id
 			this.get(discordID).then((account) => {
 				if( !account ){
-					if (discordID === msg.author.id) { throw new UserError('account', 'needRegister')}
-					else { throw new UserError('opendota', 'needRegisterMentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username })}
+					if (discordID === msg.author.id) { throw new UserError('account', 'bot.needRegister')}
+					else { throw new UserError('opendota', 'bot.needRegisterMentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username })}
 				}
 				res(account)
 			}).catch(err => rej(err))
@@ -76,25 +77,35 @@ module.exports = class Account extends CustomComponent() {
 				msg.addReaction(this.client.config.emojis.default.envelopeIncoming)
 				return this.create(discordID,dotaID,data.profile.steamid,data).then(() => {
 					this.client.notifier.accountnew(`New account: **${msg.author.username}** (${msg.author.id})`)
-					return msg.replyDM({
-						embed: {
-							title: this.client.locale.replacer(lang.welcomeToRoshan),
-							//author : {name : config.bot.name, icon_url : config.bot.icon},
-							description: this.client.locale.replacer(lang.infoAboutDotaForDiscord),
-							fields: [{
-								name: lang.dataUrRegistry,
-								value: this.client.locale.replacer(lang.dataUrRegistryAccount, { dotaID: dotaID, steamID: data.profile.steamid }),
-								inline: false
-							}, {
-								name: lang.tyForUrRegistry,
-								value: this.client.locale.replacer(lang.helpRegistryDesc),
-								inline: false
-							}],
-							thumbnail: { url: msg.author.avatarURL, height: 40, width: 40 },
-							// footer : {text : lang.botCreated, icon_url : this.user.avatarURL},
-							color: this.client.config.color
-						}
-					}).then(() => m.addReactionSuccess())
+					const embed = new EmbedBuilder({
+						title: 'roshan.welcometo',
+						description: 'roshan.infoabout',
+						fields: [
+							{ name: 'register.dataurregistry', value: 'register.dataurregistryaccount', inline: false},
+							{ name: 'register.tyforurregistry', value: 'register.helpregistrydesc', inline: false}
+						],
+						thumbnail: { url: '<_user_avatar>' }
+					})
+					return msg.replyDM(embed, { dotaID: dotaID, steamID: data.profile.steamid })
+						.then(() => m.addReactionSuccess())
+					// return msg.replyDM({
+					// 	embed: {
+					// 		title: this.client.locale.replacer(lang.welcomeToRoshan),
+					// 		//author : {name : config.bot.name, icon_url : config.bot.icon},
+					// 		description: this.client.locale.replacer(lang.infoAboutDotaForDiscord),
+					// 		fields: [{
+					// 			name: lang.dataUrRegistry,
+					// 			value: this.client.locale.replacer(lang.dataUrRegistryAccount, { dotaID: dotaID, steamID: data.profile.steamid }),
+					// 			inline: false
+					// 		}, {
+					// 			name: lang.tyForUrRegistry,
+					// 			value: this.client.locale.replacer(lang.helpRegistryDesc),
+					// 			inline: false
+					// 		}],
+					// 		thumbnail: { url: msg.author.avatarURL, height: 40, width: 40 },
+					// 		color: this.client.config.color
+					// 	}
+					// }).then(() => m.addReactionSuccess())
 				})
 			})
 		})
@@ -117,7 +128,7 @@ module.exports = class Account extends CustomComponent() {
 			return this.delete(discordID).then(() => {
 				// TODO: Remove Leaderboard
 				this.client.notifier.accountremove(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
-				return msg.reply(this.client.locale.replacer(lang.accountDeleted))
+				return msg.reply('account.deleted')
 					.then(() => m.addReactionSuccess())
 			})
 		})

@@ -1,24 +1,29 @@
 const { Command } = require('aghanim')
 const { Classes } = require('erisjs-utils')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const EmbedBuilder = require('../../classes/embed-builder.js')
+
+const embed = new EmbedBuilder({
+  title: 'searchworldranking.searchplayer',
+  description: 'searchworldranking.resultssearchquery'
+})
 
 module.exports = new Command(['searchworldranking','swr'],{
   category : 'Dota 2', help : 'Busca a un jugador por nombre en la clasificación mundial', args : '<búsqueda>'},
-  function(msg, args, command){
+  async function(msg, args, client){
     // let self = this
-    if(!args[1]){return msg.replyLocale('errorWorldBoardSearchPlayerQuery')}
+    if (!args[1]) { return msg.reply('searchworldranking.needquery')}
     const query = args.from(1)
-    const lang = this.locale.getUserStrings(msg)
     msg.channel.sendTyping();
-    return this.components.WorldRankingApi.searchPlayerInWorld(query).then(r => {
-      const table = new Classes.Table([lang.region,lang.position],null,['8','8r'],'\u2002')
+    return client.components.WorldRankingApi.searchPlayerInWorld(query).then(r => {
+      const table = new Classes.Table([args.user.langstring('region'),args.user.langstring('position')],null,['8','8r'],'\u2002')
       r.forEach(d => table.addRow([d.division,d.pos]))
-      return msg.reply({embed : {
-        title : lang.worldboardSeachPlayer,
-        description : lang.search + ': ' + `\`${query}\`\n\n${table.render()}`,
-        color : this.config.color
-      }})
+      return msg.reply(embed,{
+        _query: query,
+        _results: table.render()
+      })
     }).catch(err => {
-      throw new UserError('worldranking', 'errorWorldBoardSearchPlayer', err)
+      throw new UserError('worldranking', 'searchworldranking.errorfind', err)
     })
   })
 

@@ -7,6 +7,7 @@ const firebase = require('firebase-admin');
 const Locale = require('./classes/locale.js')
 const { ErrorManager } = require('./classes/errormanager.js')
 const Notifier = require('./classes/notifier.js')
+const EmbedBuilder = require('./classes/embed-builder.js')
 
 let TOKEN, ENVPROD = false;
 const firebaseConfig = {
@@ -50,8 +51,14 @@ firebase.initializeApp({
 const bot = new Aghanim(TOKEN,CONFIG.setup)
 
 bot.commandArgsMiddleware = function(args,msg){
-  args.hello = text => msg.reply(text)
-  msg.hic = text => msg.reply(`HIC:${text}`)
+  args.user = {}
+  args.user.supporter = bot.components.Users.isSupporter(msg.author.id)
+  args.user.betatester = bot.components.Users.isBetatester(msg.author.id)
+  args.user.lang = bot.locale.getUserStrings(msg)
+  args.user.langstring = key => args.user.lang[key] || ''
+  args.user.locale = (langString,replacements) => args.replacer(args.user.lang[langString] || langString, replacements) 
+  args.user.langFlag = bot.locale.getUserLang(msg)
+  args.replacer = bot.locale.replacer.bind(bot.locale)
 }
 
 //Add keys to bot
@@ -81,7 +88,7 @@ bot.addCommandDir(path.join(__dirname,'commands/general'))
 bot.addCommandDir(path.join(__dirname,'commands/fun'))
 bot.addCommandDir(path.join(__dirname,'commands/owner'))
 bot.addCommandDir(path.join(__dirname,'commands/dota2'))
-bot.addCommandDir(path.join(__dirname,'commands/card'))
+bot.addCommandDir(path.join(__dirname,'commands/playercard'))
 bot.addCommandDir(path.join(__dirname,'commands/artifact'))
 
 // bot.locale = new Locale(path.join(__dirname,'locale'),{},{defaultLanguage : 'en', devLanguage : 'en'})
@@ -104,29 +111,29 @@ function filterCommands(cmd,query,owner){
   return !cmd.hide
 }
 
-bot.addCommand(new Aghanim.Command('help',{},function(msg,args,command){
-  const categories = this.categories.map(c => c.name.toLowerCase())
+bot.addCommand(new Aghanim.Command('help',{}, async function(msg,args,client){
+  const categories = client.categories.map(c => c.name.toLowerCase())
   const query = args.from(1).toLowerCase();
-  const lang = this.locale.getUserStrings(msg)
+  const lang = client.locale.getUserStrings(msg)
   const owner = msg.author.id === bot.owner.id
   if(query === 'owner' && !owner){return}
-  let helpMessage = lang.helpMessage +'\n\n'
+  let helpMessage = lang['help.message'] +'\n\n'
   if(categories.includes(query)){
-    const cmds = this.getCommandsFromCategories(query).sort((a, b) => a.name > b.name ? 1 : -1)
-    const prefix = this.defaultPrefix
-    if(!cmds){helpMessage += this.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${this.defaultPrefix}help ${c.name.toLowerCase()}\` - ${this.locale.getCat(c.name,msg)}`).join('\n') + '\n\n' + lang.helpMessageAfterCategories}//// TODO:
+    const cmds = client.getCommandsFromCategories(query).sort((a, b) => a.name > b.name ? 1 : -1)
+    const prefix = client.defaultPrefix
+    if(!cmds){helpMessage += client.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${client.defaultPrefix}help ${c.name.toLowerCase()}\` - ${client.locale.getCat(c.name,msg)}`).join('\n') + '\n\n' + lang['help.messageaftercategories']}//// TODO:
     else{
       helpMessage += cmds.filter(c => filterCommands(c,query,owner)).map(c => {
-        const langCmd = this.locale.getCmd(c.name,msg)
+        const langCmd = client.locale.getCmd(c.name,msg)
         return `\`${prefix}${c.name}${langCmd.args ? ' ' + langCmd.args : ''}\` - ${langCmd.help || c.help}${c.subcommands.length ? '\n' + c.subcommands.filter(s => filterCommands(s,query,owner)).map(s => {
-          const langCmd = this.locale.getCmd(c.name + '_' + s.name,msg)
+          const langCmd = client.locale.getCmd(c.name + '_' + s.name,msg)
           return `  · \`${s.name}${langCmd.args ? ' ' + langCmd.args : ''}\` - ${langCmd.help}`}).join('\n') : ''}`
       }).join('\n')
     }
   }else{
-    helpMessage += this.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${this.defaultPrefix}help ${c.name.toLowerCase()}\` - ${this.locale.getCat(c.name,msg)}`).join('\n') + '\n\n' + lang.helpMessageAfterCategories
+    helpMessage += client.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${client.defaultPrefix}help ${c.name.toLowerCase()}\` - ${client.locale.getCat(c.name,msg)}`).join('\n') + '\n\n' + lang['help.messageaftercategories']
   }
-  if(!this.setup.helpDM){
+  if(!client.setup.helpDM){
     return msg.reply(helpMessage)
   }else{
     return msg.replyDM(helpMessage)
@@ -178,21 +185,110 @@ Eris.Message.prototype.addReactionSending = function () {
   return this.addReaction(this._client.config.emojis.default.envelopeIncoming)
 }
 
-Eris.Message.prototype.reply = function (message, file) {
+Object.defineProperty(Eris.User.prototype, 'account', {
+  get : function(){
+    const account = bot.cache.profiles.get(this.id) || bot.components.Account.schema()
+    return account
+  }
+})
+
+Object.defineProperty(Eris.User.prototype, 'registered', {
+  get: function () {
+    return bot.cache.profiles.has(this.id) 
+  },
+  enumerable : true
+})
+
+Object.defineProperty(Eris.User.prototype, 'supporter', {
+  get: function () {
+    return bot.components.Users.isSupporter(this.id)
+  },
+  enumerable : true
+})
+
+Object.defineProperty(Eris.User.prototype, 'betatester', {
+  get: function () {
+    return bot.components.Users.isBetatester(this.id)
+  },
+  enumerable : true
+})
+
+Object.defineProperty(Eris.User.prototype, 'profile', {
+  get: function () {
+    return {
+      account : this.account,
+      supporter : this.supporter,
+      betatester : this.betatester,
+      registered : this.registered
+    }
+  },
+  enumerable: true
+})
+
+Object.defineProperty(Eris.Guild.prototype, 'account', {
+  get: function () {
+    const account = bot.cache.servers.get(this.id) || bot.components.Account.schema()
+    return account
+  }
+})
+
+Object.defineProperty(Eris.Guild.prototype, 'registered', {
+  get: function () {
+    return bot.cache.servers.has(this.id)
+  },
+  enumerable: true
+})
+
+// Object.defineProperty(Eris.User.prototype.account, 'log', {
+//   get: function () {
+//     // const account = bot.cache.profiles.get(this.id)
+//     console.log(this)
+//     // return account
+//   }
+// })
+
+// Eris.Message.prototype.reply = function (content, file) {
+//   return new Promise((resolve, reject) => {
+//     this.channel.createMessage(content, file)
+//       .then(m => resolve(m))
+//       .catch(err => reject(err))
+//   })
+// }
+
+// Eris.Message.prototype.replyDM = function (content, file) {
+//   return new Promise((resolve, reject) => {
+//     this.author.getDMChannel()
+//       .then(channel => channel.createMessage(content, file))
+//       .then(m => resolve(m))
+//       .catch(err => reject(err))
+//   })
+// }
+
+Eris.Message.prototype.reply = function (content, replacements, file) {
   return new Promise((resolve, reject) => {
-    this.channel.createMessage(message, file)
+    this.channel.createMessage(parseContent(content, replacements, this), file)
       .then(m => resolve(m))
       .catch(err => reject(err))
   })
 }
 
-Eris.Message.prototype.replyDM = function (content, file) {
+Eris.Message.prototype.replyDM = function (content, replacements, file) {
   return new Promise((resolve, reject) => {
     this.author.getDMChannel()
-      .then(channel => channel.createMessage(content, file))
+      .then(channel => channel.createMessage(parseContent(content, replacements, this), file))
       .then(m => resolve(m))
       .catch(err => reject(err))
   })
+}
+
+function parseContent(content, replacements, msg){
+  if(typeof content === 'string'){
+    const lang = msg._client.locale.getUserStrings(msg)
+    return bot.locale.replacer(lang[content] || content, replacements)
+  }else if(content instanceof EmbedBuilder){
+    return content.build(msg._client, msg._client.locale.getUserLang(msg), replacements)
+  }
+  return content
 }
 
 bot.connect();

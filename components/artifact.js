@@ -7,10 +7,12 @@ const Canvas = require('../helpers/apijimp/classes/canvas')
 const jimp = require('jimp')
 const steamprice = require('steam-price-api')
 
+//PRICEAPI https://steamcommunity.com/market/search/render/?appid=583950&norender=1&count=500
+
 class Artifact extends Component {
     constructor(client, options) {
         super(client)
-        // this.client.artifact = new ArtifactManager()
+        // this.enable = false
         this.cards = []
         this.sets = []
         this.cardsURL = 'https://raw.githubusercontent.com/ottah/ArtifactDB/master/cards-manifest.json'
@@ -28,6 +30,7 @@ class Artifact extends Component {
         this.deckCodeStartsWith = 'ADC'
         this.pathStorageDecks = 'decks'
         this.appID = 583950
+        this.gameInfoUrl = `https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?appid=${this.appID}`
         this.configDeckDecoder = {
             width : 280,
             rowHeight : 28,
@@ -414,6 +417,7 @@ class Artifact extends Component {
                     }
                 })
                 return canvas.create('png').then((buffer) => ({ buffer, data: { code, name: decoded.name, deckUrl: this.deckCodeUrl(code)}}))
+                    .then(dataDeck => this.getDeckPrice(dataDeck.data.code).then(price => {dataDeck.data.price = price;return dataDeck}))
             })
         }catch(err){
             return Promise.reject(err)
@@ -549,6 +553,78 @@ class Artifact extends Component {
             steamprice.getprice(this.appID, `1${card.id}`, (err, data) => {
                 !err ? res(data) : rej(err)
             } , 3) // 1 = USD, 2 = GB, 3 = EUR
+        })
+    }
+    getPriceCard(card){
+        const id = typeof card === 'object' ? card.id : card
+        return new Promise((res, rej) => {
+            steamprice.getprice(this.appID, `1${id}`, (err, data) => {
+                const value = data.body.lowest_price || '0'
+                !err ? res(Number(value.replace(/[-|€]/g, '').replace(',', '.'))) : rej(err)
+            }, 3)
+        })
+    }
+    getDeckPrice(deckcode){
+        return this.getDeckFromCode(deckcode).then(deckData => {
+            const reducedDeck = deckData.filter(deckCard => !deckCard.card.signatureCardFor).map(deckCard => ({ card: deckCard.card, id: deckCard.card.id, count: deckCard.count }))
+            return Promise.all(
+                reducedDeck.map(deckCard => {
+                    return this.getPriceCard(deckCard.id)
+                        // .then(data => data || 0)
+                        .catch(err => 0 )
+                }))
+                .then(data => {
+                    const deckPrice = data.reduce((sum, cur, index) => sum + cur * reducedDeck[index].count, 0)
+                    return deckPrice.toFixed(2)
+                })
+        })
+    }
+    getDeckFromCode(deckcode){
+        const mainDeckTypes = ['Creep', 'Spell', 'Improvement']
+        const itemDeckTypes = ['Weapon', 'Armor', 'Accessory', 'Consumable']
+        return new Promise((res, rej) => {
+            const decoded = this.deckDecode(deckcode)
+            const cardsDeck = [...decoded.heroes.sort((a, b) => a.turn - b.turn), ...decoded.cards, ...decoded.heroes.map(card => ({ id: this.cards.find(signatureCard => signatureCard.name.english === this.getCardByID(card.id).signatureCard.english).id, count: 3 }))]
+                .map(card => ({ card: this.getCardByID(card.id), turn: card.turn || 0, count: card.count || 1 })) // Todo ordenar por coste y colores
+
+            const sorting_info = [
+                {
+                    filter: el => el.card.cardType === 'Hero',
+                    sort: (el1, el2) => el1.turn - el2.turn
+                }, {
+                    filter: el => mainDeckTypes.includes(el.card.cardType),
+                    sort: (el1, el2) => {
+                        const manaCostDiff = el1.card.manaCost - el2.card.manaCost
+                        if (manaCostDiff === 0) {
+                            if (el1.card.name.english > el2.card.name.english) { return 1 }
+                            return -1
+                        }
+                        return manaCostDiff
+                    }
+                }, {
+                    filter: el => itemDeckTypes.includes(el.card.cardType),
+                    sort: (el1, el2) => {
+                        const goldCostDiff = el1.card.goldCost - el2.card.goldCost
+                        if (goldCostDiff === 0) {
+                            if (el1.card.name.english > el2.card.name.english) { return 1 }
+                            return -1
+                        }
+                        return goldCostDiff
+                    }
+                }
+
+            ]
+            const orderedDeck = sorting_info.reduce((sum, sortMethod) => {
+                return [...sum, ...cardsDeck.filter(sortMethod.filter).sort(sortMethod.sort)]
+            }, [])
+            res(orderedDeck)
+        })
+    }
+    gameInfo(){
+        return Request.getJSON(this.gameInfoUrl).then(data => {
+            return {
+                currentplayers : data.response.player_count
+            }
         })
     }
 }

@@ -91,12 +91,16 @@ module.exports.getMedal = function (rank, mode, replace) { //DEPRECATED
     // Herald, Guardian, Crusader, Archon, Legend, Ancient, and Divine
 }
 
-module.exports.titlePlayer = function (results, title, replace) {
+module.exports.titlePlayer = function (results, title, client, profile) {
     const medal = enumMedal({ rank: results[0].rank_tier, leaderboard: results[0].leaderboard_rank })
 
+    // return typeof results[0].profile.loccountrycode == 'string' ?
+    //     replace.replacer(title, { user: module.exports.nameAndNick(results[0].profile), flag: results[0].profile.loccountrycode.toLowerCase(), medal: replace.replacer(medal.emoji), supporter : replacer.replacer('<cheese>') })
+    //     : util.String.replace(title, { '<user>': module.exports.nameAndNick(results[0].profile), ':flag_<flag>:': ' ', '<medal>': replace.replacer(medal.emoji), supporter : supporter ? replacer.replacer('<cheese>') : '' }, false)
+    const result = client.locale.replacer(title, {supporter : profile.supporter ? client.config.emojis.supporter : ''})
     return typeof results[0].profile.loccountrycode == 'string' ?
-        replace.replacer(title, { user: module.exports.nameAndNick(results[0].profile), flag: results[0].profile.loccountrycode.toLowerCase(), medal: replace.replacer(medal.emoji) })
-        : util.String.replace(title, { '<user>': module.exports.nameAndNick(results[0].profile), ':flag_<flag>:': ' ', '<medal>': replace.replacer(medal.emoji) }, false)
+        client.locale.replacer(result, { user: module.exports.nameAndNick(results[0].profile), flag: results[0].profile.loccountrycode.toLowerCase(), medal: client.locale.replacer(medal.emoji) })
+        : util.String.replace(result, { '<user>': module.exports.nameAndNick(results[0].profile), ':flag_<flag>:': ' ', '<medal>': client.locale.replacer(medal.emoji) }, false)
 
 }
 

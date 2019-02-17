@@ -33,8 +33,8 @@ module.exports = class WorldRankingApi extends Component{
         })
     }
     promises(){
-        let promises = [];
-        for (var i = 0; i < this.divisions.length; i++) {
+        const promises = [];
+        for (let i = 0; i < this.divisions.length; i++) {
             promises.push(Request.getJSON(this.url(this.divisions[i])))
         }
         return Promise.all(promises)

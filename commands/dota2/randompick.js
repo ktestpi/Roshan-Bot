@@ -4,10 +4,10 @@ const enumHeroes = require('../../enums/heroes')
 
 module.exports = new Command(['randompick','rp'],{
   category : 'Dota 2', help : 'Elige aleatoriamente un héroe', args : ''},
-  function(msg, args, command){
+  async function(msg, args, client){
     let hero
     do {
-      hero = enumHeroes.getValue(Math.floor(Math.random()*this.config.constants.heroes)).name;
+      hero = enumHeroes.getValue(Math.floor(Math.random()*client.config.constants.heroes)).localized_name;
     } while (hero.length < 1);
-    return msg.reply(this.locale.replacer(this.locale.getUserString('randomPick',msg),{author : msg.author.username, hero : hero}))
+    return msg.reply('randompick.message',{author : msg.author.username, hero})
   })

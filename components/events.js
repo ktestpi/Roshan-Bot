@@ -6,9 +6,9 @@ module.exports = class Events extends Component {
     constructor(client, options) {
         super(client)
     }
-    ready() {
+    ready(client) {
     }
-    messageReactionAdd(msg, emoji, userID){
+    messageReactionAdd(msg, emoji, userID, client){
         if (userID === this.client.owner.id && msg.channel.guild && msg.channel.guild.id === this.client.config.guild.id) {
             if (emoji.name === this.client.config.emojis.default.notification) {
                 msg.channel.getMessage(msg.id).then(m => { this.client.components.Guild.messageAllGuilds(m, false, 'notifications') })
@@ -44,7 +44,7 @@ module.exports = class Events extends Component {
         if (this.client.config.switches.welcome) {
             const mentionAdmin = Guild.getRole(guild, this.client.config.roles.admin);
             if (mentionAdmin) {
-                // this.createMessage(guild.id, this.replace.do('roshanGuildnewMemberWelcome', { member: member.mention }, true));
+                // this.createMessage(guild.id, this.replace.do('roshanguild.welcomenewmember', { member: member.mention }, true));
             }
         }
         this.client.notifier.memberin(`**${member.username}**`)

@@ -5,11 +5,10 @@ const { inspect } = require('util')
 module.exports = new Command(['eval','e'],{
   category : 'Owner', help : '', args : '', hide : true,
   ownerOnly : true},
-  function(msg, args, command){
+  async function(msg, args, client){
     // let self = this
     if(!args[1]){return}
-    let bot = this
-    let bla = this
+    const bot = client
     const _guild = msg.channel.guild
     const _channel = msg.channel
     const _user = msg.author
@@ -19,21 +18,21 @@ module.exports = new Command(['eval','e'],{
       const _message = msg
       const reply = msg.reply
       let result = eval(toEval)
-      this.notifier.console('Eval', toEval)
+      client.notifier.console('Eval', toEval)
       Promise.resolve(result).then(res => {
         if(typeof result === 'object'){
           result = inspect(result)
         }
         result = String(result).slice(0,1000)
-        this.notifier.console('Eval Result', result)
-        msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
+        client.notifier.console('Eval Result', result)
+        return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
       }).catch(err => {
-        this.notifier.console('Eval Error', err)
-        msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
+        client.notifier.console('Eval Error', err)
+        return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
       })
     }catch(err){
-      this.notifier.console('Code Error', err.stack)
-      msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
+      client.notifier.console('Code Error', err.stack)
+      return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
 
   })

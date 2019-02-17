@@ -17,7 +17,7 @@ module.exports = class Scripts extends Component {
                     .filter(m => m.content.startsWith('🇫'))
                     .map(m => ({ tag: m.content.match(/\*\*(\w+)\*\*/)[1], src: m.content.match(/\`\`\`js[\n]?(.+)[\n]?\`\`\`/)[1] }))
                     .forEach(c => { try { this.client.scripts[c.tag] = eval(`${c.src}`) } catch (err) { return this.client.notifier.console('Error loading scripts\n' + err.stack) } })
-                    this.client.notifier.console('Scripts loaded')
+                    this.client.notifier.console('Scripts','Loaded')
                     resolve()
             })
         })

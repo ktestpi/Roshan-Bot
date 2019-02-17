@@ -3,7 +3,7 @@ const { Command } = require('aghanim')
 module.exports = new Command(['beta'],{
   category : 'Owner', help : 'Betatesters', args : '[<add/remove> <mención>]',
   ownerOnly : true},
-  function(msg, args, command){
+  async function(msg, args, client){
     if(['add','remove'].includes(args[1]) && args.length > 2){
       const cmd = args[1]
       const members = msg.mentions.map(m => m.id)
@@ -12,18 +12,18 @@ module.exports = new Command(['beta'],{
         if(regex.test(args[i])){members.push(args[i])}
       }
       if(!members.length){return}
-      let promises = []
-      members.forEach(m => promises.push(cmd === 'add' ? this.cache.betatesters.include(m) : this.cache.betatesters.exclude(m)))
-      return Promise.all(promises).then(msg.addReaction(this.config.emojis.default.accept)).catch(() => msg.reply(':x: Ha ocurrido un error'))
+      const promises = []
+      members.forEach(m => promises.push(cmd === 'add' ? client.cache.betatesters.include(m) : client.cache.betatesters.exclude(m)))
+      return Promise.all(promises).then(msg.addReaction(client.config.emojis.default.accept)).catch(() => msg.reply(':x: Ha ocurrido un error'))
     }else{
-      let betatesters = this.cache.betatesters.array().map(b => {
-          let user = this.users.get(b)
-          return user ? user.username : b
+      const betatesters = client.components.Bot.betatesters().map(id => {
+          const user = client.users.get(id)
+          return user ? user.username : id
       })
       return msg.reply({embed : {
         title : `Betatesters (${betatesters.length})`,
         description : betatesters.join(', '),
-        color : this.config.color
+        color : client.config.color
       }})
     }
   })

@@ -1,17 +1,24 @@
 const { Command } = require('aghanim')
 const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const EmbedBuilder = require('../../classes/embed-builder.js')
+
+const embed = new EmbedBuilder({
+    title: 'Searching Decks',
+    description: '<_decks>',
+    footer: {text: 'Results: <_decks_count>'}
+})
 
 module.exports = new Command(['searchdeck','sdeck'], {
     category: 'Artifact', help: 'Busca nombres de mazos por término de búsqueda', args: '[búsqueda]'},
-    function (msg, args, command) {
-        if (!args[1]) { throw new UserError('artifact', 'cmd_searchdeck_error_need_arg'); return }
+    async function (msg, args, client) {
+        if (!args[1]) { throw new UserError('artifact', 'searchdeck.error.needarg'); return }
         const search = args.from(1)
-        const decks = this.components.Artifact.findAllCachedDeckByName(search)
-        if (!decks.length) { throw new UserError('artifact', 'cmd_searchdeck_error_no_decks_found', {search}); return }
-        return msg.reply({embed : {
-            title : 'Searching Decks',
-            description : decks.map(deck => deck.name).join(', '),
-            footer : {text : `Results: ${decks.length}`},
-            color : this.config.color
-        }})
+        const decks = client.components.Artifact.findAllCachedDeckByName(search)
+        if (!decks.length) { throw new UserError('artifact', 'searchdeck.error.nodecksfound', {search}); return }
+        return msg.reply(embed,{
+            _decks: decks.map(deck => deck.name).join(', '),
+            _decks_count: decks.length
+        })
     })
+
+// TODO langstring

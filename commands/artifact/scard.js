@@ -1,24 +1,29 @@
 const { Command } = require('aghanim')
+const EmbedBuilder = require('../../classes/embed-builder.js')
+
+const embed = new EmbedBuilder({
+  title: 'searchcard.title',
+  fields : [
+    {name: 'searchcard.text', value: '<_query>', inline: false},
+    {name : 'searchcard.cards', value: '<_cards>', inline: false}
+  ],
+  footer: {text : 'searchcard.results'}
+})
 
 const max = 1024
 module.exports = new Command(['searchcard','scard'],{
   category : 'Artifact', help : 'Busca cartas según texto', args : '<texto>'},
-  function(msg, args, command){
+  async function(msg, args, client){
     const query = args.from(1)
     if(!query){return}
-    const filtered = this.components.Artifact.searchCard(query)
-    const lang = this.locale.getUserStrings(msg)
-    if(!filtered.length){return msg.reply(this.locale.replacer(lang.searchCardNoFound,{query}))}
+    const filtered = client.components.Artifact.searchCard(query)
+    if(!filtered.length){return msg.reply('searchcard.notfound',{query})}
     const reduced = reduceWithCount(filtered.map(c => c.name.english),max)
-    return msg.reply({embed : {
-      title : lang.searchCardTitle,
-      fields : [
-        {name : lang.searchCardSearchText, value : query, inline : false},
-        {name : lang.searchCardCards, value : reduced.text, inline : false}
-      ],
-      footer : {text : this.locale.replacer(lang.searchCardResults,{results : reduced.count === filtered.length ? reduced.count : reduced.count + '/' + filtered.length})},
-      color : this.config.color
-    }})
+    return msg.reply(embed,{
+      _query: query,
+      _cards: reduced.text,
+      results: reduced.count === filtered.length ? reduced.count : reduced.count + '/' + filtered.length
+    })
   })
 
   function reduceWithCount(array,max){

@@ -6,7 +6,7 @@ const os = require('os')
 module.exports = new Command('usage',{
   category : 'Owner', help : 'Uso del bot', args : '',
   ownerOnly : true},
-  function(msg, args, command){
+  async function(msg, args, client){
     Os.getCPUUsage(cpuusage => {
       msg.reply({embed : {
         title : `Rendimiento - ${os.platform()}`,
@@ -15,8 +15,8 @@ module.exports = new Command('usage',{
           {name : 'RAM', value : `${Os.bytesConvert(os.totalmem()-os.freemem(),'MB')} / ${Os.bytesConvert(os.totalmem(),'MB')} MB`, inline : true}
           // {name : , value : , inline : true}
         ],
-        footer : {text : `Despierto ${secondsTohms(Math.floor(process.uptime()))}`, icon_url : this.user.avatarURL},
-        color : this.config.color
+        footer : {text : `Despierto ${secondsTohms(Math.floor(process.uptime()))}`, icon_url : client.user.avatarURL},
+        color : client.config.color
       }})
     })
   })

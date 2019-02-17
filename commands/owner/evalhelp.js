@@ -10,11 +10,11 @@ const variables = [
 module.exports = new Command(['evalhelp','eh'],{
   category : 'Owner', help : '', args : '', hide : true,
   ownerOnly : true},
-  function(msg, args, command){
+  async function(msg, args, client){
     // let self = this
     msg.reply({embed : {
       title : 'Eval - Ayuda',
       fields : [{name : 'Variables', value : variables.map(v => `**${v.id}** - ${v.desc}`).join('\n'), inline : false}],
-      color : this.config.color
+      color : client.config.color
     }})
   })

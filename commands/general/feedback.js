@@ -2,14 +2,14 @@ const { Command } = require('aghanim')
 
 module.exports = new Command('feedback',{
   category : 'General', help : 'Reporta un error o sugerencia', args : '<mensaje>'},
-  function(msg, args, command){
+  async function(msg, args, client){
     if(args.length < 4){return}
-    return this.createMessage(this.config.guild.bugs,{embed : {
-      title : this.locale.getDevString('reportTitle',msg),
+    return client.createMessage(client.config.guild.bugs,{embed : {
+      title : client.locale.getDevString('feedback.title',msg),
       description : args.after,
       footer : {text : msg.author.username, icon_url : msg.author.avatarURL},
-      color : this.config.color}
-    }).then(() =>
-        msg.addReaction(this.config.emojis.default.envelopeIncoming)
-    )
+      color : client.config.color}
+    }).then(() => msg.addReaction(client.config.emojis.default.envelopeIncoming))
   })
+
+  //TODO: message with embedbuilder

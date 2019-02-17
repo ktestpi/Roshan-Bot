@@ -53,7 +53,7 @@ module.exports = class Opendota extends Component {
     existsAuthor(msg){
         return new Promise((res,rej) => {
             const profile = this.baseProfile(msg.author.id)
-            if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'needRegister') }
+            if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'bot.needRegister') }
             res(profile)
         })
     }
@@ -61,7 +61,7 @@ module.exports = class Opendota extends Component {
         return new Promise((res, rej) => {
             if (msg.mentions.length > 0) {
                 const profile = this.baseProfile(msg.mentions[0].id)
-                if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'needRegisterMentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username }) }
+                if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'bot.Mentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username }) }
                 res(profile)
             } else if (args[1]) {
                 const number = parseInt(args[1])
@@ -80,11 +80,9 @@ module.exports = class Opendota extends Component {
     baseProfile(discordID, dotaID) {
         const cache = this.client.cache.profiles.get(discordID)
         const data = cache || this.client.components.Account.schema()
+        const profile = this.client.components.Users.getProfile(discordID)
         if (dotaID) { data.dota = dotaID }
-        return { discordID, cached: cache ? true : false, data }
-    }
-    error(msg, err) {
-        //return this.client.discordLog.send('oderror', this.client.locale.getDevString('errorOpendotaRequest', msg), this.client.locale.getUserString('errorOpendotaRequest', msg), err, msg.channel)
+        return { discordID, cached: cache ? true : false, data, profile}
     }
     userCall(msg, args) {
         return this.userID(msg, args).then(playerID => new Promise((res, rej) => {
@@ -93,7 +91,7 @@ module.exports = class Opendota extends Component {
     }
     getProPlayerID(name) {
         return new Promise((resolve, reject) => {
-            const urls = ['https://api.opendota.com/api/proPlayers/'];
+            const urls = [this.baseURL + Endpoints.search_pro] //['https://api.opendota.com/api/proPlayers/'];
             this.request(urls).then((results) => {
                 let pro = results[0].find(player => player.name.toLowerCase() === name.toLowerCase())
                 if (pro) { resolve(pro) } else { reject("getProPlayerDotaID not found") };
@@ -132,7 +130,7 @@ const Endpoints = {
     competitive: 'proMatches/',
     proplayers: 'proPlayers/',
     search_player: 'search?q=<id>&similarity=0.5',
-    search_pro: 'proPlayers/'
+    search_pro: 'proPlayers/',
 }
 
 const urls = {

@@ -12,6 +12,7 @@ module.exports = class Bot extends CustomComponent() {
         super(client)
     }
     ready() {
+        // this.client.server = this.client.guilds.get(this.client.config.guild.id)
         this.client.components.Bot.loadLastPatchNotes()
         this.waitOnce('cache:init', () => {
             this.dbOnce('bot').then(snap => {
@@ -23,11 +24,11 @@ module.exports = class Bot extends CustomComponent() {
                 //flags DEVMODE
                 if (!this.client.envprod && process.argv.includes('-db') ) {
                     this.client.config.switches.backupdb = true;
-                    this.client.notifier.console('DEV - DB active')
+                    this.client.notifier.console('DEV', 'DB active')
                 }
                 if (!this.client.envprod && process.argv.includes('-ul')) {
                     this.client.config.switches.leaderboardUpdate = true;
-                    this.client.notifier.console('DEV - DB active - UPDATE Leaderboard')
+                    this.client.notifier.console('DEV', 'DB active - UPDATE Leaderboard')
                 }
 
                 this.client.config.playing = snap.playing;
@@ -36,11 +37,11 @@ module.exports = class Bot extends CustomComponent() {
                 this.client.config.status_url = snap.status_url
                 this.client.config.status_msg = snap.status_msg
                 
-                this.setStatus(this.client.config.status_act, this.client.config.status, this.client.config.status_msg, this.client.config.status_url, false).then(() => this.client.notifier.console('Status setted'))
+                this.setStatus(this.client.config.status_act, this.client.config.status, this.client.config.status_msg, this.client.config.status_url, false).then(() => this.client.notifier.console('Status','Setted'))
 
                 if (this.client.config.switches.backupdb) { //config.switches.backupdb
                     util.Firebase.backupDBfile(this.client.db, this.client, this.client.config.guild.backup, { filenameprefix: 'roshan_db_', messageprefix: '**Roshan Backup DB**' }).then(snap => {
-                        this.client.notifier.console('Backup done!')
+                        this.client.notifier.console('Backup', 'Done!')
 
                         //Update leaderboard (Firebase) each this.client.config.hoursLeaderboardUpdate at least
                         if (this.client.config.switches.leaderboardUpdate
@@ -55,7 +56,7 @@ module.exports = class Bot extends CustomComponent() {
                             users: Object.keys(snap.profiles).length,
                             version: packageInfo.version
                         }
-                        this.client.db.child('public').update(data_public).then(() => this.client.notifier.console('Update public Info'))
+                        this.client.db.child('public').update(data_public).then(() => this.client.notifier.console('Publicinfo','Updated'))
 
                         // Check guilds config setted
                         // this.client.guilds.forEach(g => {
@@ -95,7 +96,7 @@ module.exports = class Bot extends CustomComponent() {
     loadLastPatchNotes(){
         return this.client.getMessage(this.client.config.guild.changelog, this.client.server.channels.get(this.client.config.guild.changelog).lastMessageID).then(m => {
             this.client._lastUpdateText = m.content
-            this.client.notifier.console('patch notes')
+            this.client.notifier.console('Patch notes','Loaded')
         })
     }
     updateLeaderboard(snap) {
@@ -139,21 +140,21 @@ module.exports = class Bot extends CustomComponent() {
                 })    
         }else{
             this.db.child('profiles').once('value').then((snap) => {
-                if(!snap.exists){return this.notifier.console('Not exists')}
+                if(!snap.exists()){return this.notifier.console('Not exists')}
                 this.updateLeaderboard(snap.val())
             })
         }
         
     }
     sendImageStructure(msg, query, links, cmd) {
-        if (!links[query]) { throw new UserError('wrongCmdArg', 'wrongCmdArg', { options: Object.keys(links).join(', '), cmd }) } // TODO wrongCmd
+        if (!links[query]) { throw new UserError('cmd.wrongarg', 'cmd.wrongarg', { options: Object.keys(links).join(', '), cmd }) } // TODO wrongCmd
         const match = links[query]
         if (typeof match === 'object') {
-            util.Message.sendImage(match.file).then(buffer => {
-                msg.reply(match.msg, { file: buffer, name: match.name })
+            return util.Message.sendImage(match.file).then(buffer => {
+                return msg.reply(match.msg, null, { file: buffer, name: match.name })
             })
         } else if (typeof query === 'string') {
-            msg.reply(match)
+            return msg.reply(match)
         }
     }
     parseText(text, mode) {
@@ -163,6 +164,30 @@ module.exports = class Bot extends CustomComponent() {
             newText = text.replace(new RegExp('`', 'g'), '\'')
         }
         return newText
+    }
+    isSupporterCheckMessageCreate(msg, args, client){
+        const result = this.isSupporter(msg.author.id)
+        if(!result){msg.reply('bot.onlysupporterfunction')}
+        return result
+    }
+    isBetatesterCheckMessageCreate(msg, args, client){
+        const result = this.isBetatester(msg.author.id)
+        if(!result){msg.reply('bot.onlybetatesterfunction')}
+        return result
+    }
+    isBetatester(id){
+        return this.betatesters().includes(id)
+    }
+    isSupporter(id){
+        return this.supporters().includes(id)
+    }
+    betatesters(){
+        const set = new Set([this.client.owner.id,...Array.from(this.client.cache.betatesters),...this.client.server.membersWithRole(this.client.config.roles.betatester).map(m => m.id)])
+        return Array.from(set)
+    }
+    supporters(){
+        const set = new Set([this.client.owner.id,...Array.from(this.client.cache.supporters),...this.client.server.membersWithRole(this.client.config.roles.supporter).map(m => m.id)])
+        return Array.from(set)
     }
 }
 

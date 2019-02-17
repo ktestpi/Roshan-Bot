@@ -113,7 +113,20 @@ module.exports = class Locale{
   stringLocale(string){
     return new StringLocale(string,this.constants)
   }
-  replacer(string,obj){
+  replacer(string,obj,lang){
+    // console.log('STR', string)
+    lang = lang || this.defaultLanguage
+    const reg = /%%([\w\._^%+]+)%%/g
+    const injected = []
+    let match
+    while (match = reg.exec(string)){
+      injected.push(match[1])
+    }
+    injected.forEach(inject => {
+      if(this.lang[lang][inject]){
+        string = string.replace(new RegExp(`%%${inject}%%`, 'g'), this.lang[lang][inject])
+      }
+    })
     for(let str in this.constants){
       string = string.replace(new RegExp(`<${str}>`,'g'),this.constants[str]) // Replace
     }

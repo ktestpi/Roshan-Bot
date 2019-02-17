@@ -15,7 +15,8 @@ module.exports.ErrorManager = class ErrorManager{
         this.client.on('aghanim:command:error', (error, msg, args, command) => {
             // console.log(error)
             if (error instanceof UserError) {
-                this.send(msg.channel.id, error.reply(msg))
+                // this.send(msg.channel.id, error.reply(msg, args))
+                msg.reply(error.reply(msg, args))
                 if(this.config.userSilent && !error.err){return}
                 this.console(error.toConsole(msg, args, command))
             } else if (error instanceof ConsoleError){
@@ -93,6 +94,7 @@ class BaseError extends Error{
 class UserError extends BaseError {
     constructor(type, messageCode, replacer, err) {
         super(type, messageCode, replacer, err)
+        console.log('replacer?',replacer)
     }
     toConsole(msg, args, command){
         const embed = {
@@ -106,8 +108,9 @@ class UserError extends BaseError {
         }
         return { embed }
     }
-    reply(msg){
-        return msg._client.locale.replacer(msg._client.locale.getUserString(this.message, msg), this.replacer)
+    reply(msg, args){
+        // return msg._client.locale.replacer(msg._client.locale.getUserString(this.message, msg), this.replacer)
+        return args.user.locale(this.message,this.replacer)
     }
 }
 

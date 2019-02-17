@@ -1,7 +1,7 @@
 {
   "name": "Roshan",
-  "version": "0.3.5",
-  "version_date": "29/01/19",
+  "version": "0.3.6",
+  "version_date": "17/02/19",
   "description": "Discord bot about Dota 2 and Artifact written in ErisJS using Aghanim Command Client",
   "main": "bot.js",
   "scripts": {
@@ -12,7 +12,9 @@
     "test-heroku-postbuild": "npm install",
     "pngtojpg": "node dev-scripts/pngtojpg.js pngtojpg pngtojpg/dest",
     "update-assets": "node dev-scripts/od-assets.js img",
-    "update-assets-all": "node dev-scripts/od-assets.js img -all"
+    "update-assets-all": "node dev-scripts/od-assets.js img -all",
+    "combine-medals-web": "node dev-scripts/combine-medals.js medal_",
+    "combine-medals": "node dev-scripts/combine-medals.js"
   },
   "keywords": [
     "Roshan",
