@@ -29,6 +29,12 @@ module.exports = class EmbedBuilder {
                 }
             })
         }
+        if (this.schema.image) {
+            embed.image = {}
+            if (this.schema.image.url) {
+                embed.image.url = replacer(this.schema.image.url)
+            }
+        }
         if (this.schema.thumbnail) {
             embed.thumbnail = {
                 url: replacer(this.schema.thumbnail.url),
@@ -62,7 +68,7 @@ module.exports = class EmbedBuilder {
 
 function embedReplacer(client, languageFlag, replacements){
     return function(str){
-        console.log('str', str, languageFlag || client.locale.defaultLanguage, client.locale.lang[languageFlag || client.locale.defaultLanguage][str], replacements)
+        // console.log('str', str, languageFlag || client.locale.defaultLanguage, client.locale.lang[languageFlag || client.locale.defaultLanguage][str], replacements)
         return client.locale.replacer(client.locale.lang[languageFlag || client.locale.defaultLanguage][str] || str, replacements)
     }
 }

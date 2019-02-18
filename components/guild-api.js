@@ -121,7 +121,7 @@ module.exports = class Guild extends CustomComponent() {
                 this.client.createMessage(channel, { content: message, embed: msg.embeds.length > 0 ? msg.embeds[0] : {}, disableEveryone: false }).catch(err => {
                     // Create the message to defaultChannel of guild (not cofigurated)
                     // this.createMessage(util.Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false})
-                    this.client.errorManager.emit(new ConsoleError('guildmessage', `Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`, err))
+                    this.client.notifier.error(`Guildmessage: Error al enviar un mensaje a la guild\n**${server.name}** (${server.id}) [#${channel}]`)
                 })
             })
         } else {

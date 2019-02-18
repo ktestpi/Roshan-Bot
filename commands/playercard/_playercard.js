@@ -8,7 +8,7 @@ const embed = new EmbedBuilder({
 })
 
 const embed2 = new EmbedBuilder({
-  descriptin: 'playerCard.title',
+  description: 'playercard.title',
   image: { url: '<_image>' },
 })
 

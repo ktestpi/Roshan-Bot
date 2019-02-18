@@ -10,11 +10,11 @@ const embed = new EmbedBuilder({
     { name: 'about.devserver', value: 'about.invitedevserver', inline: false},
     { name: 'global.patreon', value: 'about.support', inline: false}
   ],
-  thumbnail : {text : 'about.footer', icon_url : '<link_patreon>'}
+  footer : {text : 'about.footer'}
 })
 
 module.exports = new Command('about',{
-  category : 'General', help : 'Información sobre el bot', args : '[errors,thanks]'},
+  category : 'General', help : 'Información sobre el bot', args : ''},
   async function(msg, args, client){
     return msg.reply(embed)
   })
