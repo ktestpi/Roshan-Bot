@@ -1,4 +1,5 @@
 const { Command } = require('aghanim')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 const EmbedBuilder = require('../../classes/embed-builder.js')
 
 const embedPosts = new EmbedBuilder({
@@ -25,7 +26,7 @@ module.exports = new Command('reddit',{
           _message: result
         })
       }).catch(err => {
-        throw new UserError('reddit', 'errorRedditPostsRequest', err)
+        throw new UserError('reddit', 'reddit.error.postsrequest', err)
       })
     }else{
       msg.channel.sendTyping();
@@ -38,7 +39,7 @@ module.exports = new Command('reddit',{
           _post_subreddit: resutl.subreddit
         })
       }).catch(err => {
-        throw new UserError('reddit', 'errorRedditPostsRequest', err)
+        throw new UserError('reddit', 'reddit.error.postrequest', err)
       })
     }
   })

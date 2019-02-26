@@ -26,7 +26,7 @@ module.exports = new Command(['redditdota','redditd'],{
           _message: result
         })
       }).catch(err => {
-        throw new UserError('reddit', 'errorRedditPostsRequest', err)
+        throw new UserError('reddit', 'reddit.error.postsrequest', err)
       })
     }else{
       msg.channel.sendTyping();
@@ -39,7 +39,7 @@ module.exports = new Command(['redditdota','redditd'],{
           _post_subreddit: resutl.subreddit
         })
       }).catch(err => {
-        throw new UserError('reddit', 'errorRedditPostsRequest', err)
+        throw new UserError('reddit', 'reddit.error.postrequest', err)
       })
     }
   })

@@ -35,7 +35,8 @@ module.exports = new Command('match+',{
               match_id: results[0].match_id,
               match_link: client.config.links.profile.dotabuff.slice(0, -8) + 'matches/' + results[0].match_id,
               duration: odutil.durationTime(results[0].duration),
-              time: Datee.custom(results[0].start_time * 1000, 'h:m D/M/Y', true)
+              time: Datee.custom(results[0].start_time * 1000, 'h:m D/M/Y', true),
+              _match_image: m.attachments[0].url
             })
             // return msg.reply({
             //   embed: {
