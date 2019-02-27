@@ -86,7 +86,7 @@ module.exports = class Account extends CustomComponent() {
 						],
 						thumbnail: { url: '<_user_avatar>' }
 					})
-					return msg.replyDM(embed, { dotaID: dotaID, steamID: data.profile.steamid })
+					return msg.replyDM(embed, { dotaID: dotaID, steamID: data.profile.steamid, _user_avatar: msg.author.avatarURL})
 						.then(() => m.addReactionSuccess())
 					// return msg.replyDM({
 					// 	embed: {
