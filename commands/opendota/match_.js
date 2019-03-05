@@ -10,8 +10,8 @@ const EmbedBuilder = require('../../classes/embed-builder.js')
 const embed = new EmbedBuilder({
   title: 'match.title',
   description: 'match.description',
-  image: '<_match_image>',
-  footer: { text: 'roshan.plus', icno_url: '<bot_avatar>'}
+  image: { url: '<_match_image>'},
+  footer: { text: 'roshan.plus', icon_url: '<bot_avatar>'}
 })
 module.exports = new Command('match+',{
   category : 'Dota 2', help : 'Estadísticas de una partida. R+', args : '<id>', cooldown : 60,
