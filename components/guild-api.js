@@ -93,7 +93,7 @@ module.exports = class Guild extends CustomComponent() {
             const defaultChannel = util.Guild.getDefaultChannel(guild, this.client, true)
             if (defaultChannel) {
                 defaultChannel.createMessage(
-                    this.client.locale.replacer(`:flag_us: Hi, I am a **Dota 2** and **Artifact** bot. Read the **server guide**: use \`r!getstarted\`. Bot features at <link_web_features>`)
+                    this.client.locale.replacer(`Hi, I am a **Dota 2** and **Artifact** bot. Read the **server guide**: use \`r!getstarted\`. Bot features at <link_web_features>`)
                 )
             }
         })

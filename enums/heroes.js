@@ -122,7 +122,8 @@ const HEROES = {
   "118" : {"name" : "", "name_id" : "", "alias" : []},
   "119" : {"name" : "Dark Willow", "name_id" : "dark_willow", alias : ["willow","dw"]},
   "120" : {"name" : "Pangolier", "name_id" : "pangolier", alias : ["pango"]},
-  "121" : {"name" : "Grimstroke", "name_id" : "grimstroke", alias : ["grimstroke","gs"]}
+  "121" : {"name" : "Grimstroke", "name_id" : "grimstroke", alias : ["grimstroke","gs"]},
+  "129" : {"name" : "Mars", "name_id" : "mars", alias : ["mars"]},
 }
 
 const { heroes, hero_abilities, abilities } = require('dotaconstants')

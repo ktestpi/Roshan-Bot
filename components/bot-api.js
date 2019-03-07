@@ -54,6 +54,7 @@ module.exports = class Bot extends CustomComponent() {
                             discord_invite: this.client.config.invite,
                             discord_server: this.client.config.server,
                             users: Object.keys(snap.profiles).length,
+                            servers: Object.keys(snap.servers).length,
                             version: packageInfo.version
                         }
                         this.client.db.child('public').update(data_public).then(() => this.client.notifier.console('Publicinfo','Updated'))
