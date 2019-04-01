@@ -49,7 +49,7 @@
   "playing" : "r!help",
   "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan", "betatester" : "Betatester", "supporter" : "Supporter"},
   "switches" : {"welcome" : true, "wrongCmd" : true, "msgGuilds" : false, "feeds" : false, "leaderboardUpdate" : false, "backupdb" : false},
-  "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10, "worldBoardTop" : 10, "heroes" : 120, "hoursLeaderboardUpdate" : 48},
+  "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10, "worldBoardTop" : 10, "heroes" : 120, "hoursLeaderboardUpdate" : 168},
   "links" : {
     "profile" : {
       "dotabuff" : "https://www.dotabuff.com/players/",

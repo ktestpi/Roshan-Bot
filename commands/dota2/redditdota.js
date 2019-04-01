@@ -36,7 +36,7 @@ module.exports = new Command(['redditdota','redditd'],{
           _post_url: result.link,
           _reddit_icon: client.config.images.reddit,
           _post_text: result.text,
-          _post_subreddit: resutl.subreddit
+          _post_subreddit: result.subreddit
         })
       }).catch(err => {
         throw new UserError('reddit', 'reddit.error.postrequest', err)

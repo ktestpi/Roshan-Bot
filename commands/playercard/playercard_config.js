@@ -48,6 +48,7 @@ module.exports = new Command('config',{
         } else {
           return msg.reply(embed, {
             username: msg.author.username,
+            social_links: client.components.Account.socialLinks(player),
             _player_avatar: msg.author.avatarURL,
             _heroes: `\`\`\`${player.card.heroes ? heroes.map(h => enumHeroes.getValue(h).localized_name).join(', ') : args.locale('playercard.error.noheroesconfig', { cmd: 'r!cardhelp' })}\`\`\``,
             _position: `\`\`\`${enumPlayerPos.getValue(player.card.pos)}\`\`\``,
