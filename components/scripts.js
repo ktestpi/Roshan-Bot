@@ -3,8 +3,8 @@ const { inspect } = require('util')
 module.exports = class Scripts extends Component {
     constructor(client, options) {
         super(client)
-        this.client.scripts = {}
-        this.client.modules_scripts = {}
+        this.functions = {}
+        this.module = {}
         this.replChannel = "571165419977834506"
         this.scriptsChannel = "470189277544841226"
     }
@@ -17,12 +17,13 @@ module.exports = class Scripts extends Component {
         const _guild = msg.channel.guild
         const gval = eval
         
-        const prequire = `const {${Object.keys(bot.scripts).join(', ')}}=bot.scripts;const {${Object.keys(bot.modules_scripts).join(', ')}}=bot.modules_scripts;function infos(name){
-            return bot.scripts[name] && bot.scripts[name].description
-        }`
+        const prequire = `const {${Object.keys(this.functions).join(', ')}}=bot.components.Scripts.functions;const {${Object.keys(this.modules).join(', ')}}=bot.components.Scripts.modules;function infos(name){
+            return bot.components.Scripts.functions[name] && bot.components.Scripts.functions[name].description
+        };`
 
+        let toEval = msg.content
+        
         try {
-            let toEval = msg.content
             const _message = msg
             const reply = msg.reply
             let result = eval(prequire+toEval)
@@ -47,8 +48,8 @@ module.exports = class Scripts extends Component {
     }
     update(){
         return new Promise((resolve, reject) => {
-            this.client.scripts = {}
-            this.client.modules_scripts = {}
+            this.functions = {}
+            this.modules = {}
             const bot = this.client
             this.client.getMessages(this.scriptsChannel).then(messages => {
                 messages
@@ -56,31 +57,31 @@ module.exports = class Scripts extends Component {
                     .map(m => ({ tag: m.content.match(/\*\*(\w+)\*\*/)[1], description: m.content.match(/\*\* - ([^\n]+)/)[1] || "", src: m.content.match(/\`\`\`js\n?([^]+)\n?\`\`\`/)[1] }))
                     .forEach(c => { 
                         try {
-                            this.client.scripts[c.tag] = eval(`${c.src}`)
-                            this.client.scripts[c.tag].description = c.description
+                            this.functions[c.tag] = eval(`${c.src}`)
+                            this.functions[c.tag].description = c.description
                         } catch (err) {
                             this.client.notifier.console('Error loading script: ' + c.tag + '\n' + err.stack)
                         }
                     })
-
+                return messages
                     
-            })
-            this.client.getMessages(this.scriptsChannel).then(messages => {
+            }).then(messages => {
                 messages
                     .filter(m => m.content.startsWith('🇲'))
                     .map(m => ({ tag: m.content.match(/\*\*(\w+)\*\*/)[1], description: m.content.match(/\*\* - ([^\n]+)/)[1] || "", src: m.content.match(/\```js\n?([^]+)\n?```/)[1] }))
                     .forEach(c => {
                         try {
                             const src = `const obj = ${c.src};obj`
-                            this.client.modules_scripts[c.tag] = eval(`${src}`)
-                            this.client.modules_scripts[c.tag].description = c.description
+                            this.modules[c.tag] = eval(`${src}`)
+                            this.modules[c.tag].description = c.description
                         } catch (err) {
                             this.client.notifier.console('Error loading modules_scripts: ' + c.tag + '\n' + err.stack)
                         }
                     })
+            }).then(() => {
+                this.client.notifier.console('Scripts', 'Loaded')
+                resolve('Scripts loaded')
             })
-            this.client.notifier.console('Scripts', 'Loaded')
-            resolve('Scripts loaded')
         })
     }
 }
