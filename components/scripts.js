@@ -4,7 +4,7 @@ module.exports = class Scripts extends Component {
     constructor(client, options) {
         super(client)
         this.functions = {}
-        this.module = {}
+        this.modules = {}
         this.replChannel = "571165419977834506"
         this.scriptsChannel = "470189277544841226"
     }
