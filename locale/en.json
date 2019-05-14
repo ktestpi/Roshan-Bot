@@ -154,7 +154,7 @@
   "register.dataurregistry" : "Registered data",
   "register.dataurregistryaccount" : "<dota> <dotaID>\n<steam> <steamID>",
   "register.tyforurregistry" : "¡Thank you for your register :grin: !",
-  "register.helpregistrydesc" : ":regional_indicator_h: :regional_indicator_e: :regional_indicator_l: :regional_indicator_p: Use `r!help` to see avaliables commands.\n\n:information_source: You can use almost all commands by DM to **<bot_name>**!",
+  "register.helpregistrydesc" : ":regional_indicator_h: :regional_indicator_e: :regional_indicator_l: :regional_indicator_p: Use `r!help` to see avaliables commands.\n\n:information_source: You can use almost all commands by DM to **<bot_name>**!\n\nSee your position in the bot ranking in <link_web_leaderboard>",
   "server.config.title" : "Configuration - <guildname>\n\n",
   "server.config.info" : "ℹ Info",
   "server.config.infodesc" : "  · Members: <members>\n  · Language: <lang>\n  · Notifications: `<status_notifications>`<can_notifications> (#<channel_notifications>)\n",
