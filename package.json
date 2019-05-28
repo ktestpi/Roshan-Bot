@@ -8,7 +8,7 @@
     "test": "./node_modules/.bin/jest",
     "dev": "./node_modules/.bin/nodemon bot.js",
     "eslint": "./node_modules/.bin/eslint bot.js",
-    "heroku-postbuild": "npm i Desvelao/artifact-database Desvelao/aghanim#dev",
+    "heroku-postbuild": "npm i Desvelao/aghanim#dev",
     "test-heroku-postbuild": "npm install",
     "pngtojpg": "node dev-scripts/pngtojpg.js pngtojpg pngtojpg/dest",
     "update-assets": "node dev-scripts/od-assets.js img",
@@ -27,7 +27,7 @@
   "dependencies": {
     "aghanim": "github:desvelao/aghanim#dev",
     "artifact-api": "github:openartifact/artifact-api",
-    "dotaconstants": "^6.17.0",
+    "dotaconstants": "^6.18.0",
     "erisjs-utils": "github:desvelao/erisjs-utils#dev",
     "firebase-admin": "^5.11.0",
     "glob": "^7.1.2",
