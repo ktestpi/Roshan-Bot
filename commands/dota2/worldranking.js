@@ -1,11 +1,12 @@
 const { Command } = require('aghanim')
 const { Datee, Classes } = require('erisjs-utils')
 const EmbedBuilder = require('../../classes/embed-builder.js')
+const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 
 const embed = new EmbedBuilder({
   title : 'worldranking.title',
   description: 'worldranking.description',
-  footer: {text : '<_date>', icon_url : '_icon'}
+  footer: {text : '<_date>', icon_url : '<_icon>'}
 })
 
 module.exports = new Command('worldranking',{

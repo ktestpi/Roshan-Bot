@@ -3,7 +3,7 @@ const { Markdown } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
 const { UserError, ConsoleError } = require('../../classes/errormanager.js')
 const EmbedBuilder = require('../../classes/embed-builder.js')
-
+const enumMedal = require('../../enums/medals')
 const embed = new EmbedBuilder({
   title: 'steam.playerinfo',
   description: 'steam.description',
@@ -22,6 +22,7 @@ module.exports = new Command('steam',{
       ]))
       .then(data => {
         const [player, results] = data
+        const medal = enumMedal({ rank: results[0].rank_tier, leaderboard: results[0].leaderboard_rank })
         return msg.reply(embed, {
           user: odutil.nameAndNick(results[0].profile),
           flag: typeof results[0].profile.loccountrycode == 'string' ? ':flag_' + results[0].profile.loccountrycode.toLowerCase() + ':' : '',
