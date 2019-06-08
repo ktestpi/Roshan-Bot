@@ -12,7 +12,7 @@ module.exports = new Command(['evalhelp','eh'],{
   ownerOnly : true},
   async function(msg, args, client){
     // let self = this
-    msg.reply({embed : {
+    return msg.reply({embed : {
       title : 'Eval - Ayuda',
       fields : [{name : 'Variables', value : variables.map(v => `**${v.id}** - ${v.desc}`).join('\n'), inline : false}],
       color : client.config.color

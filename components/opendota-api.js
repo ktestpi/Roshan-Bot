@@ -1,7 +1,7 @@
 const { Component } = require('aghanim')
 const CustomComponent = require('../classes/custom-component.js')
 const { Request, Markdown } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../classes/errors.js')
 // const enumHeroes = require('../../enums/heroes')
 
 // const items = require('dotaconstants').items

@@ -1,7 +1,7 @@
 const CustomComponent = require('../classes/custom-component.js')
 const odutil = require('../helpers/opendota-utils')
 const { Datee, Markdown } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../classes/errors.js')
 const EmbedBuilder = require('../classes/embed-builder.js')
 
 module.exports = class Account extends CustomComponent() {
@@ -49,7 +49,7 @@ module.exports = class Account extends CustomComponent() {
 		data.steam = steamID || data.steam
 		return this.client.cache.profiles.save(discordID, data)
 			.then(() => this.updateAccountLeaderboard(discordID, data.dota,odResponse))
-			.then(() => this.client.notifier.console('userToLeaderboard', `${discordID}`))
+			.then(() => this.client.components.Notifier.console('userToLeaderboard', `${discordID}`))
 	}
 	modify(discordID,data){
 		return this.client.cache.profiles.save(discordID, data)
@@ -57,7 +57,7 @@ module.exports = class Account extends CustomComponent() {
 	delete(discordID){
 		return this.client.cache.profiles.remove(discordID)
 			.then(() => this.deleteAccountLeaderboard(discordID))
-			.then(() => this.client.notifier.console('userDelLeaderboard', `${discordID}`))
+			.then(() => this.client.components.Notifier.console('userDelLeaderboard', `${discordID}`))
 	}
 	createProcess(discordID, dotaID, msg){
 		const guildName = msg.channel.guild ? msg.channel.guild.name : 'DM'
@@ -76,7 +76,7 @@ module.exports = class Account extends CustomComponent() {
 			}}).then((m) => {
 				msg.addReaction(this.client.config.emojis.default.envelopeIncoming)
 				return this.create(discordID,dotaID,data.profile.steamid,data).then(() => {
-					this.client.notifier.accountnew(`New account: **${msg.author.username}** (${msg.author.id})`)
+					this.client.components.Notifier.accountnew(`New account: **${msg.author.username}** (${msg.author.id})`)
 					const embed = new EmbedBuilder({
 						title: 'roshan.welcometo',
 						description: 'roshan.infoabout',
@@ -127,7 +127,7 @@ module.exports = class Account extends CustomComponent() {
 			msg.addReaction(this.client.config.emojis.default.envelopeIncoming)
 			return this.delete(discordID).then(() => {
 				// TODO: Remove Leaderboard
-				this.client.notifier.accountremove(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
+				this.client.components.Notifier.accountremove(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
 				return msg.reply('account.deleted')
 					.then(() => m.addReactionSuccess())
 			})

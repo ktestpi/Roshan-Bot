@@ -1,5 +1,5 @@
 const { Command } = require('aghanim')
-const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../../classes/errors.js')
 
 module.exports = new Command('lastmatch+',{
   category : 'Dota 2', help : 'Última partida jugada. R+', args : '[mención/dotaID/pro]', cooldown : 60,

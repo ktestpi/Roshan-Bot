@@ -1,6 +1,6 @@
 const { Command } = require('aghanim')
 
-module.exports = new Command('patchset',{
+module.exports = new Command('setpatch',{
   category : 'Owner', help : 'Actualiza el mensaje de `r!patch`', args : '<mensaje del parche>',
   ownerOnly : true},
   async function(msg, args, client){

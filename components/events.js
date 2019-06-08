@@ -1,6 +1,6 @@
 const { Component } = require('aghanim')
 const { Datee, Guild, Member } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../classes/errors.js')
 
 module.exports = class Events extends Component {
     constructor(client, options) {
@@ -47,11 +47,11 @@ module.exports = class Events extends Component {
                 // this.createMessage(guild.id, this.replace.do('roshanguild.welcomenewmember', { member: member.mention }, true));
             }
         }
-        this.client.notifier.memberin(`**${member.username}**`)
+        this.client.components.Notifier.memberin(`**${member.username}**`)
     }
     guildMemberRemove(guild, member){
         if (guild.id !== this.client.config.guildID) { return }
-        this.client.notifier.memberout(`**${member.username}**`)
+        this.client.components.Notifier.memberout(`**${member.username}**`)
     }
 }
 

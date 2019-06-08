@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const odutil = require('../../helpers/opendota-utils')
 const enumHeroes = require('../../enums/heroes')
-const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../../classes/errors.js')
 const enumMedal = require('../../enums/medals')
 const EmbedBuilder = require('../../classes/embed-builder.js')
 

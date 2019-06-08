@@ -45,6 +45,6 @@ module.exports = class Locale extends Component {
         })
         this.client.locale.addConstants(this.client.config.emojis.bot)
         this.client.locale.addConstants(localeCommands)
-        this.client.notifier.console('Locale','Ready')
+        this.client.components.Notifier.console('Locale','Ready')
     }
 }

@@ -5,7 +5,7 @@ const { Message, Guild } = require('erisjs-utils')
 const enumFeeds = require('../enums/feeds')
 const packageInfo = require('../package.json')
 const odutil = require('../helpers/opendota-utils')
-const { UserError, ConsoleError } = require('../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../classes/errors.js')
 
 module.exports = class Bot extends CustomComponent() {
     constructor(client, options) {
@@ -24,11 +24,11 @@ module.exports = class Bot extends CustomComponent() {
                 //flags DEVMODE
                 if (!this.client.envprod && process.argv.includes('-db') ) {
                     this.client.config.switches.backupdb = true;
-                    this.client.notifier.console('DEV', 'DB active')
+                    this.client.components.Notifier.console('DEV', 'DB active')
                 }
                 if (!this.client.envprod && process.argv.includes('-ul')) {
                     this.client.config.switches.leaderboardUpdate = true;
-                    this.client.notifier.console('DEV', 'DB active - UPDATE Leaderboard')
+                    this.client.components.Notifier.console('DEV', 'DB active - UPDATE Leaderboard')
                 }
 
                 this.client.config.playing = snap.playing;
@@ -37,11 +37,11 @@ module.exports = class Bot extends CustomComponent() {
                 this.client.config.status_url = snap.status_url
                 this.client.config.status_msg = snap.status_msg
                 
-                this.setStatus(this.client.config.status_act, this.client.config.status, this.client.config.status_msg, this.client.config.status_url, false).then(() => this.client.notifier.console('Status','Setted'))
+                this.setStatus(this.client.config.status_act, this.client.config.status, this.client.config.status_msg, this.client.config.status_url, false).then(() => this.client.components.Notifier.console('Status','Setted'))
 
                 if (this.client.config.switches.backupdb) { //config.switches.backupdb
                     util.Firebase.backupDBfile(this.client.db, this.client, this.client.config.guild.backup, { filenameprefix: 'roshan_db_', messageprefix: '**Roshan Backup DB**' }).then(snap => {
-                        this.client.notifier.console('Backup', 'Done!')
+                        this.client.components.Notifier.console('Backup', 'Done!')
 
                         //Update leaderboard (Firebase) each this.client.config.hoursLeaderboardUpdate at least
                         if (this.client.config.switches.leaderboardUpdate
@@ -57,12 +57,12 @@ module.exports = class Bot extends CustomComponent() {
                             servers: Object.keys(snap.servers).length,
                             version: packageInfo.version
                         }
-                        this.client.db.child('public').update(data_public).then(() => this.client.notifier.console('Publicinfo','Updated'))
+                        this.client.db.child('public').update(data_public).then(() => this.client.components.Notifier.console('Publicinfo','Updated'))
 
                         // Check guilds config setted
                         // this.client.guilds.forEach(g => {
                         //     if (!this.client.cache.servers.get(g.id)) {
-                        //         this.components.Guild.createProcess(g).then(() => this.client.notifier.bot(`${g.name} encontrado. Registrado en el bot.`))
+                        //         this.components.Guild.createProcess(g).then(() => this.client.components.Notifier.bot(`${g.name} encontrado. Registrado en el bot.`))
                         //     }
                         // })
                     })
@@ -97,7 +97,7 @@ module.exports = class Bot extends CustomComponent() {
     loadLastPatchNotes(){
         return this.client.getMessage(this.client.config.guild.changelog, this.client.server.channels.get(this.client.config.guild.changelog).lastMessageID).then(m => {
             this.client._lastUpdateText = m.content
-            this.client.notifier.console('Patch notes','Loaded')
+            this.client.components.Notifier.console('Patch notes','Loaded')
         })
     }
     updateLeaderboard(snap) {
@@ -137,11 +137,11 @@ module.exports = class Bot extends CustomComponent() {
                         }
                         return update
                     }, { updated: util.Date.now(), ranking: {} })
-                    return this.client.db.child('leaderboard').set(update).then(() => this.client.notifier.bot('Ranking Updated'))
+                    return this.client.db.child('leaderboard').set(update).then(() => this.client.components.Notifier.bot('Ranking Updated'))
                 })    
         }else{
             this.db.child('profiles').once('value').then((snap) => {
-                if(!snap.exists()){return this.notifier.console('Not exists')}
+                if (!snap.exists()) { return this.components.Notifier.console('Not exists')}
                 this.updateLeaderboard(snap.val())
             })
         }

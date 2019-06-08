@@ -1,5 +1,5 @@
 const { Command } = require('aghanim')
-const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../../classes/errors.js')
 const { Markdown } = require('erisjs-utils')
 const { doIfCondition } = require('../../helpers/functional.js')
 const EmbedBuilder = require('../../classes/embed-builder.js')

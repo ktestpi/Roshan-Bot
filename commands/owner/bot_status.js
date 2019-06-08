@@ -19,14 +19,14 @@ module.exports = new Command('status',{subcommandFrom : 'bot',
     let _status = args[2]
     if(!_status){
       client.setStatus('online',null,null,null,true)
-        .then(() => client.notifier.bot('Status to default'))
+        .then(() => client.components.Notifier.bot('Status to default'))
         .catch(err => msg.addReactionFail())
     }else{
       _status = _status.toLowerCase()
       if(status_modes.includes(_status)){
         const status_save = status_mode[_status]
         client.setStatus(null, status_save, null, null, true)
-          .then(() => client.notifier.bot(`Status to ${status_save}`))
+          .then(() => client.components.Notifier.bot(`Status to ${status_save}`))
           .catch(err => msg.addReactionFail())
       }
     }

@@ -15,20 +15,20 @@ module.exports = new Command(['evalp','ep'],{
     if(toEval.includes('return')){toEval=`(function(){${toEval}})()`}
     try{
       let result = eval(toEval)
-      client.notifier.console('EvalPrivate',toEval)
+      client.components.Notifier.console('EvalPrivate',toEval)
       Promise.resolve(result).then(res => {
         if(typeof result === 'object'){
           result = inspect(result)
         }
         result = String(result).slice(0,1000)
-        client.notifier.console('EvalP Result', result)
+        client.components.Notifier.console('EvalP Result', result)
         return bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
       }).catch(err => {
-        client.notifier.console('EvalP Error', err)
+        client.components.Notifier.console('EvalP Error', err)
         return bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
       })
     }catch(err){
-      client.notifier.console('Code Error', err.stack)
+      client.components.Notifier.console('Code Error', err.stack)
       return bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
   })

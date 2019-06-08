@@ -27,22 +27,22 @@ module.exports = class Scripts extends Component {
             const _message = msg
             const reply = msg.reply
             let result = eval(prequire+toEval)
-            this.client.notifier.console('Eval', toEval)
+            this.client.components.Notifier.console('Eval', toEval)
             Promise.resolve(result).then(res => {
                 if (typeof result === 'object') {
                     result = inspect(result)
                 }
                 result = String(result).slice(0, 1000)
-                this.client.notifier.console('Eval Result', result)
+                this.client.components.Notifier.console('Eval Result', result)
                 return msg.reply(`**${this.client.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
                 // return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.client.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
             }).catch(err => {
-                this.client.notifier.console('Eval Error', err)
+                this.client.components.Notifier.console('Eval Error', err)
                 return msg.reply(`**${this.client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
                 // return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
             })
         } catch (err) {
-            this.client.notifier.console('Code Error', err.stack)
+            this.client.components.Notifier.console('Code Error', err.stack)
             return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.client.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
         }
     }
@@ -60,7 +60,7 @@ module.exports = class Scripts extends Component {
                             this.functions[c.tag] = eval(`${c.src}`)
                             this.functions[c.tag].description = c.description
                         } catch (err) {
-                            this.client.notifier.console('Error loading script: ' + c.tag + '\n' + err.stack)
+                            this.client.components.Notifier.console('Error loading script: ' + c.tag + '\n' + err.stack)
                         }
                     })
                 return messages
@@ -75,11 +75,11 @@ module.exports = class Scripts extends Component {
                             this.modules[c.tag] = eval(`${src}`)
                             this.modules[c.tag].description = c.description
                         } catch (err) {
-                            this.client.notifier.console('Error loading modules_scripts: ' + c.tag + '\n' + err.stack)
+                            this.client.components.Notifier.console('Error loading modules_scripts: ' + c.tag + '\n' + err.stack)
                         }
                     })
             }).then(() => {
-                this.client.notifier.console('Scripts', 'Loaded')
+                this.client.components.Notifier.console('Scripts', 'Loaded')
                 resolve('Scripts loaded')
             })
         })

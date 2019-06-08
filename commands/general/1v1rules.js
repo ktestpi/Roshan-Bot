@@ -1,6 +1,6 @@
 const { Command } = require('aghanim')
 const messages = require('../../containers/messages.json')
-const { UserError, ConsoleError } = require('../../classes/errormanager')
+const { UserError, ConsoleError } = require('../../classes/errors')
 
 const rules = {}
 rules['1v1rules'] = messages['1v1rules']

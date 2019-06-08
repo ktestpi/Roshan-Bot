@@ -9,7 +9,6 @@ module.exports = class Dota extends Component {
     }
     gameInfo() {
         return Request.getJSON(this.gameInfoUrl).then(data => {
-            console.log(data)
             return {
                 currentplayers: data.response.player_count
             }

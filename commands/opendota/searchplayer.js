@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const { Markdown, Request } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
-const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../../classes/errors.js')
 const EmbedBuilder = require('../../classes/embed-builder.js')
 
 const embed = new EmbedBuilder({

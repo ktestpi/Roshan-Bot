@@ -1,56 +1,10 @@
 const Aghanim = require('aghanim')
-// const Eris = require('aghanim/node_modules/eris')
-const { Eris } = require('aghanim')
 const path = require('path')
-const { Color } = require('erisjs-utils')
-const firebase = require('firebase-admin');
-const Locale = require('./classes/locale.js')
-const { ErrorManager } = require('./classes/errormanager.js')
-const Notifier = require('./classes/notifier.js')
-const EmbedBuilder = require('./classes/embed-builder.js')
-
-let TOKEN, ENVPROD = false;
-const firebaseConfig = {
-  "type": "service_account",
-  // "private_key": process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
-  // "client_email": process.env.CLIENT_EMAIL,
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://accounts.google.com/o/oauth2/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-};
-
-try{
-  TOKEN = process.env.BOT_TOKEN;
-  firebaseConfig.private_key = process.env.PRIVATE_KEY.replace(/\\n/g, '\n');
-  firebaseConfig.client_email = process.env.CLIENT_EMAIL;
-  ENVPROD = true
-}catch(err){
-  const env = require('./env.json');
-  TOKEN = env.BOT_TOKEN;
-  firebaseConfig.private_key = env.PRIVATE_KEY.replace(/\\n/g, '\n');
-  firebaseConfig.client_email = env.CLIENT_EMAIL
-}
-
-let CONFIG = require('./config.json')
-CONFIG.color = Color.convert(CONFIG.color,'hex-int');
-for(cat in CONFIG.colors){
-  if(typeof CONFIG.colors[cat] == 'string'){CONFIG.colors[cat] = Color.convert(CONFIG.colors[cat],'hex-int');continue}
-  for(c in CONFIG.colors[cat]){
-    CONFIG.colors[cat][c] = Color.convert(CONFIG.colors[cat][c],'hex-int');
-  }
-}
-
-//Initialize Firebase
-firebase.initializeApp({
-  credential: firebase.credential.cert(firebaseConfig),
-  databaseURL: "https://roshan-bot.firebaseio.com",
-  storageBucket: "roshan-bot.appspot.com"
-});
 
 //Initialize Bot with Aghanim Command Client
-const bot = new Aghanim(TOKEN,CONFIG.setup)
+const bot = new Aghanim(process.env.BOT_TOKEN || require('./env.json').BOT_TOKEN)
 
-bot.commandArgsMiddleware = function(args,msg){
+bot.commandArgsMiddleware = function(args, msg){
   args.user = {}
   args.user.supporter = bot.components.Users.isSupporter(msg.author.id)
   args.user.betatester = bot.components.Users.isBetatester(msg.author.id)
@@ -61,47 +15,26 @@ bot.commandArgsMiddleware = function(args,msg){
   args.replacer = bot.locale.replacer.bind(bot.locale)
 }
 
-//Add keys to bot
-bot.config = CONFIG
-bot.config.colors.palette = {default : CONFIG.color}
-bot.envprod = ENVPROD
-bot.firebase = firebase;
-bot.storage = firebase.storage().bucket()
-bot.db = firebase.database().ref()
-bot.errorManager = new ErrorManager(bot, bot.config.console)
-bot.notifier = new Notifier(bot, bot.config.notifier)
-
 //Define categories for commands
-bot.addCategory('General','Ayuda de general')
-bot.addCategory('Dota 2','Ayuda de Dota 2')
-bot.addCategory('Account','Ayuda para la gestión de la cuenta en Roshan')
-bot.addCategory('Server','Ayuda para comandos de servidor')
-bot.addCategory('Owner','Ayuda para comandos de propietario')
-bot.addCategory('Fun','Ayuda para comandos de emojis y memes')
-bot.addCategory('Artifact','Ayuda los comandos de Artifact')
+const categoryCommands = [
+  { name: 'General', description: 'Ayuda de general'},
+  { name: 'Dota 2', description: 'Ayuda de Dota 2'},
+  { name: 'Account', description: 'Ayuda para la gestión de la cuenta en Roshan'},
+  { name: 'Server', description: 'Ayuda para comandos de servidor'},
+  { name: 'Owner', description: 'Ayuda para comandos de propietario'},
+  { name: 'Fun', description: 'Ayuda para comandos de emojis y memes'},
+  { name: 'Artifact', description: 'Ayuda los comandos de Artifact'},
+]
+
+categoryCommands.forEach(category => bot.addCategory(category.name, category.description))
 
 //Load commands
-bot.addCommandDir(path.join(__dirname,'commands/opendota'))
-bot.addCommandDir(path.join(__dirname,'commands/account'))
-bot.addCommandDir(path.join(__dirname,'commands/server'))
-bot.addCommandDir(path.join(__dirname,'commands/general'))
-bot.addCommandDir(path.join(__dirname,'commands/fun'))
-bot.addCommandDir(path.join(__dirname,'commands/owner'))
-bot.addCommandDir(path.join(__dirname,'commands/dota2'))
-bot.addCommandDir(path.join(__dirname,'commands/playercard'))
-bot.addCommandDir(path.join(__dirname,'commands/artifact'))
+const commandsDirs = ['commands/opendota', 'commands/account', 'commands/server', 'commands/general',
+  'commands/fun', 'commands/owner', 'commands/dota2', 'commands/playercard', 'commands/artifact']
 
-// bot.locale = new Locale(path.join(__dirname,'locale'),{},{defaultLanguage : 'en', devLanguage : 'en'})
-// bot.db.child('profiles').once('value').then(snap => {
-//   if(!snap.exists()){return}
-//   snap = snap.val()
-//   // console.log(snap);
-//   let profiles = Object.keys(snap).map(profile => Object.assign({},snap[profile],{_id : profile}))
-//   profiles.forEach(profile => {
-//     bot.db.child(`profiles/${profile._id}/profile`).update({dota : profile.profile.dotabuff})
-//   })
-// })
+commandsDirs.forEach(dir => bot.addCommandDir(path.join(__dirname, dir)))
 
+// Load components
 bot.addComponentDir(path.join(__dirname, 'components'))
 
 function filterCommands(cmd,query,owner){
@@ -111,6 +44,7 @@ function filterCommands(cmd,query,owner){
   return !cmd.hide
 }
 
+// Adding help command
 bot.addCommand(new Aghanim.Command('help',{}, async function(msg,args,client){
   const categories = client.categories.map(c => c.name.toLowerCase())
   const query = args.from(1).toLowerCase();
@@ -140,23 +74,6 @@ bot.addCommand(new Aghanim.Command('help',{}, async function(msg,args,client){
   }
 }))
 
-// bot.on('aghanim:command:error', function (error) {
-//   console.log('Aghanim COMMAND ERROR from Bot', error)
-//   // bot.emit('roshan:errorManager', error)
-
-// })
-
-// bot.on('aghanim:error', function(error){
-//   console.log('Aghanim ERROR from Bot',error)
-//   // bot.emit('roshan:errorManager', error)
-// })
-
-// bot.on('error',function(error){
-//   console.log('ERROR from Bot', error)
-//   // bot.emit('roshan:errorManager', error)
-// })
-
-
 process.on('unhandledRejection', (reason, p) => {
   Promise.resolve(p).then((val) => {
     bot.emit('error', new Error(`Unhandled Rejection at: ${val}\n${reason}`))
@@ -168,138 +85,4 @@ process.on('unhandledRejection', (reason, p) => {
 
 process.on('unhandledRejection', r => console.log(r))
 
-Eris.Guild.prototype.membersWithRole = function (roleName) {
-  const role = this.roles.find(r => r.name === roleName)
-  return role ? this.members.filter(m => m.roles.includes(role.id)) : []
-}
-
-Eris.Message.prototype.addReactionSuccess = function () {
-  return this.addReaction(this._client.config.emojis.default.accept)
-}
-
-Eris.Message.prototype.addReactionFail = function () {
-  return this.addReaction(this._client.config.emojis.default.error)
-}
-
-Eris.Message.prototype.addReactionSending = function () {
-  return this.addReaction(this._client.config.emojis.default.envelopeIncoming)
-}
-
-Object.defineProperty(Eris.User.prototype, 'account', {
-  get : function(){
-    const account = bot.cache.profiles.get(this.id) || bot.components.Account.schema()
-    return account
-  }
-})
-
-Object.defineProperty(Eris.User.prototype, 'registered', {
-  get: function () {
-    return bot.cache.profiles.has(this.id) 
-  },
-  enumerable : true
-})
-
-Object.defineProperty(Eris.User.prototype, 'supporter', {
-  get: function () {
-    return bot.components.Users.isSupporter(this.id)
-  },
-  enumerable : true
-})
-
-Object.defineProperty(Eris.User.prototype, 'betatester', {
-  get: function () {
-    return bot.components.Users.isBetatester(this.id)
-  },
-  enumerable : true
-})
-
-Object.defineProperty(Eris.User.prototype, 'profile', {
-  get: function () {
-    return {
-      account : this.account,
-      supporter : this.supporter,
-      betatester : this.betatester,
-      registered : this.registered
-    }
-  },
-  enumerable: true
-})
-
-Object.defineProperty(Eris.Guild.prototype, 'account', {
-  get: function () {
-    const account = bot.cache.servers.get(this.id) || bot.components.Account.schema()
-    return account
-  }
-})
-
-Object.defineProperty(Eris.Guild.prototype, 'registered', {
-  get: function () {
-    return bot.cache.servers.has(this.id)
-  },
-  enumerable: true
-})
-
-// Object.defineProperty(Eris.User.prototype.account, 'log', {
-//   get: function () {
-//     // const account = bot.cache.profiles.get(this.id)
-//     console.log(this)
-//     // return account
-//   }
-// })
-
-// Eris.Message.prototype.reply = function (content, file) {
-//   return new Promise((resolve, reject) => {
-//     this.channel.createMessage(content, file)
-//       .then(m => resolve(m))
-//       .catch(err => reject(err))
-//   })
-// }
-
-// Eris.Message.prototype.replyDM = function (content, file) {
-//   return new Promise((resolve, reject) => {
-//     this.author.getDMChannel()
-//       .then(channel => channel.createMessage(content, file))
-//       .then(m => resolve(m))
-//       .catch(err => reject(err))
-//   })
-// }
-
-Eris.Message.prototype.reply = function (content, replacements, file) {
-  return new Promise((resolve, reject) => {
-    this.channel.createMessage(parseContent(content, replacements, this), file)
-      .then(m => resolve(m))
-      .catch(err => reject(err))
-  })
-}
-
-Eris.Message.prototype.replyDM = function (content, replacements, file) {
-  return new Promise((resolve, reject) => {
-    this.author.getDMChannel()
-      .then(channel => channel.createMessage(parseContent(content, replacements, this), file))
-      .then(m => resolve(m))
-      .catch(err => reject(err))
-  })
-}
-
-function parseContent(content, replacements, msg){
-  if(typeof content === 'string'){
-    const lang = msg._client.locale.getUserStrings(msg)
-    return bot.locale.replacer(lang[content] || content, replacements)
-  }else if(content instanceof EmbedBuilder){
-    return content.build(msg._client, msg._client.locale.getUserLang(msg), replacements)
-  }
-  return content
-}
-
-bot.connect();
-
-
-// bot.addGame = function (game) {
-//   if (!this.games) { this.games = {} }
-//   this.games[game.name.toLowerCase()] = game
-//   this.addCategory(game.category, '')
-//   game.commands.forEach(cmd => { cmd.game = game; cmd.category = game.category; this.addCommand(cmd) })
-//   game.events.forEach(ev => { ev.game = game; ev.category = game.category; this.addEvent(ev) })
-//   // this.events.forEach(ev => bot.addEvent(ev))
-//   game.client = this
-// }
+bot.connect()

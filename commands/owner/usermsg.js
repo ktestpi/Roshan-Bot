@@ -6,7 +6,7 @@ module.exports = new Command('usermsg',{
   async function(msg, args, client){
     const id = args[1];
     const user = client.users.find(user => user.id === id)
-    if(!user){return msg.replyLocale('errorUserNotFound')}
+    if(!user){return}
     const message = args.from(2)
     const embed = {
       author : {name : `Private message: ${user.username}`, icon_url : user.avatarURL},

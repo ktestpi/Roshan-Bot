@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const { Datee, Classes } = require('erisjs-utils')
 const EmbedBuilder = require('../../classes/embed-builder.js')
-const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../../classes/errors.js')
 
 const embed = new EmbedBuilder({
   title : 'worldranking.title',

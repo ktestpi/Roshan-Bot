@@ -1,12 +1,12 @@
 const { Command } = require('aghanim')
 const util = require('erisjs-utils')
 const enumHeroes = require('../../enums/heroes')
-const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../../classes/errors.js')
 const { doIfCondition } = require('../../helpers/functional.js')
 const EmbedBuilder = require('../../classes/embed-builder.js')
 
 const embed = new EmbedBuilder({
-  title : 'rollMessage',
+  title: '%%nameServer%% hola',
   description : 'rollMessage'
 })
 
@@ -18,8 +18,11 @@ module.exports = new Command('tes',{
   }},
   async function(msg, args, client){
     // msg.reply(msg.author.account)
+    // throw new Error("Hola estes es mi error")
     console.log('HI')
     console.log(client.locale.replacer('%%nameServer%% dsadsadas %%discord%%'))
+    return msg.reply(embed)
+    
     // console.log(args.locale('<bot_name> ssdas'))
     // return doIfCondition(this.components.Users.isSupporter(msg.author.id), () => msg.reply('DoIF True')
     //     ).then(message => msg.reply('Secure after DoIF'))

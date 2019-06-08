@@ -4,7 +4,7 @@ const odutil = require('../../helpers/opendota-utils')
 const enumHeroes = require('../../enums/heroes')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
-const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../../classes/errors.js')
 const EmbedBuilder = require('../../classes/embed-builder.js')
 
 const embed = new EmbedBuilder({

@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const { Markdown } = require('erisjs-utils')
 const links = require('../../containers/links.json')
-const { UserError, ConsoleError } = require('../../classes/errormanager.js')
+const { UserError, ConsoleError } = require('../../classes/errors.js')
 
 module.exports = new Command('links',{
   category : 'General', help : 'Enlaces interesantes sobre el juego', args : '<categoría>'},
