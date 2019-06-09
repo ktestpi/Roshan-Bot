@@ -7,7 +7,7 @@ const EmbedBuilder = require('../../classes/embed-builder.js')
 
 const embed = new EmbedBuilder({
   title: '%%nameServer%% hola',
-  description : 'rollMessage'
+  description: '%%steam.playerinfo%% hola'
 })
 
 module.exports = new Command('tes',{
@@ -18,10 +18,10 @@ module.exports = new Command('tes',{
   }},
   async function(msg, args, client){
     // msg.reply(msg.author.account)
-    // throw new Error("Hola estes es mi error")
+    // throw new ConsoleError('Console', 'error.unknown')
     console.log('HI')
     console.log(client.locale.replacer('%%nameServer%% dsadsadas %%discord%%'))
-    return msg.reply(embed)
+    return msg.reply(embed, {flag: 'esta es la flag'})
     
     // console.log(args.locale('<bot_name> ssdas'))
     // return doIfCondition(this.components.Users.isSupporter(msg.author.id), () => msg.reply('DoIF True')

@@ -1,7 +1,7 @@
 const { Command } = require('aghanim')
 const { Datee, Markdown } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
-const apijimp = require('../../helpers/apijimp')
+const paintjimp = require('../../paintjimp')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
 const { UserError, ConsoleError } = require('../../classes/errors.js')
@@ -25,7 +25,7 @@ module.exports = new Command('match+',{
         
         if (results[0].game_mode === 19) { return msg.reply('match.eventgame') }
 
-        return apijimp.match(results[0])
+        return paintjimp.match(results[0])
           .then(buffer => client.createMessage(client.config.guild.generated, `**${msg.author.username}** pidió \`${args[1]}\``, { file: buffer, name: args[1] + ".jpg" }))
           .then(m => {
             return msg.reply(embed, {

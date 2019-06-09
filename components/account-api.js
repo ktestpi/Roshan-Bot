@@ -27,7 +27,7 @@ module.exports = class Account extends CustomComponent() {
 	}
 	exists(discordID){
 		return this.get(discordID).then((account) => {
-			if (!account) { throw new UserError('account', 'bot.needRegister')}
+			if (!account) { throw new UserError('account', 'bot.needregister')}
 			return Promise.resolve(account)
 		}).catch(err => Promise.reject(err))
 	}
@@ -36,8 +36,8 @@ module.exports = class Account extends CustomComponent() {
 			const discordID = msg.mentions.length ? msg.mentions[0].id : msg.author.id
 			this.get(discordID).then((account) => {
 				if( !account ){
-					if (discordID === msg.author.id) { throw new UserError('account', 'bot.needRegister')}
-					else { throw new UserError('opendota', 'bot.needRegisterMentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username })}
+					if (discordID === msg.author.id) { throw new UserError('account', 'bot.needregister')}
+					else { throw new UserError('opendota', 'bot.needregistermentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username })}
 				}
 				res(account)
 			}).catch(err => rej(err))

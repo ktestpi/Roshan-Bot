@@ -6,7 +6,7 @@ module.exports = new Command('setbg', {
   category : 'Account', help : 'Configura el fondo de la tarjeta de jugador', args : '',
   check : async function(msg, args, client){
     if(!msg.author.registered){
-      await msg.reply('bot.needRegister')
+      await msg.reply('bot.needregister')
       return false
     }
     if(!msg.author.supporter){

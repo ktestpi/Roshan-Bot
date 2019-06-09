@@ -35,4 +35,3 @@ class AssetLoader{
 }
 
 module.exports = AssetLoader
-// module.exports = {bla : 'bla'}

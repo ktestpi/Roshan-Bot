@@ -36,7 +36,8 @@ module.exports = class ErrorManager extends CustomComponent() {
         })
 
         this.client.on('error', (error) => {
-            this.console(`\`\`\`${error.stack}\`\`\``)
+            // this.console(`\`\`\`${error.stack}\`\`\``)
+            this.errorToConsole(error)
         })
     }
     emit(error) {

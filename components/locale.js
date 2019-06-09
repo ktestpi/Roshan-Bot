@@ -7,7 +7,7 @@ const packageInfo = require('../package.json')
 module.exports = class Locale extends Component {
     constructor(client, options) {
         super(client)
-        this.client.locale = new LocaleClass(path.join(process.cwd(), 'locale'), {}, { defaultLanguage: 'en', devLanguage: 'en' })
+        this.client.locale = new LocaleClass(path.join(process.cwd(), 'locale/locale.xlsx'), {}, { defaultLanguage: 'en', devLanguage: 'en' })
     }
     ready() {
         this.client.config.emojis.bot = util.Guild.loadEmojis(this.client.server)

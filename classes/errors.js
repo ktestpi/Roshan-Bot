@@ -81,7 +81,7 @@ class ComponentError extends BaseError {
 class ConsoleError extends BaseError {
     constructor(type, messageCode, err) {
         super(type, messageCode, null, err)
-        if (err.err) { this.errc = err.err }
+        if (err && err.err) { this.errc = err.err }
     }
     toConsole(msg, args, command) {
         const embed = {

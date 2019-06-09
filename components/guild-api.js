@@ -26,8 +26,8 @@ module.exports = class Guild extends CustomComponent() {
         if (this.client.config.guild.feedsHidden === msg.channel.id
             && this.client.config.switches.feeds
             && this.client.config.webhooks.feedsHidden === msg.author.id) { // AutoFeeds
-            this.messageAllGuilds(msg, false, 'feeds')
-            msg.addReaction(this.client.config.emojis.default.feeds)
+                this.messageAllGuilds(msg, false, 'feeds')
+                msg.addReaction(this.client.config.emojis.default.feeds)
         }
     }
     guildCreate(guild) {

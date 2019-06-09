@@ -1,5 +1,5 @@
 const fs = require('fs')
-
+const xlsx = require('xlsx')
 module.exports = class Locale{
   constructor(path,constants,options){
     options = options || {}
@@ -9,13 +9,21 @@ module.exports = class Locale{
     this.constants = constants
     this.defaultLanguage = options.defaultLanguage || 'en'
     this.devLanguage = options.devLanguage || 'en'
-    fs.readdirSync(path).forEach(file => {
-      const pathfile = `${path}/${file}`
-      const lang = file.split('.')[0]
-      this.lang[lang] = require(pathfile)
-      this.languages.push(lang)
-      // this.lang[]
+    const wb = xlsx.readFile(path)
+    xlsx.utils.sheet_to_json(wb.Sheets.locale).forEach(row => {
+      const langs = Object.keys(row).filter(key => key)
+      langs.forEach(lang => {
+        if (!this.lang[lang]) { this.lang[lang] = {}; this.languages.push(lang)}
+        this.lang[lang][row['langkey']] = row[lang]
+      })
     })
+    // fs.readdirSync(path).forEach(file => {
+    //   const pathfile = `${path}/${file}`
+    //   const lang = file.split('.')[0]
+    //   this.lang[lang] = require(pathfile)
+    //   this.languages.push(lang)
+    //   // this.lang[]
+    // })
   }
   getString(string,lang){
     lang = lang || this.defaultLanguage

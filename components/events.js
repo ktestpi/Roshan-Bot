@@ -6,8 +6,6 @@ module.exports = class Events extends Component {
     constructor(client, options) {
         super(client)
     }
-    ready(client) {
-    }
     messageReactionAdd(msg, emoji, userID, client){
         if (userID === this.client.owner.id && msg.channel.guild && msg.channel.guild.id === this.client.config.guild.id) {
             if (emoji.name === this.client.config.emojis.default.notification) {

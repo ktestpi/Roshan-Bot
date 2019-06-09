@@ -1,5 +1,5 @@
 const { Command } = require('aghanim')
-const apijimp = require('../../helpers/apijimp')
+const paintjimp = require('../../paintjimp')
 const { UserError, ConsoleError } = require('../../classes/errors.js')
 const EmbedBuilder = require('../../classes/embed-builder.js')
 
@@ -24,7 +24,7 @@ module.exports = new Command('playercard',{
           return client.components.Opendota.card_heroes(account.dota).catch(err => { throw new UserError('opendota', 'errorOpendotaRequest', err ) }).then(results => {
             account.card.heroes = results[1].slice(0,3).map(h => h.hero_id).join(',')
             account.card.pos = 'all'
-            return apijimp.card([results[0],account.card])})
+            return paintjimp.card([results[0],account.card])})
           .then(buffer => client.createMessage(client.config.guild.generated,'',{file : buffer, name : user.username + '_roshan_card.png'}))
           .then(m => msg.reply(embed, {
               _image : m.attachments[0].url
@@ -34,7 +34,7 @@ module.exports = new Command('playercard',{
           })
         }else{
           return client.components.Opendota.card(account.dota).catch(err => {throw new UserError('opendota', 'errorOpendotaRequest', err ) })
-            .then(results => apijimp.card([...results,account.card]))
+            .then(results => paintjimp.card([...results,account.card]))
             .then(buffer => client.createMessage(client.config.guild.generated,'',{file : buffer, name : user.username + '_roshan_card.png'}))
             .then(m => msg.reply(embed2, {
                 username: user.username,

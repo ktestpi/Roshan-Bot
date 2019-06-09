@@ -53,7 +53,7 @@ module.exports = class Opendota extends Component {
     existsAuthor(msg){
         return new Promise((res,rej) => {
             const profile = this.baseProfile(msg.author.id)
-            if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'bot.needRegister') }
+            if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'bot.needregister') }
             res(profile)
         })
     }
@@ -68,7 +68,7 @@ module.exports = class Opendota extends Component {
                 if (!isNaN(number)) {
                     res(this.baseProfile(undefined, number))
                 } else {
-                    this.getProPlayerID(args.from(1)).then(player => res(this.baseProfile(undefined, player.account_id)))
+                    this.getProPlayerID(args.from(1)).then(player => res(this.baseProfile(undefined, player.account_id))).catch(err => rej(new UserError('opendota', 'error.pronotfound', { pro: args.from(1)})))
                 }
             } else {
                 const profile = this.baseProfile(msg.author.id)
