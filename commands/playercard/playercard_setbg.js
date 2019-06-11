@@ -16,7 +16,7 @@ module.exports = new Command('setbg', {
       return true
     }
   }},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     if (args[2]){
       const bg = enumPlayerBg.getKey(args[2])
       if(!bg){return} //TODO bg doesn't exist

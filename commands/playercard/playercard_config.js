@@ -54,19 +54,6 @@ module.exports = new Command('config',{
             _position: `\`\`\`${enumPlayerPos.getValue(player.card.pos)}\`\`\``,
             _bg: `\`\`\`${enumPlayerCardBg.getValue(player.card.bg)}\`\`\``
           })
-          // return msg.reply({
-          //   embed: {
-          //     title: args.user.locale('playerCard', { username: msg.author.username }),
-          //     thumbnail: { url: msg.author.avatarURL, width: 40, height: 40 },
-          //     fields: [
-          //       { name: args.user.langstring('highlightsHeroes'), value: `\`\`\`${player.card.heroes ? heroes.map(h => enumHeroes.getValue(h).localized_name).join(', ') : args.locale('errorCardNoHeroesConfig', { cmd: 'r!cardhelp' })}\`\`\``, inline: false },
-          //       { name: args.user.langstring('position'), value: `\`\`\`${enumPlayerPos.getValue(player.card.pos)}\`\`\``, inline: false },
-          //       { name: args.user.langstring('playerCardBg'), value: `\`\`\`${enumPlayerCardBg.getValue(player.card.bg)}\`\`\``, inline: false }
-          //     ],
-          //     footer: { text: args.user.langstring('roshanCard'), icon_url: client.user.avatarURL },
-          //     color: client.config.color
-          //   }
-          // })
         }
       })
   })

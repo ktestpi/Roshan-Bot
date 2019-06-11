@@ -3,20 +3,11 @@ const enumItems = require('../../enums/items')
 const EmbedBuilder = require('../../classes/embed-builder.js')
 
 module.exports = new Command('item', {
-    category: 'Dota 2', help: 'Muestra información de un objeto de Dota 2', args: ''
-},
-    async function (msg, args, client) {
+    category: 'Dota 2', help: 'Muestra información de un objeto de Dota 2', args: ''},
+    async function (msg, args, client, command) {
         const item = enumItems.getValueByName(args.from(1))
-        // console.log(item)
+        // FIXME: when search sange we get sange and yasha. See enumItems.getValueByName method
         if (!item) { return }
-        // const embed = {
-        //     author: { name: item.dname, url: `${enumItems.dotaWikiURL}${item.dname.replace(/ /g, "_")}` },
-        //     description: item.notes,
-        //     thumbnail: { url: `${enumItems.dotaCdnURL}${item.img}` },
-        //     fields: [],
-        //     footer : {text : item.lore},
-        //     color: client.config.color
-        // }
         const embed = new EmbedBuilder({
             author: {name: '<_item_name>', url: '<_item_wikiurl>'},
             description: '<_item_description>',
@@ -29,7 +20,7 @@ module.exports = new Command('item', {
             .fn(item.components && item.components.length, (schema) => schema.fields.push({ name: 'Components - Total cost: <_item_cost>', value: '<_item_components>', inlue: true }))
             .fn(item.active && item.active.length, (schema) => schema.fields.push({ name: 'Actives', value: '<_item_actives>', inlue: true }))
             .fn(item.cd, (schema) => schema.fields.push({ name: 'Cd', value: '<_item_cd>', inlue: true }))
-            .build(client,args.user.langFlag,{
+            .build(client, msg.author.account.lang,{
                 _item_name: item.dname,
                 _item_wikirul: enumItems.dotaWikiURL + item.dname.replace(/ /g, "_"),
                 _item_description: item.notes,

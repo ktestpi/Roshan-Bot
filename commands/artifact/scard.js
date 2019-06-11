@@ -13,7 +13,7 @@ const embed = new EmbedBuilder({
 const max = 1024
 module.exports = new Command(['searchcard','scard'],{
   category : 'Artifact', help : 'Busca cartas según texto', args : '<texto>'},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     const query = args.from(1)
     if(!query){return}
     const filtered = client.components.Artifact.searchCard(query)

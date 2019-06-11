@@ -13,7 +13,7 @@ const embed = new EmbedBuilder({
 
 module.exports = new Command('withpros',{
   category : 'Dota 2', help : 'Pros con los que has jugado', args : '[mención/dotaID/pro]'},
-  async function(msg, args, client){
+  async function(msg, args, client, command){
     msg.channel.sendTyping()
     return client.components.Opendota.userID(msg, args)
       .then(player => Promise.all([
@@ -36,25 +36,16 @@ module.exports = new Command('withpros',{
           resultsShow++
         })
         description = description.slice(0, -2)
-        description = description || args.user.langstring('withpros.withno')
+        description = description || msg.author.locale('withpros.withno')
         const medal = enumMedal({ rank: results[0].rank_tier, leaderboard: results[0].leaderboard_rank })
         return msg.reply(embed, {
           user: odutil.nameAndNick(results[0].profile),
           flag: typeof results[0].profile.loccountrycode == 'string' ? ':flag_' + results[0].profile.loccountrycode.toLowerCase() + ':' : '',
-          medal: client.locale.replacer(medal.emoji),
-          supporter: client.locale.replacer(player.profile.supporter ? client.config.emojis.supporter : ''),
+          medal: client.components.Locale.replacer(medal.emoji),
+          supporter: client.components.Locale.replacer(player.profile.supporter ? client.config.emojis.supporter : ''),
           _description: description,
           _player_avatar: results[0].profile.avatarmedium,
           number: resultsShow !== resultsTotal ? resultsShow + "/" + resultsTotal : results[1].length
         })
-        // return msg.reply({
-        //   embed: {
-        //     title: odutil.titlePlayer(results, args.user.langstring('playerProfile'), client, player.profile),
-        //     description: description,
-        //     thumbnail: { url: results[0].profile.avatarmedium, height: 40, width: 40 },
-        //     footer: { text: args.user.locale('withProsFooter', { number: resultsShow !== resultsTotal ? resultsShow + "/" + resultsTotal : results[1].length }), icon_url: client.user.avatarURL },
-        //     color: client.config.color
-        //   }
-        // })
       })
   })

@@ -15,7 +15,7 @@ const embed2 = new EmbedBuilder({
 module.exports = new Command('playercard',{
   category : 'Account', help : 'Muestra tu tarjeta de jugador', args : '', cooldown : 10,
   cooldownMessage : function(msg, args, client, cooldown){return msg.reply('warningInCooldown')}},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     const user = msg.mentions.length ? msg.mentions[0] : msg.author
     return client.components.Account.exists(msg.author.id)
       .then(account => {

@@ -110,7 +110,7 @@ class UserError extends BaseError {
     }
     reply(msg, args){
         // return msg._client.locale.replacer(msg._client.locale.getUserString(this.message, msg), this.replacer)
-        return args.user.locale(this.message,this.replacer)
+        return msg.author.locale(this.message,this.replacer)
     }
 }
 

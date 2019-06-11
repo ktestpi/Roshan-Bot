@@ -1,4 +1,4 @@
-const { Component } = require('aghanim')
+const { Component, Eris } = require('aghanim')
 const CustomComponent = require('../classes/custom-component')
 const { Datee, Member } = require('erisjs-utils')
 const util = require('erisjs-utils')
@@ -8,6 +8,18 @@ const { UserError, ConsoleError } = require('../classes/errors.js')
 module.exports = class Guild extends CustomComponent() {
     constructor(client, options) {
         super(client)
+        Object.defineProperty(Eris.Guild.prototype, 'account', {
+            get: function () {
+                return client.cache.servers.get(this.id) || client.components.Account.schema()
+            }
+        })
+
+        Object.defineProperty(Eris.Guild.prototype, 'registered', {
+            get: function () {
+                return client.cache.servers.has(this.id)
+            },
+            enumerable: true
+        })
     }
     ready(){
         this.waitOnce('cache:init', () => {
@@ -55,8 +67,8 @@ module.exports = class Guild extends CustomComponent() {
     }
     schema(){
         return {
-            notifications: { channel: "", enable: true },
-            feeds: { channel: "", enable: true, subs: "" },
+            notifications: { channel: '', enable: true },
+            feeds: { channel: '', enable: true, subs: '' },
             lang: ''
         }
     }
@@ -68,7 +80,7 @@ module.exports = class Guild extends CustomComponent() {
         const defaultChannel = util.Guild.getDefaultChannel(this.client.guilds.get(guildID), this.client, true).id
         schema.notifications.channel = defaultChannel
         schema.feeds.channel = defaultChannel
-        schema.lang = this.client.locale.defaultLanguage
+        schema.lang = this.client.components.Locale.defaultLanguage
         return this.client.cache.servers.save(guildID,schema)
     }
     modify(guildID,data){
@@ -93,7 +105,7 @@ module.exports = class Guild extends CustomComponent() {
             const defaultChannel = util.Guild.getDefaultChannel(guild, this.client, true)
             if (defaultChannel) {
                 defaultChannel.createMessage(
-                    this.client.locale.replacer(`Hi, I am a **Dota 2** and **Artifact** bot. Read the **server guide**: use \`r!getstarted\`. Bot features at <link_web_features>`)
+                    this.client.components.Locale.replacer(`Hi, I am a **Dota 2** and **Artifact** bot. Read the **server guide**: use \`r!getstarted\`. Bot features at <link_web_features>`)
                 )
             }
         })
@@ -117,7 +129,7 @@ module.exports = class Guild extends CustomComponent() {
                 if (!all && cached && !cached[mode].enable) { return };
                 const channel = cached ? cached[mode].channel : util.Guild.getDefaultChannel(server, this.client, true).id
                 if (mode === 'feeds' && !cached.feeds.subs.split(',').includes(author)) { return }
-                // TODO: Use Client.channelGuildMap
+                
                 this.client.createMessage(channel, { content: message, embed: msg.embeds.length > 0 ? msg.embeds[0] : {}, disableEveryone: false }).catch(err => {
                     // Create the message to defaultChannel of guild (not cofigurated)
                     // this.createMessage(util.Guild.getDefaultChannel(server,this,true).id,{content: message, embed : msg.embeds.length > 0 ? msg.embeds[0] : {},disableEveryone:false})

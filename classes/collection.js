@@ -44,7 +44,7 @@ module.exports = class Collection extends Map{
         return this.toArray().sort(func)
     }
     each(func){
-        this.toArray.map(item => this.add(item._id,func(item)))
+        this.toArray().forEach(item => this.add(item._id,func(item)))
     }
     get keys(){
         const array = []

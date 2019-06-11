@@ -5,7 +5,7 @@ const { matches } = require('../../helpers/apijimp')
 
 module.exports = new Command('matches+',{
   category : 'General', help : 'Últimas partidas jugadas. R+', args : '', cooldown : 1, enable : false},
-  function(msg, args, command){
+  async function(msg, args, command, command){
     opendota.odcall(this,msg,args,function(msg,args,profile){
       msg.channel.sendTyping();
       opendota.request('player_matches',profile.id.dota).then(results => {

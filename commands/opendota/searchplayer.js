@@ -12,7 +12,7 @@ const embed = new EmbedBuilder({
 
 module.exports = new Command('searchplayer',{
   category : 'Dota 2', help : 'Busca a un/a jugador/a', args : '[búsqueda]'},
-  async function(msg, args, client){
+  async function(msg, args, client, command){
     const query = args.slice(1).join(' ')
     if(query.length < 2){return msg.reply('searchplayer.mincharsrequired')}
     msg.channel.sendTyping()
@@ -39,12 +39,6 @@ module.exports = new Command('searchplayer',{
           text: text,
           match: playersShow !== playersTotal ? playersShow + "/" + playersTotal : playersShow
         })
-        // return msg.reply({embed : {
-        //   title : args.user.langstring('searchplayerTitle'),
-        //   description : args.user.locale('searchplayerDescription',{query : query, text : text}),
-        //   footer : {text : args.user.locale('searchplayerFooter',{match : playersShow !== playersTotal ? playersShow + "/" + playersTotal : playersShow}), icon_url : client.user.avatarURL},
-        //   color : client.config.color
-        // }})
       }).catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
     })
   })

@@ -12,7 +12,7 @@ const steamprice = require('steam-price-api')
 class Artifact extends Component {
     constructor(client, options) {
         super(client)
-        // this.enable = false
+        this.enable = true
         this.cards = []
         this.sets = []
         this.cardsURL = 'https://raw.githubusercontent.com/ottah/ArtifactDB/master/cards-manifest.json'
@@ -501,7 +501,7 @@ class Artifact extends Component {
         this.update()
     }
     messageCreate(msg){
-        this.parseMessage(msg, this.client.locale)
+        this.parseMessage(msg, this.client.components.Locale)
     }
     deckEncode(deck){
         return encode(deck)

@@ -20,7 +20,7 @@ class UserError extends BaseError {
         const embed = {
             title: `User Error: ${command.name}`,
             author: { name: `${command.name} - ${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.avatarURL },
-            description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
+            description: msg._client.components.Locale.replacer(this.message, this.replacer, msg._client.components.Locale.defaultLanguage),
             footer: { text: `Error: ${this.type || 'ND'} - ${command.name || ''}` }
         }
         if (this.err) {
@@ -29,8 +29,7 @@ class UserError extends BaseError {
         return { embed }
     }
     reply(msg, args) {
-        // return msg._client.locale.replacer(msg._client.locale.getUserString(this.message, msg), this.replacer)
-        return args.user.locale(this.message, this.replacer)
+        return msg.author.locale(this.message, this.replacer)
     }
 }
 
@@ -41,12 +40,10 @@ class CommandError extends BaseError {
     toConsole(msg, args, command) {
         const embed = {
             title: `:x: Command Error: ${command.name}`,
-            // description: `**Command Content:** ${msg.content}`,
             author: { name: `${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.avatarURL },
             fields: [
                 { name: 'Command Content', value: toCode(msg.content), inline: false },
                 { name: 'Error Message', value: toCode(this.err.message), inline: false }],
-            // description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
             footer: { text: `Error: ${this.type || 'ND'} - ${command.name || ''}` }
         }
         if (this.err) {
@@ -63,12 +60,9 @@ class ComponentError extends BaseError {
     toConsole(component) {
         const embed = {
             title: `:x: Component Error: ${component.constructor.name}`,
-            // description: `**Command Content:** ${msg.content}`,
-            // author: { name: `${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.avatarURL },
             fields: [
                 // { name: 'Command Content', value: toCode(msg.content), inline: false },
                 { name: 'Error Message', value: toCode(this.err.message), inline: false }],
-            // description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
             footer: { text: `Error: ${this.type || 'ND'} - ${component.constructor.name || ''}` }
         }
         if (this.err) {
@@ -103,7 +97,7 @@ class UserSilentError extends BaseError {
     toConsole(msg, args, command) {
         const embed = {
             author: { name: `${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.iconURL },
-            description: msg._client.locale.replacer(msg._client.locale.getDevString(this.message), this.replacer),
+            description: msg._client.components.Locale.replacer(this.message, this.replacer, msg._client.components.Locale.defaultLanguage),
             footer: { text: `Error: ${this.type || 'ND'} - ${command.name || ''}` }
         }
         if (this.err) {

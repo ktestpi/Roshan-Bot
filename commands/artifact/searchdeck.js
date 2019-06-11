@@ -10,7 +10,7 @@ const embed = new EmbedBuilder({
 
 module.exports = new Command(['searchdeck','sdeck'], {
     category: 'Artifact', help: 'Busca nombres de mazos por término de búsqueda', args: '[búsqueda]'},
-    async function (msg, args, client) {
+    async function (msg, args, client, command) {
         if (!args[1]) { throw new UserError('artifact', 'searchdeck.error.needarg'); return }
         const search = args.from(1)
         const decks = client.components.Artifact.findAllCachedDeckByName(search)

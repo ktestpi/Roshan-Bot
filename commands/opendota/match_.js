@@ -15,8 +15,8 @@ const embed = new EmbedBuilder({
 })
 module.exports = new Command('match+',{
   category : 'Dota 2', help : 'Estadísticas de una partida. R+', args : '<id>', cooldown : 60,
-  cooldownMessage: function (msg, args, client, cooldown) { return args.user.langstring('cmd.incooldown')}},
-  async function(msg, args, client){
+  cooldownMessage: function (msg, args, client, cooldown) { return msg.author.locale('cmd.incooldown')}},
+  async function (msg, args, client, command){
     if (!args[1]) { return }
     msg.channel.sendTyping()
     return client.components.Opendota.match(args[1])
@@ -38,15 +38,6 @@ module.exports = new Command('match+',{
               time: Datee.custom(results[0].start_time * 1000, 'h:m D/M/Y', true),
               _match_image: m.attachments[0].url
             })
-            // return msg.reply({
-            //   embed: {
-            //     title: args.user.locale('matchTitle', { victory: args.user.langstring('victory'), team: odutil.winnerTeam(results[0]) }),
-            //     description: (results[0].league ? ' :trophy: ' + results[0].league.name : enumLobbyType.getValue(results[0].lobby_type) + ' ' + (enumSkill.getValue(results[0].skill) || '')) + ' `' + args.user.langstring('matchID') + ': ' + results[0].match_id + '` ' + Markdown.link(client.config.links.profile.dotabuff.slice(0, -8) + 'matches/' + results[0].match_id, args.user.langstring('moreInfo')) + '\n' + args.user.locale('matchTime', { duration: odutil.durationTime(results[0].duration), time: Datee.custom(results[0].start_time * 1000, 'h:m D/M/Y', true) }),
-            //     image: { url: m.attachments[0].url },
-            //     footer: {text: args.user.langstring('roshanPlus'), icon_url: client.user.avatarURL },
-            //     color: client.config.color
-            //   }
-            // })
           })
       }).catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
   })

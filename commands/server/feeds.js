@@ -5,7 +5,7 @@ const off = 'off'
 module.exports = new Command('feeds',{subcommandFrom : 'server',
   category : 'Server', help : 'Configuración de feeds', args : '<on,off,[channel]>',
   rolesCanUse: 'aegis'},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     if(args[2] === on){
       return client.cache.servers.save(msg.channel.guild.id,{feeds : {enable : true}}).then(() => msg.addReaction(client.config.emojis.default.accept))
     }else if(args[2] === off){

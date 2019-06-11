@@ -11,10 +11,17 @@ module.exports = class Cache extends Component {
     ready() {
         this.update().then(() => { this.client.emit('cache:init')})
     }
+    messageCreate(msg){
+        if (msg.channel.id === this.client.config.guild.changelog) { // Update Bot Changelog
+            return this.loadLastPatchNotes()
+        }
+    }
     update(){
         return new Promise((res,rej) => {
             this.client.cache = {}
+            this.loadLastPatchNotes()
             this.updateTorneysFeeds()
+            this.loadDota2Patch()
             if(this.client.envprod || process.argv.includes('-db')){
                 this.client.db.once('value').then(snap => {
                     if (!snap.exists()) { this.client.errors.emit(new ConsoleError('cacheReload', 'Error al recargar')) } else { snap = snap.val() }
@@ -84,5 +91,14 @@ module.exports = class Cache extends Component {
             return this.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
         }
         this.client.components.Notifier.console('Cache','Tournaments and Feeds loaded')
+    }
+    loadLastPatchNotes(){
+        return this.client.getMessage(this.client.config.guild.changelog, this.client.server.channels.get(this.client.config.guild.changelog).lastMessageID).then(m => {
+            this.client.cache.botPatchNotes = m.content
+            this.client.components.Notifier.console('Patch notes','Loaded')
+        })
+    }
+    loadDota2Patch(){
+        return this.client.db.child('bot/patch').once('value').then(snap => this.client.cache.dota2Patch = snap.val())
     }
 }

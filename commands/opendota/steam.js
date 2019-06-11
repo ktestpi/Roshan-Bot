@@ -12,7 +12,7 @@ const embed = new EmbedBuilder({
 
 module.exports = new Command('steam',{
   category : 'Dota 2', help : 'Url de steam de un jugador', args : '[mención/dotaID/pro]'},
-  async function(msg, args, client){
+  async function(msg, args, client, command){
     msg.channel.sendTyping()
     return client.components.Opendota.userID(msg, args)
       .then(player => Promise.all([
@@ -26,20 +26,11 @@ module.exports = new Command('steam',{
         return msg.reply(embed, {
           user: odutil.nameAndNick(results[0].profile),
           flag: typeof results[0].profile.loccountrycode == 'string' ? ':flag_' + results[0].profile.loccountrycode.toLowerCase() + ':' : '',
-          medal: client.locale.replacer(medal.emoji),
-          supporter: client.locale.replacer(player.profile.supporter ? client.config.emojis.supporter : ''),
+          medal: client.components.Locale.replacer(medal.emoji),
+          supporter: client.components.Locale.replacer(player.profile.supporter ? client.config.emojis.supporter : ''),
           profile: odutil.nameAndNick(results[0].profile),
-          link: Markdown.link(results[0].profile.profileurl, args.user.langstring('global.steam')),
+          link: Markdown.link(results[0].profile.profileurl, msg.author.locale('global.steam')),
           url: results[0].profile.profileurl 
         })
-        // return msg.reply({
-        //   embed: {
-        //     title: odutil.titlePlayer(results, args.user.langstring('playerProfile'), client, player.profile),
-        //     description: args.user.locale('steamProfileDesc', { profile: odutil.nameAndNick(results[0].profile), link: Markdown.link(results[0].profile.profileurl, args.user.langstring('steam')), url: results[0].profile.profileurl }),
-        //     thumbnail: { url: results[0].profile.avatarmedium, height: 40, width: 40 },
-        //     footer: { text: player.discordID ? msg.author.username : odutil.nameAndNick(results[0].profile), icon_url: player.discordID ? msg.author.avatarURL : results[0].profile.avatarmedium },
-        //     color: client.config.color
-        //   }
-        // })
       })
   })

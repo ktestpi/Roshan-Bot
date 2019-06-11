@@ -10,8 +10,8 @@ const embed = new EmbedBuilder({
 })
 module.exports = new Command('thanks',{
   category : 'General', help : 'Agradecimientos', args : ''},
-  async function(msg, args, client){
-    return msg.reply({
+  async function (msg, args, client, command){
+    return msg.reply(embed, {
       _betatesters: client.config.others.betatesters.join(', '),
       _complements: client.config.others.complements.map(c => `${c.tag}: ${c.author}`).join('\n')
     })

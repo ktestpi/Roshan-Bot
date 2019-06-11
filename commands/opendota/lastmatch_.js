@@ -3,8 +3,8 @@ const { UserError, ConsoleError } = require('../../classes/errors.js')
 
 module.exports = new Command('lastmatch+',{
   category : 'Dota 2', help : 'Última partida jugada. R+', args : '[mención/dotaID/pro]', cooldown : 60,
-  cooldownMessage: function (msg, args, command, cooldown) { return args.user.langstring('cmd.incooldown')}},
-  async function(msg, args, client){
+  cooldownMessage: function (msg, args, command, cooldown) { return msg.author.locale('cmd.incooldown')}},
+  async function (msg, args, client, command){
     msg.channel.sendTyping()
     return client.components.Opendota.userID(msg, args)
       .then(player => Promise.all([

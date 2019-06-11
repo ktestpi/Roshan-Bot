@@ -1,4 +1,5 @@
 const CustomComponent = require('../classes/custom-component.js')
+const { Eris } = require('aghanim')
 const odutil = require('../helpers/opendota-utils')
 const { Datee, Markdown } = require('erisjs-utils')
 const { UserError, ConsoleError } = require('../classes/errors.js')
@@ -7,6 +8,44 @@ const EmbedBuilder = require('../classes/embed-builder.js')
 module.exports = class Account extends CustomComponent() {
 	constructor(client, options) {
 		super(client)
+		Object.defineProperty(Eris.User.prototype, 'account', {
+			get: function () {
+				return client.cache.profiles.get(this.id) || client.components.Account.schema()
+			}
+		})
+
+		Object.defineProperty(Eris.User.prototype, 'registered', {
+			get: function () {
+				return client.cache.profiles.has(this.id)
+			},
+			enumerable: true
+		})
+
+		Object.defineProperty(Eris.User.prototype, 'supporter', {
+			get: function () {
+				return client.components.Users.isSupporter(this.id)
+			},
+			enumerable: true
+		})
+
+		Object.defineProperty(Eris.User.prototype, 'betatester', {
+			get: function () {
+				return client.components.Users.isBetatester(this.id)
+			},
+			enumerable: true
+		})
+
+		Object.defineProperty(Eris.User.prototype, 'profile', {
+			get: function () {
+				return {
+					account: this.account,
+					supporter: this.supporter,
+					betatester: this.betatester,
+					registered: this.registered
+				}
+			},
+			enumerable: true
+		})
 	}
 	ready(){
 	}
@@ -29,7 +68,7 @@ module.exports = class Account extends CustomComponent() {
 		return this.get(discordID).then((account) => {
 			if (!account) { throw new UserError('account', 'bot.needregister')}
 			return Promise.resolve(account)
-		}).catch(err => Promise.reject(err))
+		})//.catch(err => Promise.reject(err))
 	}
 	existsAny(msg){
 		return new Promise((res,rej) => {
@@ -64,12 +103,10 @@ module.exports = class Account extends CustomComponent() {
 		const guildID = msg.channel.guild ? msg.channel.guild.id : msg.channel.id
 		return this.client.components.Opendota.account(dotaID).then(([data]) => {
 			if(!data.profile){return/*TODO error*/}
-			const devLang = this.client.locale.getDevStrings()
-			const lang = this.client.locale.getUserStrings(msg)
 			return this.client.createMessage(this.client.config.guild.accounts,{
 				embed :{
-					title: this.client.locale.replacer(devLang.registerAccountTitle, { id: msg.author.id }),
-					description: this.client.locale.replacer(devLang.registerAccountDesc, { guildName, guildID, dotaID: dotaID, steamID: data.profile.steamid}),
+					title: this.client.components.Locale.replacer('registerAccountTitle', { id: msg.author.id }),
+					description: this.client.components.Locale.replacer('registerAccountDesc', { guildName, guildID, dotaID: dotaID, steamID: data.profile.steamid}),
 					//thumbnail : {url : config.icon, height : 40, width : 40},
 					footer: { text: msg.author.username + ' | ' + msg.author.id + ' | ' + Datee.custom(msg.timestamp, 'D/M/Y h:m:s'), icon_url: msg.author.avatarURL },
 					color: this.client.config.colors.account.register
@@ -88,37 +125,17 @@ module.exports = class Account extends CustomComponent() {
 					})
 					return msg.replyDM(embed, { dotaID: dotaID, steamID: data.profile.steamid, _user_avatar: msg.author.avatarURL})
 						.then(() => m.addReactionSuccess())
-					// return msg.replyDM({
-					// 	embed: {
-					// 		title: this.client.locale.replacer(lang.welcomeToRoshan),
-					// 		//author : {name : config.bot.name, icon_url : config.bot.icon},
-					// 		description: this.client.locale.replacer(lang.infoAboutDotaForDiscord),
-					// 		fields: [{
-					// 			name: lang.dataUrRegistry,
-					// 			value: this.client.locale.replacer(lang.dataUrRegistryAccount, { dotaID: dotaID, steamID: data.profile.steamid }),
-					// 			inline: false
-					// 		}, {
-					// 			name: lang.tyForUrRegistry,
-					// 			value: this.client.locale.replacer(lang.helpRegistryDesc),
-					// 			inline: false
-					// 		}],
-					// 		thumbnail: { url: msg.author.avatarURL, height: 40, width: 40 },
-					// 		color: this.client.config.color
-					// 	}
-					// }).then(() => m.addReactionSuccess())
 				})
 			})
 		})
 	}
 	deleteProcess(discordID, msg){
-		const devLang = this.client.locale.getDevStrings()
-		const lang = this.client.locale.getUserStrings(msg)
 		const guildName = msg.channel.guild ? msg.channel.guild.name : 'DM'
 		const guildID = msg.channel.guild ? msg.channel.guild.id : msg.channel.id
 		return this.client.createMessage(this.client.config.guild.accounts, {
 			embed: {
-				title: this.client.locale.replacer(devLang.unregisterAccountTitle, { id: msg.author.id }),
-				description: this.client.locale.replacer(devLang.unregisterAccountDesc, { guildName, guildID }),
+				title: this.client.components.Locale.replacer('unregisterAccountTitle', { id: msg.author.id }),
+				description: this.client.components.Locale.replacer('unregisterAccountDesc', { guildName, guildID }),
 				//thumbnail : {url : msg.author.avatarURL, height : 40, width : 40},
 				footer: { text: msg.author.username + ' | ' + msg.author.id + ' | ' + Datee.custom(msg.timestamp, 'D/M/Y h:m:s'), icon_url: msg.author.avatarURL },
 				color: this.client.config.colors.account.delete

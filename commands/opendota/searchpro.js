@@ -12,7 +12,7 @@ const embed = new EmbedBuilder({
 
 module.exports = new Command('searchpro',{
   category : 'Dota 2', help : 'Busca a un/a pro', args : '[búsqueda]'},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     const query = args.slice(1).join(' ')
     if(query.length < 2){return msg.reply('errorSearchMinChars')}
     return client.components.Opendota.getProPlayersDotaName(query)
@@ -23,11 +23,5 @@ module.exports = new Command('searchpro',{
           text: text,
           match: players.length
         })
-        // return msg.reply({embed : {
-        //   title : args.user.langstring('searchproTitle'),
-        //   description : args.user.locale('searchproDescription',{query : query, text : text}),
-        //   footer : {text : args.user.locale('searchproFooter',{match : players.length}), icon_url : client.user.avatarURL},
-        //   color : client.config.color
-        // }})
       }).catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
   })

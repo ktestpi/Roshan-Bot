@@ -7,14 +7,13 @@ module.exports = new Command('deleteacc',{
     const user = client.users.get(args[1])
     if(!user){return msg.addReaction(client.config.emojis.default.error)}
     if(!client.cache.profiles.get(user.id)){return msg.addReaction(client.config.emojis.default.error)}
-    const lang = client.locale.getDevStrings(msg)
     const guild = client.config.guild;
     const guildName = msg.channel.guild ? msg.channel.guild.name : 'DM';
     const guildID = msg.channel.guild ? msg.channel.guild.id : msg.channel.id;
     return client.createMessage(guild.accounts,{
       embed : {
-        title : client.locale.replacer(lang.unregisterAccountTitle,{id : user.id}),
-        description : client.locale.replacer(lang.unregisterAccountDesc,{guildName,guildID}),
+        title : client.components.Locale.replacer('unregisterAccountTitle',{id : user.id}),
+        description : client.components.Locale.replacer('unregisterAccountDesc',{guildName,guildID}),
         //thumbnail : {url : msg.author.avatarURL, height : 40, width : 40},
         footer : {text : user.username + ' | ' + user.id + ' | ' + Datee.custom(msg.timestamp,'D/M/Y h:m:s') ,icon_url : user.avatarURL},
         color : client.config.colors.account.delete

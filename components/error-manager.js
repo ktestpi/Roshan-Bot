@@ -1,5 +1,5 @@
 const CustomComponent = require('../classes/custom-component.js')
-const { UserError, ConsoleError, CommandError} =require('../classes/errors')
+const { UserError, ConsoleError, CommandError, ComponentError} =require('../classes/errors')
 
 module.exports = class ErrorManager extends CustomComponent() {
     constructor(client, options) {

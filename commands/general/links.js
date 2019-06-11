@@ -5,7 +5,7 @@ const { UserError, ConsoleError } = require('../../classes/errors.js')
 
 module.exports = new Command('links',{
   category : 'General', help : 'Enlaces interesantes sobre el juego', args : '<categoría>'},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     const query = args.after
     if (!links[query]) { throw new UserError('wrongCmdArg', 'wrongCmdArg', { options: Object.keys(links).join(', '), cmd: args.until(1) })}
     let textLinks = '';

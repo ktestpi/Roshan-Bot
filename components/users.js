@@ -37,27 +37,3 @@ module.exports = class Users extends CustomComponent() {
         return user ? user.profile : {}
     }
 }
-
-
-
-// module.exports.sendImageStructure = function (msg, query, links, cmd) {
-//     if (!links[query]) { return module.exports.wrongCmd(msg, links, cmd) } // TODO wrongCmd
-//     const match = links[query]
-//     if (typeof match === 'object') {
-//         util.Message.sendImage(match.file).then(buffer => {
-//             msg.reply(match.msg, { file: buffer, name: match.name })
-//         })
-//     } else if (typeof query === 'string') {
-//         msg.reply(match)
-//     }
-//     // if(typeof pics[query] == 'object'){
-//     //   util.msg.sendImage_(url).then(buffer => {
-//     //     msg.reply(util.string.replace(pics[query].msg, {author : msg.author.username},true),{file : buffer, name : pics[query].name});
-//     //   })
-//     //   util.msg.sendImage([pics[query].file],[],{msg : msg, config : config, pics : pics, query : query},function(results,container){
-//     //
-//     //   })
-//     // }else{
-//     //   msg.reply(util.string.replace(pics[query], {author : msg.author.username},true));
-//     // }
-// }

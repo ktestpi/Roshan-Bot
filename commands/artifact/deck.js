@@ -14,8 +14,8 @@ const embed = new EmbedBuilder({
 
 module.exports = new Command('deck', {
     category: 'Artifact', help: 'Genera un mazo desde un código', args: '[código/nombre mazo]', cooldown: 30,
-    cooldownMessage: function (msg, args, command, cooldown) { return args.user.langstring('cmd.incooldown') }},
-    async function (msg, args, client) {
+    cooldownMessage: function (msg, args, command, cooldown) { return msg.author.locale('cmd.incooldown') }},
+    async function (msg, args, client, command) {
         if (!args[1]) { throw new UserError('artifact', 'deck.error.needargorvalidcode'); return}
         const deckCached = client.cache.decks.find(deck => deck.name.toLowerCase() === String(args.from(1)).toLowerCase())
         const code = deckCached ? deckCached._id : client.components.Artifact.isValidDeckCode(args[1])
@@ -40,7 +40,7 @@ module.exports = new Command('deck', {
 
     function embedResponse(msg, args, bot, data){
         const author = bot.users.get(data.author) || {}
-        return doIfCondition(args.user.supporter,() => bot.components.Artifact.getDeckPrice(data._id))
+        return doIfCondition(msg.author.supporter,() => bot.components.Artifact.getDeckPrice(data._id))
             .then(price => msg.reply(embed,{
                 _deck_name: data.name,
                 _deck_url: bot.components.Artifact.deckCodeUrl(data._id),

@@ -66,9 +66,8 @@ module.exports = class EmbedBuilder {
     }
 }
 
-function embedReplacer(client, languageFlag, replacements){
+function embedReplacer(client, language, replacements){
     return function(str){
-        // console.log('str', str, languageFlag || client.locale.defaultLanguage, client.locale.lang[languageFlag || client.locale.defaultLanguage][str], replacements)
-        return client.locale.replacer(client.locale.lang[languageFlag || client.locale.defaultLanguage][str] || str, replacements)
+        return client.components.Locale.replacer(str, replacements, language)
     }
 }

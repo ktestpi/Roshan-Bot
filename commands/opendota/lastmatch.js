@@ -3,7 +3,7 @@ const { UserError, ConsoleError } = require('../../classes/errors.js')
 
 module.exports = new Command('lastmatch',{
   category : 'Dota 2', help : 'Última partida jugada', args : '[mención/dotaID/pro]'},
-  async function(msg, args, client){
+  async function(msg, args, client, command){
 
     msg.channel.sendTyping()
     return client.components.Opendota.userID(msg, args)

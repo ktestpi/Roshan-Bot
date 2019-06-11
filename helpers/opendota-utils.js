@@ -97,10 +97,10 @@ module.exports.titlePlayer = function (results, title, client, profile) {
     // return typeof results[0].profile.loccountrycode == 'string' ?
     //     replace.replacer(title, { user: module.exports.nameAndNick(results[0].profile), flag: results[0].profile.loccountrycode.toLowerCase(), medal: replace.replacer(medal.emoji), supporter : replacer.replacer('<cheese>') })
     //     : util.String.replace(title, { '<user>': module.exports.nameAndNick(results[0].profile), ':flag_<flag>:': ' ', '<medal>': replace.replacer(medal.emoji), supporter : supporter ? replacer.replacer('<cheese>') : '' }, false)
-    const result = client.locale.replacer(title, {supporter : profile.supporter ? client.config.emojis.supporter : ''})
+    const result = client.components.Locale.replacer(title, {supporter : profile.supporter ? client.config.emojis.supporter : ''})
     return typeof results[0].profile.loccountrycode == 'string' ?
-        client.locale.replacer(result, { user: module.exports.nameAndNick(results[0].profile), flag: results[0].profile.loccountrycode.toLowerCase(), medal: client.locale.replacer(medal.emoji) })
-        : util.String.replace(result, { '<user>': module.exports.nameAndNick(results[0].profile), ':flag_<flag>:': ' ', '<medal>': client.locale.replacer(medal.emoji) }, false)
+        client.components.Locale.replacer(result, { user: module.exports.nameAndNick(results[0].profile), flag: results[0].profile.loccountrycode.toLowerCase(), medal: client.components.Locale.replacer(medal.emoji) })
+        : util.String.replace(result, { '<user>': module.exports.nameAndNick(results[0].profile), ':flag_<flag>:': ' ', '<medal>': client.components.Locale.replacer(medal.emoji) }, false)
 
 }
 

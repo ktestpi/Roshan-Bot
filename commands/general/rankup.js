@@ -8,7 +8,7 @@ const readFile = promisifyCallback(fs.readFile)
 
 module.exports = new Command('rankup',{
   category : 'General', help : 'Sube de MMR', args : ''},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     msg.channel.sendTyping()
     return readFile(path.join(__dirname, '../..', '/img/rankup.png'))
       .then(data => msg.reply('RankUp', {}, {file : data, name :'rankup.png'}))

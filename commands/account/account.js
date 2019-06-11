@@ -5,7 +5,8 @@ const EmbedBuilder = require('../../classes/embed-builder.js')
 const embed = new EmbedBuilder({
   title: 'account.title',
   description: 'account.data',
-  thumbnail: {url : '<_user_avatar>'}
+  thumbnail: {url : '<user_avatar>'}
+
 })
 
 module.exports = new Command('account',{
@@ -13,13 +14,9 @@ module.exports = new Command('account',{
   async function(msg, args, client, command){
     return client.components.Account.exists(msg.author.id)
       .then(account => {
-        if(!account){return command.error()}
-        return msg.replyDM(embed,{
-            dotaID: account.dota,
-            steamID : account.steam,
-            lang: client.locale.getUserFlag(account.lang),
-            _user_avatar: msg.author.avatarURL,
-            supporter: client.locale.replacer(msg.author.supporter ? `\n${client.config.emojis.supporter}` : '')
+        return msg.reply(embed,{
+            lang: msg.author.account.lang,
+            supporter: msg.author.supporter ? `\n${client.config.emojis.supporter}` : ''
           })
       })
   })

@@ -16,20 +16,8 @@ const embed = new EmbedBuilder({
 module.exports = new Command('help', {
   subcommandFrom: 'playercard',
   category : 'Account', help : 'Ayuda de la tarjeta de jugador@', args : ''},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     return msg.replyDM(embed, {
       _positions: `\`${enumPlayerPos.toArray().map(k => k.key).join(',')}\``
     })
-    // return msg.replyDM({
-    //   embed : {
-    //     title: args.user.langstring('cardConfigTitle'),
-    //     description : args.user.locale('cardHelpCommand'),
-    //     fields : [
-    //       {name : args.user.langstring('cardHelpHeroesTitle'), value : args.user.langstring('cardHelpHeroesDesc'), inline : false},
-    //       {name : args.user.langstring('cardHelpPositionTitle') , value : `\`${enumPlayerPos.toArray().map(k => k.key).join(',')}\``, inline : false},
-    //       {name : args.user.langstring('cardHelpExampleTitle') , value : args.user.locale('cardHelpExampleDesc'), inline : false}
-    //     ],
-    //     color : client.config.color
-    //   }
-    // })
   })

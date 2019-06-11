@@ -14,12 +14,11 @@ const embed = new EmbedBuilder({
 })
 
 module.exports = new Command('hero', {
-    category: 'Dota 2', help: 'Muestra información de dota', args: ''
-},
-    async function (msg, args, client) {
+    category: 'Dota 2', help: 'Muestra información de dota', args: ''},
+    async function (msg, args, client, command) {
         const hero = enumHeroes.getValueByAlias(args[1])
         if(!hero){ return }
-        return msg.reply(embed.build(client, args.user.langFlag,{
+        return msg.reply(embed.build(client, msg.author.account.lang,{
             _hero_basehealth: hero.base_health + Math.round((hero.primary_attr === "str" ? 22.5 : 17) * hero.base_str),
             _base_mana: hero.base_mana + ((hero.primary_attr === "int" ? 15 : 12) * hero.base_int),
             _base_armor: hero.base_armor + Math.round((hero.primary_attr === "agi" ? 0.2 : 0.16) * hero.base_agi),

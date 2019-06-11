@@ -12,8 +12,6 @@ module.exports = class Bot extends CustomComponent() {
         super(client)
     }
     ready() {
-        // this.client.server = this.client.guilds.get(this.client.config.guild.id)
-        this.client.components.Bot.loadLastPatchNotes()
         this.waitOnce('cache:init', () => {
             this.dbOnce('bot').then(snap => {
                 this.client.config.switches = snap.switches
@@ -70,11 +68,6 @@ module.exports = class Bot extends CustomComponent() {
             })
         })
     }
-    messageCreate(msg){
-        if (msg.channel.id === this.client.config.guild.changelog) { // Update Bot Changelog
-            return this.client.components.Bot.loadLastPatchNotes()
-        }
-    }
     dbOnce(path){
         return new Promise((res,rej) => {
             this.client.db.child(path).once('value').then(snap => {
@@ -93,12 +86,6 @@ module.exports = class Bot extends CustomComponent() {
         }
         promises.push(this.client.editStatus(this.client.config.status, { name: this.client.config.status_msg, type: this.client.config.status_act, url: this.client.config.status_url }))
         return Promise.all(promises)
-    }
-    loadLastPatchNotes(){
-        return this.client.getMessage(this.client.config.guild.changelog, this.client.server.channels.get(this.client.config.guild.changelog).lastMessageID).then(m => {
-            this.client._lastUpdateText = m.content
-            this.client.components.Notifier.console('Patch notes','Loaded')
-        })
     }
     updateLeaderboard(snap) {
         if(snap){

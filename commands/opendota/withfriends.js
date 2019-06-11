@@ -13,7 +13,7 @@ const embed = new EmbedBuilder({
 
 module.exports = new Command(['withfriends','friends'],{
   category : 'Dota 2', help : 'Estadísticas de partidas jugadas con amig@s', args : '[mención/dotaID/pro]'},
-  async function(msg, args, client){
+  async function(msg, args, client, command){
     msg.channel.sendTyping()
     return client.components.Opendota.userID(msg, args)
       .then(player => Promise.all([
@@ -26,7 +26,7 @@ module.exports = new Command(['withfriends','friends'],{
         const profile = player.data
         results[1] = results[1].filter(friend => friend.with_games > 0)
         const spacesBoard = ['25f', '3cf', '6cf'];
-        let table = Classes.Table.renderRow([client.components.Bot.parseText(args.user.langstring('player'), 'nf'), args.user.langstring('games').slice(0, 1), args.user.langstring('gamesWR')], spacesBoard, '\u2002') + '\n';
+        let table = Classes.Table.renderRow([client.components.Bot.parseText(msg.author.locale('player'), 'nf'), msg.author.locale('games').slice(0, 1), msg.author.locale('gamesWR')], spacesBoard, '\u2002') + '\n';
         if (results[1].length > 0) {
           results[1].forEach(friend => {
             if (table.length > client.config.constants.descriptionChars) { return }
@@ -37,21 +37,11 @@ module.exports = new Command(['withfriends','friends'],{
         return msg.reply(embed, {
           user: odutil.nameAndNick(results[0].profile),
           flag: typeof results[0].profile.loccountrycode == 'string' ? ':flag_' + results[0].profile.loccountrycode.toLowerCase() + ':' : '',
-          medal: client.locale.replacer(medal.emoji),
-          supporter: client.locale.replacer(player.profile.supporter ? client.config.emojis.supporter : ''),
-          _description: results[1].length > 0 ? table : args.user.langstring('withfriends.withno'),
+          medal: client.components.Locale.replacer(medal.emoji),
+          supporter: client.components.Locale.replacer(player.profile.supporter ? client.config.emojis.supporter : ''),
+          _description: results[1].length > 0 ? table : msg.author.locale('withfriends.withno'),
           _player_avatar: results[0].profile.avatarmedium,
           number: results[1].length > 0 ? results[1].length : '0'
         })
-        // return msg.reply({
-        //   embed: {
-        //     title: odutil.titlePlayer(results, args.user.langstring('playerProfile'), client, player.profile),
-        //     description: results[1].length > 0 ? table : args.user.langstring('withFriendsNo'),
-        //     thumbnail: { url: results[0].profile.avatarmedium, height: 40, width: 40 },
-        //     footer: {
-        //       text: args.user.locale('withFriendsFooter', { number: results[1].length > 0 ? results[1].length : '0' }), icon_url: client.user.avatarURL },
-        //     color: client.config.color
-        //   }
-        // })
       })
   })

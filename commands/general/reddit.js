@@ -15,7 +15,7 @@ const embedPost = new EmbedBuilder({
 
 module.exports = new Command('reddit',{
   category : 'General', help : 'Información sobre reddit', args : '<idpost,top,hot,new>'},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     if (!args[1]) { args[1] = 'top'}
     if(['top','hot','new'].indexOf(args[1].toLowerCase()) > -1){
       msg.channel.sendTyping();

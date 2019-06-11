@@ -4,7 +4,7 @@ const { sortTourneys } = require('../../helpers/sort')
 
 module.exports = new Command('tourneys',{
   category : 'General', help : 'Últimos torneos o muestra info sobre torneo', args : '[nombre torneo]'},
-  async function(msg, args, client){
+  async function(msg, args, client, command){
     // const tourneys = this.cache.tourneys.order().slice(0,8)
     // const description = tourneys.map(tourney => tourney._id).join('\n')
     if(!args[1]){
@@ -14,17 +14,17 @@ module.exports = new Command('tourneys',{
       if (tourneys_playing.length && !tourneys_next.length) { return msg.reply('tourneys.error.noevents')}
       if(tourneys_playing.length){
         tourneys_playing.sort(sortTourneysPlaying)
-        fields.push({ name: args.user.locale('tourneys.now',{events : tourneys_playing.length}), value : tourneys_playing.map(t => `**${t._id}**${t.finish ? ' \`' + util.Date.custom(parseInt(t.finish)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
+        fields.push({ name: msg.author.locale('tourneys.now',{events : tourneys_playing.length}), value : tourneys_playing.map(t => `**${t._id}**${t.finish ? ' \`' + util.Date.custom(parseInt(t.finish)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
       }
       if(tourneys_next.length){
         tourneys_next.sort(sortTourneysNext)
-        fields.push({name: args.user.locale('tourneys.next',{events : tourneys_next.length}), value : tourneys_next.map(t => `**${t._id}**${t.until ? ' \`' + util.Date.custom(parseInt(t.until)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
+        fields.push({name: msg.author.locale('tourneys.next',{events : tourneys_next.length}), value : tourneys_next.map(t => `**${t._id}**${t.until ? ' \`' + util.Date.custom(parseInt(t.until)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
       }
-      fields.push({name : args.user.langstring('tourneys.suggestion'), value : client.config.links.web_addtourney, inline : false})
+      fields.push({name : msg.author.locale('tourneys.suggestion'), value : client.config.links.web_addtourney, inline : false})
       // const description = tourneys.map(tourney => `\`${util.Date.custom(parseInt(feed._id)*1000,'h:m D/M',true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + util.md.link(feed.link,':link:') : ''}`).join('\n')
       msg.reply({
         embed : {
-          title : args.user.langstring('tourneys.title'),
+          title : msg.author.locale('tourneys.title'),
           // description : description,
           fields : fields,
           // thumbnail : {
@@ -45,10 +45,10 @@ module.exports = new Command('tourneys',{
       const tourney = client.cache.tourneys.find(t => t._id.toLowerCase() === search.toLowerCase())
       if (!tourney) { return msg.reply('tourneys.error.search',{search})}
       let fields = []
-      if (tourney.start) { fields.push({ name: args.user.langstring('tourneys.begin'), value : util.Date.custom(parseInt(tourney.start)*1000,'D/M',true), inline : true})}
-      if (tourney.finish) { fields.push({ name: args.user.langstring('tourneys.finish'), value : util.Date.custom(parseInt(tourney.finish)*1000,'D/M',true), inline : true})}
-      if (tourney.until) { fields.push({ name: args.user.langstring('tourneys.until'), value : util.Date.custom(parseInt(tourney.until)*1000,'D/M',true), inline : true})}
-      if (tourney.link) { fields.push({ name: args.user.langstring('global.link'), value : tourney.link, inline : true})}
+      if (tourney.start) { fields.push({ name: msg.author.locale('tourneys.begin'), value : util.Date.custom(parseInt(tourney.start)*1000,'D/M',true), inline : true})}
+      if (tourney.finish) { fields.push({ name: msg.author.locale('tourneys.finish'), value : util.Date.custom(parseInt(tourney.finish)*1000,'D/M',true), inline : true})}
+      if (tourney.until) { fields.push({ name: msg.author.locale('tourneys.until'), value : util.Date.custom(parseInt(tourney.until)*1000,'D/M',true), inline : true})}
+      if (tourney.link) { fields.push({ name: msg.author.locale('global.link'), value : tourney.link, inline : true})}
       return msg.reply({embed : {
         title : `${tourney._id}${tourney.by ? ' (' + tourney.by +')' : ''}`,
         description : tourney.info || '',

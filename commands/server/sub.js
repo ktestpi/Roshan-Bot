@@ -5,7 +5,7 @@ const FirebaseArraySet = require('../../classes/firebasearrayset')
 module.exports = new Command(['subscribe','sub'],{subcommandFrom : 'server',
   category : 'Server', help : 'Subscripción de feeds', args : '<feeds separados por un espacio>',
   rolesCanUse: 'aegis'},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     const content = args.from(2)
     if(!content){return}
     const subs = content.split(' ')

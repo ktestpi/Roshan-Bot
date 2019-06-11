@@ -16,7 +16,7 @@ const embedKeywords = new EmbedBuilder({
 
 module.exports = new Command('akey',{
   category : 'Artifact', help : 'Información sobre las palabras clave del juego', args : '[palabra clave]'},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     const query = args.from(1).toLowerCase()
     const keyword = client.components.Artifact.keywords.find(k => [k.name.toLowerCase(),...k.alias.map(a => a.toLowerCase())].includes(query))
     if (keyword){

@@ -17,7 +17,7 @@ const embedSet = new EmbedBuilder({
 
 module.exports = new Command('sets',{
   category : 'Artifact', help : 'Información sobre los sets', args : '[nombre del set]'},
-  async function(msg, args, client){
+  async function (msg, args, client, command){
     if(args[1]){
       const query = args.from(1).toLowerCase()
       const set = client.components.Artifact.getSet(query)
@@ -39,10 +39,10 @@ module.exports = new Command('sets',{
   })
 
 
-function func(msg, bot){
+function func(msg, client){
   return msg.reply(embedSets,{
-    _sets: bot.components.Artifact.sets.map(s => `**${s.name.english}** - ${s.totalCards} cards`).join('\n'),
-    _cards: bot.components.Artifact.sets.reduce((s, v) => s + v.totalCards, 0)
+    _sets: client.components.Artifact.sets.map(s => `**${s.name.english}** - ${s.totalCards} cards`).join('\n'),
+    _cards: client.components.Artifact.sets.reduce((s, v) => s + v.totalCards, 0)
   })
 }
 

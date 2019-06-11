@@ -6,7 +6,7 @@ module.exports = new Command('setpatch',{
   async function(msg, args, client){
     const patch = args.from(1)
     return client.db.child('bot').update({patch : patch}).then(() => {
-      //TODO: Caché patch
+      client.cache.dota2Patch = patch
       return msg.addReaction(client.config.emojis.default.accept)
     })
   })
