@@ -12,7 +12,7 @@ const steamprice = require('steam-price-api')
 class Artifact extends Component {
     constructor(client, options) {
         super(client)
-        this.enable = true
+        this.enable = false
         this.cards = []
         this.sets = []
         this.cardsURL = 'https://raw.githubusercontent.com/ottah/ArtifactDB/master/cards-manifest.json'

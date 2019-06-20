@@ -96,8 +96,9 @@
   },
   "images" : {
     "reddit" : "https://icon-icons.com/icons2/1195/PNG/512/1490889653-reddit_82537.png",
-    "redditdota2" : "https://b.thumbs.redditmedia.com/F82n9T2HtoYxNmxbe1CL0RKxBdeUEw-HVyd-F-Lb91o.png",
-    "redditartifact" : "https://b.thumbs.redditmedia.com/Y6ghcGFvvQjNAufIfckzmWEqwmhIsD7fqTC0sVvTMcc.png",
+    "reddit_dota2" : "https://b.thumbs.redditmedia.com/F82n9T2HtoYxNmxbe1CL0RKxBdeUEw-HVyd-F-Lb91o.png",
+    "reddit_artifact" : "https://b.thumbs.redditmedia.com/Y6ghcGFvvQjNAufIfckzmWEqwmhIsD7fqTC0sVvTMcc.png",
+    "reddit_underlords" : "https://styles.redditmedia.com/t5_117kpk/styles/communityIcon_87bnogkb67431.png",
     "dota2" : "https://seeklogo.com/images/D/dota-2-logo-A8CAC9B4C9-seeklogo.com.png",
     "mmrmaik" : "https://cdn.discordapp.com/attachments/327621996089180162/331619601639014400/mmr.png"
   }

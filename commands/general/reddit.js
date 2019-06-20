@@ -3,7 +3,7 @@ const { UserError, ConsoleError } = require('../../classes/errors.js')
 const EmbedBuilder = require('../../classes/embed-builder.js')
 
 const embedPosts = new EmbedBuilder({
-  author: { name: 'reddit - <_category>', icon_url: '<_reddit_icon_artifact>' },
+  author: { name: 'reddit - <_category>', icon_url: '<image_reddit>' },
   description: '<_message>'
 })
 
@@ -16,13 +16,12 @@ const embedPost = new EmbedBuilder({
 module.exports = new Command('reddit',{
   category : 'General', help : 'Información sobre reddit', args : '<idpost,top,hot,new>'},
   async function (msg, args, client, command){
-    if (!args[1]) { args[1] = 'top'}
-    if(['top','hot','new'].indexOf(args[1].toLowerCase()) > -1){
+    const query = args[1] || 'top'
+    if(['top','hot','new'].indexOf(query.toLowerCase()) > -1){
       msg.channel.sendTyping();
-      return client.components.RedditApi.posts(args[1],5,'reddit').then(result => {
+      return client.components.RedditApi.posts(query,5,'reddit').then(result => {
         return msg.reply(embedPosts, {
-          _category: args[1],
-          _reddit_icon_artifact: client.config.images.reddit,
+          _category: query,
           _message: result
         })
       }).catch(err => {
@@ -30,7 +29,7 @@ module.exports = new Command('reddit',{
       })
     }else{
       msg.channel.sendTyping();
-      return client.components.RedditApi.post(args[1]).then(result => {
+      return client.components.RedditApi.post(query).then(result => {
         return msg.reply(embedPost,{
           _post_title: result.title.slice(0, 255),
           _post_url: result.link,

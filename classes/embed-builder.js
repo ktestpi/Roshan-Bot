@@ -10,8 +10,8 @@ module.exports = class EmbedBuilder {
             if (this.schema.author.name) {
                 embed.author.name = replacer(this.schema.author.name)
             }
-            if (this.schema.author.ur) {
-                embed.author.ur = replacer(this.schema.author.ur)
+            if (this.schema.author.icon_url) {
+                embed.author.icon_url = replacer(this.schema.author.icon_url)
             }
         }
         if (this.schema.title) {
@@ -56,7 +56,7 @@ module.exports = class EmbedBuilder {
     }
     if(condition, schema){
         if(condition){
-            this.schema = Object.assign(this.schema,schema)
+            this.schema = Object.assign(this.schema, schema)
         }
         return this
     }

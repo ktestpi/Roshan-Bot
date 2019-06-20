@@ -114,5 +114,5 @@ module.exports.CommandError = CommandError
 module.exports.ComponentError = ComponentError
 
 function toCode(string) {
-    return `\`\`\`${string}\`\`\``
+    return `\`\`\`${string.slice(0,1000)}\`\`\``
 }

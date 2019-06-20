@@ -1,11 +1,6 @@
 const { Component } = require('aghanim')
-const CustomComponent = require('../classes/custom-component.js')
 const { Request, Markdown } = require('erisjs-utils')
 const { UserError, ConsoleError } = require('../classes/errors.js')
-// const enumHeroes = require('../../enums/heroes')
-
-// const items = require('dotaconstants').items
-// items = Object.keys(heroes).map(key => items[key])
 
 module.exports = class Opendota extends Component {
     constructor(client, options) {
@@ -13,7 +8,6 @@ module.exports = class Opendota extends Component {
         this.baseURL = baseURL
         this._calls = 0
         this.db = this.client.db.child('botstats')
-        // this.heroes = heroes
         Object.keys(urls).forEach(key => {
             this[key] = decorator(this.request.bind(this), urls[key].map(url => this.baseURL + url))
         })
@@ -25,6 +19,36 @@ module.exports = class Opendota extends Component {
             }
         })
     }
+    // FIXME: Maybe use new Poxy to intercept fetches before done (cache system?) for url profile? within time interval
+    // function fn(param) {
+    //     return new Promise((res, rej) => {
+    //         setTimeout(() => res(param + 'response'), 1000)
+    //     })
+    // }
+
+    // function createProxy(time) {
+    //     let cache = {}
+    //     return new Proxy(fn, {
+    //         apply(target, thisArg, args) {
+    //             const req = args[0]
+    //             console.log(cache[req], Date.now())
+    //             if (cache[req] && cache[req].time) {
+    //                 console.log(cache[req].time > Date.now() - time * 1000)
+    //             }
+    //             if (cache[req] && cache[req].time > Date.now() - time * 1000) {
+    //                 return Promise.resolve('Response cached: ' + cache[req].response)
+    //             } else {
+    //                 return target.apply(thisArg, args).then(response => {
+    //                     cache[req] = { response, time: Date.now() }
+    //                     return response
+    //                 })
+    //             }
+    //         }
+    //     })
+    // }
+    // const proxy = createProxy(1)
+    // proxy(1).then((res) => { console.log(res); proxy(1).then(console.log) })
+    // proxy(1).then(console.log)
     request(urls, id) {
         return Request.getJSONMulti(urls.map(url => replace(url, '<id>', id)))
             .then(results => {

@@ -14,11 +14,16 @@ module.exports = class Locale extends Component {
         this.defaultLanguage = 'en'
         const self = this
         const wb = xlsx.readFile(path.join(__dirname,'../locale/locale.xlsx'))
-        xlsx.utils.sheet_to_json(wb.Sheets.locale).forEach(row => {
-            const langs = Object.keys(row).filter(key => key)
-            langs.forEach(lang => {
-                if (!this.lang[lang]) { this.lang[lang] = {}; this.languages.push(lang) }
-                this.lang[lang][row['langkey']] = row[lang]
+        xlsx.utils.sheet_to_json(wb.Sheets.locale).forEach((row, index)=> {
+            if(index === 0){
+                const langs = Object.keys(row).filter(key => key !== 'langkey')
+                langs.forEach(lang => {
+                    this.lang[lang] = {}
+                    this.languages.push(lang)
+                })
+            }
+            this.languages.forEach(lang => {
+                this.lang[lang][row['langkey']] = row[lang] || ''
             })
         })
         Eris.Message.prototype.reply = function(content, replacements = {}, file, user_discord_id){
@@ -83,6 +88,11 @@ module.exports = class Locale extends Component {
             link_devserver: this.client.config.server,
             link_web_playercard_bg_gallery: this.client.config.links.web_playercard_bg_gallery,
             link_web_features: this.client.config.links.web_features,
+            image_reddit: this.client.config.images.reddit,
+            image_reddit_dota2: this.client.config.images.reddit_dota2,
+            image_reddit_artifact: this.client.config.images.reddit_artifact,
+            image_reddit_dotaunderlords: this.client.config.images.reddit,
+            image_reddit_dota_underlords: this.client.config.images.reddit_underlords,
         })
         this.client.components.Notifier.console('Locale', 'Ready')
     }
@@ -121,7 +131,7 @@ module.exports = class Locale extends Component {
         return string
     }
     getString(key, language){
-        return (this.lang[language] && this.lang[language][key]) || key
+        return this.lang[language] && this.lang[language][key] !== undefined ? this.lang[language][key] : key
     }
     flags(){
         return [{ flag: '🇺🇸', lang: 'en' },{ flag: '🇪🇸', lang: 'es' }]

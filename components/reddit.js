@@ -27,13 +27,15 @@ module.exports = class RedditApi extends Component {
 
 const REDDIT_DOTA2_URL = 'https://www.reddit.com/r/Dota2/'
 const REDDIT_ARTIFACT_URL = 'https://www.reddit.com/r/Artifact/'
+const REDDIT_DOTA_UNDERLORDS_URL = 'https://www.reddit.com/r/underlords/'
 const REDDIT_BASE_URL = 'https://www.reddit.com/'
 const REDDIT_URL = 'https://www.reddit.com'
 const BY_ID_URL = 'https://www.reddit.com/by_id/'
 const subreddits = {
   dota2: REDDIT_DOTA2_URL,
   artifact: REDDIT_ARTIFACT_URL,
-  reddit: REDDIT_BASE_URL
+  reddit: REDDIT_BASE_URL,
+  underlords: REDDIT_DOTA_UNDERLORDS_URL
 }
 
 function toJSONURL(url){return url+'.json'};
