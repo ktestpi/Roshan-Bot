@@ -5,8 +5,6 @@ const { sortTourneys } = require('../../helpers/sort')
 module.exports = new Command('tourneys',{
   category : 'General', help : 'Últimos torneos o muestra info sobre torneo', args : '[nombre torneo]'},
   async function(msg, args, client, command){
-    // const tourneys = this.cache.tourneys.order().slice(0,8)
-    // const description = tourneys.map(tourney => tourney._id).join('\n')
     if(!args[1]){
       let tourneys_playing = client.cache.tourneys.getPlaying()
       let tourneys_next = client.cache.tourneys.getNext()
@@ -21,21 +19,10 @@ module.exports = new Command('tourneys',{
         fields.push({name: msg.author.locale('tourneys.next',{events : tourneys_next.length}), value : tourneys_next.map(t => `**${t._id}**${t.until ? ' \`' + util.Date.custom(parseInt(t.until)*1000,'D/M',true) + '\`' : ''}`).join(', '), inline : false})
       }
       fields.push({name : msg.author.locale('tourneys.suggestion'), value : client.config.links.web_addtourney, inline : false})
-      // const description = tourneys.map(tourney => `\`${util.Date.custom(parseInt(feed._id)*1000,'h:m D/M',true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + util.md.link(feed.link,':link:') : ''}`).join('\n')
       msg.reply({
         embed : {
           title : msg.author.locale('tourneys.title'),
-          // description : description,
           fields : fields,
-          // thumbnail : {
-          //   url : links[query].thumbnail  || config.bot.icon,
-          //   height : 40,
-          //   width : 40
-          // },
-          // footer : {
-          //   text : links[query].footer.text,
-          //   icon_url : links[query].footer.icon || client.user.avatarURL
-          // },
           color : client.config.color
         }
       })

@@ -20,13 +20,22 @@ module.exports = class DuelGame extends Component{
         this.client.components.Locale.lang['es']['cmd_duel_help'] = 'Crea un duelo'
         this.client.addCommandDir(path.join(__dirname, './commands') )
         this.locale = {}
+        this.client.on('duel:awaitmanager:messageCreate', (err, msg, client, message) => {
+            console.log('Error: messageCreate', message.id, err)
+        })
+        this.client.on('duel:awaitmanager:messageReactionAdd', (err, msg, emoji, userID, client, message) => {
+            console.log('Error: messageReactionAdd', message.id, err)
+        })
+        this.client.on('duel:awaitmanager:messageReactionRemove', (err, msg, emoji, userID, client, message) => {
+            console.log('Error: messageReactionRemove', message.id, err)
+        })
     }
     ready(){
         Object.keys(gameconfig.emojis).forEach(emojiKey => this.addLocale('emoji_' + emojiKey, gameconfig.emojis[emojiKey]))
         this.addLocale('emoji_gold', this.client.config.emojis.bot.gold)
         this.addLocale('emoji_mana', this.client.config.emojis.bot.mana)
-        return;
-        this.testBoard()
+        // return;
+        // this.testBoard()
     }
     testBoard(){
         const user1 = this.client.users.get('189996884322942976')
@@ -89,8 +98,8 @@ module.exports = class DuelGame extends Component{
         const ctx = this.replaceContent(content, extra)
         return channel.createMessage(ctx, file)
     }
-    messageCreate(msg, args, client){
-        this.awaitManager.messageCreate(msg, args, client)
+    messageCreate(msg, client){
+        this.awaitManager.messageCreate(msg, client)
     }
     messageReactionAdd(msg, emoji, userID, client) {
         this.awaitManager.messageReactionAdd(msg, emoji, userID, client)

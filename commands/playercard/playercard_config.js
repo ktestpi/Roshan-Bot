@@ -6,6 +6,7 @@ const EmbedBuilder = require('../../classes/embed-builder.js')
 
 const embed = new EmbedBuilder({
   title: 'playercard.title',
+  description: '<social_links>',
   fields: [
     { name: 'playercard.highlightsheroes', value: '<_heroes>', inline: false},
     { name: 'game.position', value: '<_position>', inline: false},

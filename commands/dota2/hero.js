@@ -16,9 +16,10 @@ const embed = new EmbedBuilder({
 module.exports = new Command('hero', {
     category: 'Dota 2', help: 'Muestra información de dota', args: ''},
     async function (msg, args, client, command) {
-        const hero = enumHeroes.getValueByAlias(args[1])
+        const hero = enumHeroes.getValueByAlias(args.from(1))
         if(!hero){ return }
-        return msg.reply(embed.build(client, msg.author.account.lang,{
+        console.log(hero)
+        return msg.reply(embed,{
             _hero_basehealth: hero.base_health + Math.round((hero.primary_attr === "str" ? 22.5 : 17) * hero.base_str),
             _base_mana: hero.base_mana + ((hero.primary_attr === "int" ? 15 : 12) * hero.base_int),
             _base_armor: hero.base_armor + Math.round((hero.primary_attr === "agi" ? 0.2 : 0.16) * hero.base_agi),
@@ -37,8 +38,9 @@ module.exports = new Command('hero', {
             _roles: hero.roles.join(', '),
             _abilities: hero.abilities.join(', '),
             _hero_image: `${enumHeroes.dotaCdnURL}${hero.img}`,
+            _hero_icon: `${enumHeroes.dotaCdnURL}${hero.icon}`,
             _hero_name: hero.localized_name,
             _hero_basemana: hero.base_mana + ((hero.primary_attr === "int" ? 15 : 12) * hero.base_int),
             _hero_basearmor: hero.base_armor + Math.round((hero.primary_attr === "agi" ? 0.2 : 0.16) * hero.base_agi)
-        }))
+        })
     })

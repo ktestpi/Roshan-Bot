@@ -12,10 +12,5 @@ module.exports = new Command('register',{
       return msg.author.registered ?
         msg.reply('register.alreadyregistered') :
         client.components.Account.createProcess(msg.author.id, dotaID, msg)
-      // return client.components.Account.get(msg.author.id)
-      //   .then(account => {
-      //     if (account) { return msg.reply('register.alreadyregistered') }
-      //     return client.components.Account.createProcess(msg.author.id, dotaID, msg)
-      //   })
     }
 })

@@ -29,8 +29,8 @@ class HandBoard{
             this[type].push(card())
         }
     }
-    render(){
-        return { name: 'Shared Hand', value: `${this.playerActions.filter(el => el).map(playerAction => playerAction.action.render(playerAction.button)).join('\n')}`, inline: false}
+    render(skill){
+        return { name: 'Shared Hand - Actions', value: `${this.playerActions.filter(el => el).map(playerAction => playerAction.action.render(playerAction.button)).join('\n')}\n${skill}`, inline: false}
     }
     get playerActions(){
         const actions = this.actions.map((action, index) => ({button: gameconfig.board.buttons[index+1], action }))
@@ -44,10 +44,16 @@ class HandBoard{
         return [...actions, ...items]
     }
     reset(){
+        this.forceDraw('item','cuirass')
         // this.generate('action')
-        // this.generate('action')
-        this.generate('action')
-        this.generate('item')
+        // this.generate('item')
+    }
+    forceDraw(type, card){
+        if(type === 'action'){
+            this[type + 's'].push(loadAction(card)())
+        } else if (type === 'item'){
+            this[type + 's'].push(loadItem(card)())
+        }
     }
 }
 
@@ -72,6 +78,13 @@ function loadCards(dirname){
     const pattern = `${dirname}/*.js`
     const filenames = glob.sync(pattern)
     return filenames.map(filename => require(filename))
+}
+
+function loadAction(action) {
+    return require(path.join(__dirname, '../cards/actions')+ '/' + action + '.js')
+}
+function loadItem(item) {
+    return require(path.join(__dirname, '../cards/items') + '/' + item + '.js')
 }
 
 HandBoard.pool = {

@@ -25,9 +25,9 @@ module.exports.AwaitMessage = class AwaitMessage {
     destroyTimer(){
         if(this.timer){ clearTimeout(this.timer) }
     }
-    messageCreate(msg, args, client) {
+    messageCreate(msg, client) {
         if (this.message && isEqual(msg.channel.id, this.message.id)){
-            this.onMessageCreate(msg, args, client)
+            this.onMessageCreate(msg, client)
         }
     }
     messageReactionAdd(msg, emoji, userID, client) {
@@ -64,13 +64,31 @@ module.exports.AwaitMessageManager = class AwaitMessageManager{
     unregister(awaitMessage){
         this.awaitMessages = this.awaitMessages.filter(message => message !== awaitMessage)
     }
-    messageCreate(msg, args, client){
-        this.awaitMessages.forEach(message => message.messageCreate(msg, args, client))
+    messageCreate(msg, client){
+        this.awaitMessages.forEach(async message => {
+            try{
+                await message.messageCreate(msg, client)
+            }catch(err){
+                this.client.emit('duel:awaitmanager:messageCreate', err, msg, client, message)
+            }
+        })
     }
     messageReactionAdd(msg, emoji, userID, client) {
-        this.awaitMessages.forEach(message => message.messageReactionAdd(msg, emoji, userID, client))
+        this.awaitMessages.forEach(async message => {
+            try {
+                await message.messageReactionAdd(msg, emoji, userID, client)
+            } catch (err) {
+                this.client.emit('duel:awaitmanager:messageReactionAdd', err, msg, emoji, userID, client, message)
+            }
+        })
     }
     messageReactionRemove(msg, emoji, userID, client) {
-        this.awaitMessages.forEach(message => message.messageCreate(msg, emoji, userID, client))
+        this.awaitMessages.forEach(async message => {
+            try {
+                await message.messageReactionRemove(msg, emoji, userID, client)
+            } catch (err) {
+                this.client.emit('duel:awaitmanager:messageReactionRemove', err, msg, emoji, userID, client, message)
+            }
+        })
     }
 }

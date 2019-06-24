@@ -16,11 +16,17 @@ Object.keys(items).forEach(k => {
 const enumItems = new SimpleEnums(Items)
 
 enumItems.getValueByName = function(tag){
+    const results = []
     for (const [key, val] of this) {
         if(typeof val.dname !== 'string' || val.dname.toLowerCase().includes('recipe')){continue}
-        if (val.dname.toLowerCase().includes(tag.toLowerCase())) { return val }
+        if (val.dname.toLowerCase().includes(tag.toLowerCase())) { results.push(val) }
     }
-    return undefined
+    if (results.length){
+        const exact = results.find(result => result.dname.toLowerCase() === tag.toLowerCase())
+        return exact ? exact : results[0]
+    }else{
+        return undefined
+    }
 }
 enumItems.apiURL = 'https://api.opendota.com'
 enumItems.dotaCdnURL = 'http://cdn.dota2.com'

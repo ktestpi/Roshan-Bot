@@ -44,13 +44,13 @@ module.exports = class Locale extends Component {
             const account_dota = replacements.account_dota || user.account.dota
             const account_steam = replacements.account_steam || user.account.steam
             replacements = Object.assign(replacements, { user_name, user_id, user_avatar, user_lang, account_dota, account_steam })
-            return self.replaceFromMsg(content, replacements, msg)
+            return self.replaceContent(content, replacements, msg.author.account.lang)
         }
         Eris.User.prototype.locale = function (content, replacements) {
-            return self.replacer(content, replacements, this.account.lang)
+            return self.replaceContent(content, replacements, this.account.lang)
         }
         Eris.Guild.prototype.locale = function (content, replacements) {
-            return self.replacer(content, replacements, this.account.lang)
+            return self.replaceContent(content, replacements, this.account.lang)
         }
     }
     ready() {
@@ -99,15 +99,19 @@ module.exports = class Locale extends Component {
     addConstants(constants){
         this.constants = Object.assign(this.constants, constants)
     }
-    replaceFromMsg( content, replacements, msg){
-        if (typeof content === 'string') {
-            return this.replacer(content, replacements, msg.author.account.lang)
-        } else if (content instanceof EmbedBuilder) {
-            return content.build(msg._client, msg.author.account.lang, replacements)
-        }
-        return content
+    addLocale(lang, string){
+        this.lang[lang] = string
     }
-    replacer(string, replacements, lang){
+    replaceFromMsg( content, replacements, msg){ // FIXME: Deprecated
+        // if (typeof content === 'string') {
+        //     return this.replacer(content, replacements, msg.author.account.lang)
+        // } else if (content instanceof EmbedBuilder) {
+        //     return content.build(msg._client, msg.author.account.lang, replacements)
+        // }
+        // return content
+        return this.replaceContent(content, replacements, msg.author.account.lang)
+    }
+    replacer(string, replacements, lang){ // FIXME: Deprecated
         lang = (this.lang[lang] && lang) || this.defaultLanguage
         string = this.getString(string, lang)
         const reg = /%%([\w\._^%+]+)%%/g
@@ -138,6 +142,54 @@ module.exports = class Locale extends Component {
     }
     getFlag(lang){
         return this.flags().find(f => f.lang === lang).flag
+    }
+    exeReg(string, re){
+        const found = []
+        let find
+        while (find = re.exec(string)) {
+            found.push(find[1])
+        }
+        return found
+    }
+    findAndReplace(string, extra = {}, lang) {
+        lang = lang ||this.defaultLanguage
+        string = this.getString(string, lang)
+        
+        // Inject string
+        const injected = this.exeReg(string, /%%([\w\._^%+]+)%%/g)
+        injected.forEach(injectKey => {
+            const inject = this.getString(injectKey, lang)
+            if (inject) {
+                string = string.replace(new RegExp(`%%${injectKey}%%`, 'g'), inject)
+            }
+        })
+        const found = this.exeReg(string, /<([^>]+)>/g)
+        found.forEach(f => {
+            // if (this.lang[lang][f]) {
+            //     string = string.replace('<' + f + '>', this.lang[lang][f])
+            // } else
+            if (this.constants[f]) {
+                string = string.replace('<' + f + '>', this.constants[f])
+            }else if (extra[f]) {
+                string = string.replace('<' + f + '>', extra[f])
+            }
+        })
+        return string
+    }
+    // board.locale = (str, extra) => client.components.DuelGame.findAndReplace(str, extra)
+    replaceContent(content, extra, lang) {
+        if (typeof content === 'string') {
+            return this.findAndReplace(content, extra, lang)
+        } else {
+            Object.keys(content).forEach(key => {
+                if (typeof content[key] === 'string') {
+                    content[key] = this.findAndReplace(content[key], extra, lang)
+                } else if (typeof content[key] === 'object') {
+                    content[key] = this.replaceContent(content[key], extra, lang)
+                }
+            })
+        }
+        return content
     }
 }
 

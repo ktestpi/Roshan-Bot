@@ -1,10 +1,10 @@
 const { ActionCard } = require('../../core/card')
 
-const damage = 2
+const damage = 4
 module.exports = () => ActionCard({
-    name: 'Splash',
+    name: 'Splash Super',
     description: `Do **${damage}** damage to all enemy units`,
-    mana: 2,
+    mana: 4,
     run(sourcePlayer, targetPlayer, board) {
         targetPlayer.units.forEach(unit => unit.damaged(damage))
     }

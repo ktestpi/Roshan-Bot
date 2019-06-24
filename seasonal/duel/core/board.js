@@ -1,52 +1,35 @@
 const DashboardMessage = require('../classes/dashboard.message.js')
-const Player = require('./player')
-const HistoryAction = require('./history.action')
-const BoardStack = require('./stack')
-const HandBoard = require('./hand')
+const DuelPlayer = require('./player.js')
+const HistoryAction = require('./history.action.js')
+const HandBoard = require('./hand.js')
 const gameconfig = require('../duel.config.js')
-const Card = require('../cards/card.js')
+const Card = require('./card.js')
+const { delay, jsFilesOnDirectory } = require('../duel.util.js')
+const path = require('path')
 
+const commands = jsFilesOnDirectory(path.join(__dirname,'../board-commands'))
+/** @class */
 module.exports = class Board extends DashboardMessage{
+    /**
+     * 
+     * @param {*} config 
+     * @prop {number} id
+     */
     constructor(config){
         super(config)
         this.id = this.channel.id
-        this.registerCommand(new DashboardMessage.DashboardCommand('concede', 'Concede the game',
-            (msg, args, client, that) => {
-                const player = this.players.find(player => player.id === msg.author.id)
-                if(player){
-                    this.close(player.enemy)
-                }
+        this.ready = false
+        this.renderRequests = []
+        commands.forEach(command => this.registerCommand(require(command)))
 
-            }))
-        this.registerCommand(new DashboardMessage.DashboardCommand('help', 'Help command',
-            (msg, args, client, that) => {
-                return msg.reply({ embed : {
-                    title : 'Duel Help',
-                    description: 'Objective:',
-                    fields: [
-                        {name: 'Win', value: "Reduce opponent's hero hp to 0", inline: false},
-                        {name: 'How to', value: 'Battle 2 players with shared cards. Use reactions as buttons to active actions', inline: false}
-                    ]
-                }
-                }).then(m => setTimeout(m.delete, gameconfig.board.timeDeleteMessage))
-            }))
-
-        this.registerCommand(new DashboardMessage.DashboardCommand('log', 'Help command',
-            (msg, args, client, that) => {
-                console.log(this.players)
-            }))
-
-        this.registerCommand(new DashboardMessage.DashboardCommand('pm', 'Help command',
-            (msg, args, client, that) => {
-                console.log(this.players.map(player => player.modifiers))
-            }))
-        this.registerCommand(new DashboardMessage.DashboardCommand('hand', 'Help command',
-            (msg, args, client, that) => {
-                console.log('HAND',this.hand.actions, this.hand.items)
-            }))
         // this.buttonss = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
         // this.buttons = ['✅', '1⃣', '2⃣', '3⃣', '4⃣', '🅰', '🅱'] // '🇦', '🇧', '🇸'
     }
+    /**
+     * 
+     * @param {*} player1 
+     * @param {*} player2 
+     */
     init(player1, player2){
         return super.init().then(() => {
             return this.addActionButton({ button: gameconfig.emojis.refresh , add : () => {
@@ -63,8 +46,8 @@ module.exports = class Board extends DashboardMessage{
             this.stack = []
             this.history = []
             this.players = []
-            this.player1 = new Player(player1)
-            this.player2 = new Player(player2)
+            this.player1 = new DuelPlayer(player1)
+            this.player2 = new DuelPlayer(player2)
             this.registerPlayer(this.player1)
             this.registerPlayer(this.player2)
             this.currentPlayerIndex = 0
@@ -74,12 +57,14 @@ module.exports = class Board extends DashboardMessage{
             this.addEffect({
                 event: 'game_players_die?',
                 run: (board) => {
-                    const losers = board.players.filter(player => player.hp < 0)
+                    const losers = board.players.filter(player => player.hp <= 0)
                     if (losers.length === 1) {
                         const winner = losers[0].enemy
-                        return winner.createNotification('**wins!!**').then(() => board.close(winner))
+                        winner.createNotification('**wins!!**')//.then(() => board.close(winner))
+                        board.close(winner)
                     } else if (losers.length === 2) {
-                        return board.createNotification(`**${board.player1.name} and ${board.player2.name} draws**`).then(() => this.close())
+                        board.createNotification(`**${board.player1.name} and ${board.player2.name} draws**`)//.then(() => this.close())
+                        board.close()
                     }
                 }
             })
@@ -87,7 +72,7 @@ module.exports = class Board extends DashboardMessage{
                 event: 'game_units_die?',
                 run: (board) => {
                     board.players.forEach(player => {
-                        player.units.filter((unit, index) => index > 0).forEach(unit => {
+                        player.units.forEach(unit => {
                             if(unit.hp <= 0){
                                 player.removeUnit(unit)
                                 player.board.emit('player_unit_dies', unit)
@@ -99,8 +84,8 @@ module.exports = class Board extends DashboardMessage{
             this.addEffect({
                 event: 'player_unit_dies',
                 run: (unit) => {
-                    unit.owner.enemy.incrementGold(unit.bounty)
-                    unit.owner.createNotification(`gets +${unit.bounty} <emoji_gold> for kill ${unit.name}`)
+                    unit.owner.enemy.addGold(unit.bounty)
+                    unit.owner.enemy.createNotification(`gets **+${unit.bounty}** <emoji_gold> for kill ${unit.name}`)
                 }
             })
             this.addEffect({
@@ -111,19 +96,7 @@ module.exports = class Board extends DashboardMessage{
                     board.players.forEach(player => {
                         player.passiveGold()
                         player._mana = 0
-                        player.modifiers.filter(modifier => modifier.event && modifier.event === 'game_round_starts')
-                            .forEach(modifier => {
-                                if (modifier.run) {
-                                    modifier.run(modifier.ctx)
-                                }
-                                if (typeof modifier.expiration === 'number') {
-                                    modifier.expiration--
-                                    if (modifier.expiration <= 0) {
-                                        player.removeModifier(modifier)
-                                    }
-                                }
-                            })
-
+                        player.onEvent('game_round_starts')
                     })
                     board.currentPlayerIndex = board.initiativePlayer.playerIndex
                 }
@@ -132,19 +105,7 @@ module.exports = class Board extends DashboardMessage{
                 event: 'game_round_ends',
                 run: (board) => {
                     board.players.forEach(player => {
-                        player.modifiers.filter(modifier => modifier.event && modifier.event === 'game_round_ends')
-                            .forEach(modifier => {
-                                if (modifier.run) {
-                                    modifier.run(modifier.ctx)
-                                }
-                                if (typeof modifier.expiration === 'number') {
-                                    modifier.expiration--
-                                    if (modifier.expiration <= 0) {
-                                        player.removeModifier(modifier)
-                                    }
-                                }
-                            })
-
+                        player.onEvent('game_round_ends')
                     })
                 }
             })
@@ -162,7 +123,7 @@ module.exports = class Board extends DashboardMessage{
             this.addEffect({
                 event: 'player_card_plays',
                 run: (card, player) => {
-                    player.createNotification(`played ${card.name} - ${card.description}`)
+                    player.createNotification(`played **${card.name}** - ${card.description}`)
                     // return player.board.render()
                 }
             })
@@ -202,31 +163,22 @@ module.exports = class Board extends DashboardMessage{
                         board.emit('game_round_starts', board)
                         board.emit('game_players_die?', board)
                         board.emit('game_units_die?', board)
-                        this.addHistoryAction({type: 'game_round_starts' , description: `Round ${this.round} starts`})
+                        this.addHistoryAction({type: 'game_round_starts' , description: `-- Round ${this.round} starts --`})
                         // Check if player hp < 0
 
                     }
                     board.emit('game_turn_starts', board)
-                    // return board.currentPlayer.createNotification('ends turn').then(() => {
-                    //     board.currentPlayerIndex = board.currentPlayerIndex === 0 ? 1 : 0
-                    //     // Pass the round
-                    //     if (board.turn > 0 && board.turn % 2 === 0) {
-                    //         // this.emit('before_combat')
-                    //         // Attack each player
-
-                    //         board.players.forEach(player => player.attack(player.enemy))
-                    //         board.emit('game_players_die?', board)
-                    //         board.emit('game_round_starts', board)
-                    //         // Check if player hp < 0
-
-                    //     }
-                    //     board.emit('game_turn_start', board)
-                    // })
                 }
             })
+            this.ready = true
             this.addHistoryAction({ type: 'start_game', description: 'Start game', source: this })
+            this.players.forEach(player => player.start())
         })
     }
+    /**
+     * 
+     * @param {DuelPlayer} player
+     */
     registerPlayer(player){
         player.board = this
         player.playerIndex = this.indexPlayer
@@ -260,6 +212,8 @@ module.exports = class Board extends DashboardMessage{
     }
     
     close(winner){
+        this.closed = true
+        this.unregister()
         const content = this.replaceContent({
             embed: {
                 title: this.player1.name + ' vs ' + this.player2.name,
@@ -275,20 +229,26 @@ module.exports = class Board extends DashboardMessage{
                 }
             }
         })
-        return this.message.edit(content).then( () => this.unregister() )// close the lobby/channel?
+        return this.message.edit(content)
+    }
+    messageCreateAfter(msg, client) {
+        console.log(msg.author, client.user)
+        if(this.ready && msg.channel.id === this.message.channel.id && msg.author.id !== client.user.id){
+            msg.delete()
+        }
     }
     messageReactionAdd(msg, emoji, userID, client) {
         if (this.message && msg.id === this.message.id){
-            if (this.player1 && this.player2 && this.currentPlayer.id === userID){
+            if (this.ready && this.currentPlayer.id === userID){
                 const playerActions = [{ button: gameconfig.board.buttons[0], action: this.currentPlayer.passTurn }, ...this.hand.playerActions, { button: gameconfig.board.buttons[7], action: this.currentPlayer.skill}]
                 let playerAction = playerActions.find(action => action && action.button === emoji.name)
                 playerAction = playerAction && playerAction.action ? playerAction.action : null
-                if (playerAction && playerAction.can(this.currentPlayer, this.opponentPlayer, this)){
-                    playerAction.run(this.currentPlayer, this.opponentPlayer, this)
+                if (playerAction && playerAction.canPlay(this.currentPlayer, this.opponentPlayer, this)){
+                    playerAction.play(this.currentPlayer, this.opponentPlayer, this)
                     this.emit('game_turn_next', this, playerAction)
                 }
             }
-            if (this.player1 && this.player2 && this.players.find(player => player.id === userID)){
+            if (this.ready && this.players.find(player => player.id === userID)){
                 if(emoji.name === gameconfig.emojis.refresh){
                     this.actions.add[gameconfig.emojis.refresh]()
                 }
@@ -298,31 +258,38 @@ module.exports = class Board extends DashboardMessage{
             }
         }
     }
+    // messageReactionRemove(msg, emoji, userID, client) {
+    // }
     addHistoryAction(action){
+        if (this.closed){ return }
         this.history.push(new HistoryAction(action))
         return this.render()
     }
-    pushStack(action){
-        this.stack.push(action)
-    }
     render() {
-        const content = this.replaceContent({
-            embed: {
-                title: 'Duel: ' + this.player1.name + ' vs ' + this.player2.name + ' - ' + this.id,
-                description: '',
-                fields: [
-                    this.player1.render(),
-                    this.player2.render(),
-                    this.hand.render(),
-                    { name: 'History', value: this.history.slice(-5).map(h => h.render()).reverse().join('\n'), inline: false }
-                ],
-                thumbnail: { url: this.currentPlayer.avatar },
-                footer: {
-                    text: `Round: ${this.round} - Turn: ${this.currentPlayer.name} - <emoji_initiative>: ${this.initiativePlayer.name}`
-                },
-                color: this.currentPlayer.color
+        if (this.closed) { return }
+        this.renderRequests.push("")
+        return delay(500).then(() => {
+            this.renderRequests.pop()
+            if(!this.renderRequests.length){
+                const content = this.replaceContent({
+                    embed: {
+                        title: 'Duel: ' + this.player1.name + ' vs ' + this.player2.name + ' - ' + this.id,
+                        description: '',
+                        fields: [
+                            this.player1.render(),
+                            this.player2.render(),
+                            this.hand.render('<emoji_skill> ' + this.currentPlayer.skill.name + ': ' + this.currentPlayer.skill.description + '\n<emoji_initiative> Pass & initiative'),
+                            { name: 'History', value: this.history.slice(-5).map(h => h.render()).reverse().join('\n'), inline: false }
+                        ],
+                        thumbnail: { url: this.currentPlayer.avatar },
+                        footer: {
+                            text: `Round: ${this.round} - Turn: ${this.currentPlayer.name} - <emoji_initiative>: ${this.initiativePlayer.name}`
+                        },
+                        color: this.currentPlayer.color
+                    }
+                })
+                return this.update(content)
             }
         })
-        return this.update(content)
     }
 }

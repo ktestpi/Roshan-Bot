@@ -1,13 +1,12 @@
-const ActionCard = require('../action.card')
-const CreepUnit = require('../../units/types/creep.unit')
+const { ActionCard } = require('../../core/card')
 
-const gold = 2
-module.exports = () => new ActionCard({
+const goldBonus = 3
+
+module.exports = () => ActionCard({
     name: 'Farm',
-    description: `Gets +${gold} <emoji_gold>`,
+    description: `Gets +${goldBonus} <emoji_gold>`,
     mana: 0,
-    gold: 2,
     run(sourcePlayer, targetPlayer, board) {
-        sourcePlayer.incrementGold(this.gold)
+        sourcePlayer.producedGold(goldBonus, this)
     }
 })

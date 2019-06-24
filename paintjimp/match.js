@@ -11,7 +11,7 @@ module.exports = function(data_info){
   var jimps = [loader.matchTemplate('1')]
   const info = data_info.players.map(p => jimps.push(Promise.all([
     loader.hero(p.hero_id),
-    p.personaname || UNKNOWN,
+    p.name || p.personaname || UNKNOWN,
     p.kills,
     p.deaths,
     p.assists,

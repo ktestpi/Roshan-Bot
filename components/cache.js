@@ -43,7 +43,7 @@ module.exports = class Cache extends Component {
         this.client.components.Notifier.console('Cache from DB')
     }
     updateFake(){
-        this.client.cache.profiles = new FirebaseCollection({ "189996884322942976": { lang: 'es', card: { bg: '1', pos: 'all', heroes: '1,2,3' }, dota: '112840925', steam: '76561198073106653' }, "314083101129310208": { lang: 'en', card: { bg: '1', pos: 'all', heroes: '1,2,3' }, dota: '112840925', steam: '76561198073106653' } }, this.client.db.child('profiles'));
+        this.client.cache.profiles = new FirebaseCollection({ "189996884322942976": { lang: 'es', card: { bg: '1', pos: 'carry-es', heroes: '1,2,3' }, dota: '112840925', steam: '76561198073106653' }, "314083101129310208": { lang: 'en', card: { bg: '1', pos: 'all', heroes: '1,2,3' }, dota: '112840925', steam: '76561198073106653' } }, this.client.db.child('profiles'));
         this.client.cache.servers = new FirebaseCollection({
             "327603106257043456": { lang: 'es', notifications: { enable: true, channel: "491295737251102733" }, feeds: { enable: true, channel: "491295737251102733", subs: "1,2,3" } },
             "332023803691532289": { lang: 'es', notifications: { enable: true, channel: "332023803691532289" }, feeds: { enable: true, channel: "332023803691532289", subs: "1,2,3" } }
@@ -79,7 +79,6 @@ module.exports = class Cache extends Component {
             }
         })
         this.client.cache.tourneys.order = function () {
-            const now = util.Date.now()
             return this.bucket.sort(sortTourneys)
         }
         this.client.cache.tourneys.getPlaying = function () {

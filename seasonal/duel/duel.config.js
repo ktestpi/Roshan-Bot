@@ -10,7 +10,7 @@ module.exports = {
         gold: ':gold:' // 💰
     },
     board: {
-        buttons: ['✅', '1⃣', '2⃣', '3⃣', '4⃣', '🅰', '🅱', '✨'],
+        buttons: ['⚡', '1⃣', '2⃣', '3⃣', '4⃣', '🅰', '🅱', '✨'],
         timeDeleteMessage: 5000,
         timeRefreshAction: 10000,
         emojis: {
@@ -24,9 +24,7 @@ module.exports = {
             gold: ':gold:'
         },
         player: {
-            atk: 1,
-            rst: 0,
-            hp: 10,
+            hp: 100,
             gold: 10,
             mana: 0
         }

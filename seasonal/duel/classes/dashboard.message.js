@@ -58,13 +58,17 @@ module.exports = class DashboardMessage extends AwaitMessage{
     removeAction(emoji){
         this.actions[emoji] = undefined
     }
-    messageCreate(msg, args, client){
+    messageCreate(msg, client){
         if (this.message && msg.channel.id === this.message.channel.id) {
             const command = this.commands.find(command => msg.content.startsWith(command.name))
             if(command){
-                return command.run(msg, args, client, this)
+                return command.run(msg, client, this)
             }
         }
+        this.messageCreateAfter(msg, client)
+    }
+    messageCreateAfter(msg, client){
+
     }
     messageReactionAdd(msg, emoji, userID, client){
         if (this.message && msg.id === this.message.id && !client.users.get(userID).bot){
@@ -79,7 +83,7 @@ module.exports = class DashboardMessage extends AwaitMessage{
     messageReactionRemove(msg, emoji, userID, client) {
         if (this.message && msg.id === this.message.id && !client.users.get(userID).bot) {
             if (this.actions['remove'][emoji.name]) {
-                return this.actions['remove'][emoji](msg, emoji, userID, client, this)
+                return this.actions['remove'][emoji.name](msg, emoji, userID, client, this)
             }
         }
     }

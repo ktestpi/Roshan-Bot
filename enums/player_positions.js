@@ -8,14 +8,15 @@ const POSITIONS = {
   "5" : "hardSupport",
   "core" : "Core",
   "sup" : "Support",
-  "all" : "Todas las posiciones",
+  "all" : "All positions",
   "roamer" : "Roamer",
   "carry" : "Carry",
+  "mid" : "Mid",
   "off" : "Offlaner",
   "hsup" : "Hard Support",
-  "por" : "Portador",
-  "apo" : "Apoyo",
-  "med" : "Medio"
+  "carry-es" : "Portador",
+  "sup-es" : "Apoyo",
+  "mid-es" : "Medio"
 }
 
 module.exports = new SimpleEnums(POSITIONS)

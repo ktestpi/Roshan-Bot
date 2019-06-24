@@ -12,12 +12,17 @@ Object.keys(abilities).forEach(k => {
 const enumAbilities = new SimpleEnums(Abilities)
 
 enumAbilities.getValueByName = function(tag){
+    const results = []
     for (const [key, val] of this) {
         if (typeof val.dname !== 'string') { continue }
-        console.log('Skill',val.dname)
-        if (val.dname.toLowerCase().includes(tag.toLowerCase())) { return val }
+        if (val.dname.toLowerCase().includes(tag.toLowerCase())) { results.push(val) }
     }
-    return undefined
+    if (results.length) {
+        const exact = results.find(result => result.dname.toLowerCase() === tag.toLowerCase())
+        return exact ? exact : results[0]
+    } else {
+        return undefined
+    }
 }
 
 enumAbilities.apiURL = 'https://api.opendota.com'
