@@ -1,13 +1,6 @@
 const { Command } = require('aghanim')
 const { Datee, Classes } = require('erisjs-utils')
-const EmbedBuilder = require('../../classes/embed-builder.js')
 const { UserError, ConsoleError } = require('../../classes/errors.js')
-
-const embed = new EmbedBuilder({
-  title : 'worldranking.title',
-  description: 'worldranking.description',
-  footer: {text : '<_date>', icon_url : '<_icon>'}
-})
 
 module.exports = new Command('worldranking',{
   category : 'Dota 2', help : 'Clasificación mundial según zona', args : '<división>'},
@@ -19,7 +12,13 @@ module.exports = new Command('worldranking',{
       const top = r.leaderboard.slice(0,client.config.constants.worldBoardTop)
       const table = new Classes.Table([msg.author.locale('game.pos'),msg.author.locale('dota2.player')],null,["3f","20f"],{fill : '\u2002'})
       top.forEach((p,ix) => table.addRow([`#${ix+1}`,replace(p.name)]))
-      return msg.reply(embed,{
+      return msg.reply({
+        embed: {
+          title : 'worldranking.title',
+          description: 'worldranking.description',
+          footer: {text : '<_date>', icon_url : '<_icon>'}
+        }
+      },{
         division: division,
         results: table.render(),
         divisions: client.components.WorldRankingApi.divisions.sort().join(', '),

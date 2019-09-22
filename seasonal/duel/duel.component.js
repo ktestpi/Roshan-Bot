@@ -12,6 +12,9 @@ const gameconfig = require('./duel.config.js')
 module.exports = class DuelGame extends Component{
     constructor(client, options){
         super(client)
+        this.categoryID = "623994429979492373"
+        this.channelLogID = "624002949609291816"
+        this.channelMatchmakingID = "624002949609291816"
         this.awaitManager = new AwaitMessageManager(this.client)
         // this.client.addCategory('Duel', 'DuelGame')
         this.client.components.Locale.lang['en']['cmd_duel_args'] = ''
@@ -28,6 +31,12 @@ module.exports = class DuelGame extends Component{
         })
         this.client.on('duel:awaitmanager:messageReactionRemove', (err, msg, emoji, userID, client, message) => {
             console.log('Error: messageReactionRemove', message.id, err)
+        })
+        this.client.on('duel:initgame', (board) => {
+            this.client.createMessage(this.channelLogID, `Init game: ${board.players.map(player => player.mention).join(' vs ')}`)
+        })
+        this.client.on('duel:closegame', (board) => {
+            this.client.createMessage(this.channelLogID, {embed: board.resultMessage})
         })
     }
     ready(){

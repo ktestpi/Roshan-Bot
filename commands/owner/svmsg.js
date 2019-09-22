@@ -12,7 +12,7 @@ module.exports = new Command('svmsg',{
     const owner = guild.members.get(guild.ownerID);
     const message = args.from(2)
     const embed = {
-      author : {name : `Mensaje servidor: ${guild.name}`, icon_url : guild.iconURL},
+      author : {name : `Server message: ${guild.name}`, icon_url : guild.iconURL},
       // title : message.reason,
       description : message,
       // thumbnail : {url : owner.avatarURL, height : 40, width : 40},

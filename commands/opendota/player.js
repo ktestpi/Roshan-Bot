@@ -3,19 +3,6 @@ const odutil = require('../../helpers/opendota-utils')
 const enumHeroes = require('../../enums/heroes')
 const { UserError, ConsoleError } = require('../../classes/errors.js')
 const enumMedal = require('../../enums/medals')
-const EmbedBuilder = require('../../classes/embed-builder.js')
-
-const embed = new EmbedBuilder({
-  title: 'player.playerinfo',
-  description: '<_sociallinks>',
-  fields: [
-    {name: 'player.wlr', value : '<_wlr>', inline: true},
-    {name: 'player.kda', value : '<_kda>', inline: true},
-    {name: 'player.top5heroes', value : '<_top5heroes>', inline: true},
-  ],
-  thumbnail: { url: '<_player_avatar>' },
-  footer: { text: 'opendota.notenoprivateinfo', icon_url: '<bot_avatar>'}
-})
 
 module.exports = new Command(['player','p'],{
   category : 'Dota 2', help : 'Información sobre un/a jugador/a', args : '[mención/dotaID/pro]'},
@@ -39,7 +26,19 @@ module.exports = new Command(['player','p'],{
         },'')
         const kda = odutil.kda(results[3][0].sum, results[3][1].sum, results[3][2].sum)
         const medal = enumMedal({ rank: results[0].rank_tier, leaderboard: results[0].leaderboard_rank })
-        return msg.reply(embed, {
+        return msg.reply({
+          embed: {
+            title: 'player.playerinfo',
+            description: '<_sociallinks>',
+            fields: [
+              {name: 'player.wlr', value : '<_wlr>', inline: true},
+              {name: 'player.kda', value : '<_kda>', inline: true},
+              {name: 'player.top5heroes', value : '<_top5heroes>', inline: true},
+            ],
+            thumbnail: { url: '<_player_avatar>' },
+            footer: { text: 'opendota.notenoprivateinfo', icon_url: '<bot_avatar>'}
+          }
+        }, {
           user: odutil.nameAndNick(results[0].profile),
           flag: typeof results[0].profile.loccountrycode == 'string' ? ':flag_' + results[0].profile.loccountrycode.toLowerCase() + ':' : '',
           medal: client.components.Locale.replacer(medal.emoji),

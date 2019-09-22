@@ -13,7 +13,6 @@ module.exports.ErrorManager = class ErrorManager{
         this.config = {userSilent : true}
 
         this.client.on('aghanim:command:error', (error, msg, args, command) => {
-            // console.log(error)
             if (error instanceof UserError) {
                 // this.send(msg.channel.id, error.reply(msg, args))
                 msg.reply(error.reply(msg, args))
@@ -32,12 +31,10 @@ module.exports.ErrorManager = class ErrorManager{
         })
 
         this.client.on('aghanim:error:', (error) => {
-            // console.log(error)
             this.errorToConsole(error)    
         })
 
         this.client.on('error', (error) => {
-            console.log(error)
             this.console(`${toCode(error.stack)}`)
         })
     }
@@ -94,7 +91,6 @@ class BaseError extends Error{
 class UserError extends BaseError {
     constructor(type, messageCode, replacer, err) {
         super(type, messageCode, replacer, err)
-        console.log('replacer?',replacer)
     }
     toConsole(msg, args, command){
         const embed = {

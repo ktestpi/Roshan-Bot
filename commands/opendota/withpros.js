@@ -2,14 +2,6 @@ const { Command } = require('aghanim')
 const odutil = require('../../helpers/opendota-utils')
 const { UserError, ConsoleError } = require('../../classes/errors.js')
 const enumMedal = require('../../enums/medals')
-const EmbedBuilder = require('../../classes/embed-builder.js')
-
-const embed = new EmbedBuilder({
-  title: 'withpros.playerinfo',
-  description: '<_description>',
-  thumbnail: {url: '<_player_avatar>'},
-  footer: { text: 'withpros.footer', icon_url: '<bot_avatar>' }
-})
 
 module.exports = new Command('withpros',{
   category : 'Dota 2', help : 'Pros con los que has jugado', args : '[mención/dotaID/pro]'},
@@ -38,7 +30,14 @@ module.exports = new Command('withpros',{
         description = description.slice(0, -2)
         description = description || msg.author.locale('withpros.withno')
         const medal = enumMedal({ rank: results[0].rank_tier, leaderboard: results[0].leaderboard_rank })
-        return msg.reply(embed, {
+        return msg.reply({
+          embed: {
+            title: 'withpros.playerinfo',
+            description: '<_description>',
+            thumbnail: {url: '<_player_avatar>'},
+            footer: { text: 'withpros.footer', icon_url: '<bot_avatar>' }
+          }
+        }, {
           user: odutil.nameAndNick(results[0].profile),
           flag: typeof results[0].profile.loccountrycode == 'string' ? ':flag_' + results[0].profile.loccountrycode.toLowerCase() + ':' : '',
           medal: client.components.Locale.replacer(medal.emoji),

@@ -52,7 +52,6 @@ module.exports = function(data_info){
           data[i][9].filter(i => i).forEach((item,itemIndex) => {
             canvas.paint('player' + i + 'item' + itemIndex, item.resize(33, jimp.AUTO),{x : 493 + itemIndex*ITEM_WIDTH, y : minihero.y}).add()
           })
-          // console.log('Hi'+i);
         }
         canvas.create('png').then(buff => resolve(buff)).catch(err => reject(err))
       }catch(err){

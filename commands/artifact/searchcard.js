@@ -1,14 +1,4 @@
 const { Command } = require('aghanim')
-const EmbedBuilder = require('../../classes/embed-builder.js')
-
-const embed = new EmbedBuilder({
-  title: 'searchcard.title',
-  fields : [
-    {name: 'searchcard.text', value: '<_query>', inline: false},
-    {name : 'searchcard.cards', value: '<_cards>', inline: false}
-  ],
-  footer: {text : 'searchcard.results'}
-})
 
 const max = 1024
 module.exports = new Command(['searchcard','scard'],{
@@ -19,7 +9,16 @@ module.exports = new Command(['searchcard','scard'],{
     const filtered = client.components.Artifact.searchCard(query)
     if(!filtered.length){return msg.reply('searchcard.notfound',{query})}
     const reduced = reduceWithCount(filtered.map(c => c.name.english),max)
-    return msg.reply(embed,{
+    return msg.reply({
+      embed : {
+        title: 'searchcard.title',
+        fields : [
+          {name: 'searchcard.text', value: '<_query>', inline: false},
+          {name : 'searchcard.cards', value: '<_cards>', inline: false}
+        ],
+        footer: {text : 'searchcard.results'}
+      }
+    },{
       _query: query,
       _cards: reduced.text,
       results: reduced.count === filtered.length ? reduced.count : reduced.count + '/' + filtered.length

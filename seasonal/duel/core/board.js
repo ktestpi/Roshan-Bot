@@ -6,6 +6,7 @@ const gameconfig = require('../duel.config.js')
 const Card = require('./card.js')
 const { delay, jsFilesOnDirectory } = require('../duel.util.js')
 const path = require('path')
+const { deleteMessageAfterTime } = require('../duel.util.js')
 
 const commands = jsFilesOnDirectory(path.join(__dirname,'../board-commands'))
 /** @class */
@@ -31,149 +32,153 @@ module.exports = class Board extends DashboardMessage{
      * @param {*} player2 
      */
     init(player1, player2){
-        return super.init().then(() => {
-            return this.addActionButton({ button: gameconfig.emojis.refresh , add : () => {
-                if (Date.now() - this.tsLastRefresh > gameconfig.board.timeRefreshAction){
-                    this.tsLastRefresh = Date.now()
-                    return this.render()
-                }
-            }})
-        }).then(() => {
-            this.tsLastRefresh = Date.now()
-            this.turn = 0
-            this.indexPlayer = 0
-            this.round = 1
-            this.stack = []
-            this.history = []
-            this.players = []
-            this.player1 = new DuelPlayer(player1)
-            this.player2 = new DuelPlayer(player2)
-            this.registerPlayer(this.player1)
-            this.registerPlayer(this.player2)
-            this.currentPlayerIndex = 0
-            this.initiativePlayer = this.currentPlayer
-            this.hand = new HandBoard()
-            const self = this
-            this.addEffect({
-                event: 'game_players_die?',
-                run: (board) => {
-                    const losers = board.players.filter(player => player.hp <= 0)
-                    if (losers.length === 1) {
-                        const winner = losers[0].enemy
-                        winner.createNotification('**wins!!**')//.then(() => board.close(winner))
-                        board.close(winner)
-                    } else if (losers.length === 2) {
-                        board.createNotification(`**${board.player1.name} and ${board.player2.name} draws**`)//.then(() => this.close())
-                        board.close()
+        return this.channel.createMessage(`Welcome to a Duel Game ${player1.mention} and ${player2.mention}. To see commands avaliable write on this channel \`help\``).then(() => 
+            super.init().then(() => {
+                return this.addActionButton({ button: gameconfig.emojis.refresh , add : () => {
+                    if (Date.now() - this.tsLastRefresh > gameconfig.board.timeRefreshAction){
+                        this.tsLastRefresh = Date.now()
+                        return this.render()
                     }
-                }
-            })
-            this.addEffect({
-                event: 'game_units_die?',
-                run: (board) => {
-                    board.players.forEach(player => {
-                        player.units.forEach(unit => {
-                            if(unit.hp <= 0){
-                                player.removeUnit(unit)
-                                player.board.emit('player_unit_dies', unit)
-                            }
+                }})
+            }).then(() => {
+                this.tsLastRefresh = Date.now()
+                this.startAt = Date.now()
+                this.turn = 0
+                this.indexPlayer = 0
+                this.round = 1
+                this.stack = []
+                this.history = []
+                this.players = []
+                this.player1 = new DuelPlayer(player1)
+                this.player2 = new DuelPlayer(player2)
+                this.registerPlayer(this.player1)
+                this.registerPlayer(this.player2)
+                this.currentPlayerIndex = 0
+                this.initiativePlayer = this.currentPlayer
+                this.hand = new HandBoard()
+                const self = this 
+                this.addEffect({
+                    event: 'game_players_die?',
+                    run: (board) => {
+                        const losers = board.players.filter(player => player.hp <= 0)
+                        if (losers.length === 1) {
+                            const winner = losers[0].enemy
+                            winner.createNotification('**wins!!**')//.then(() => board.close(winner))
+                            board.close(winner)
+                        } else if (losers.length === 2) {
+                            board.createNotification(`**${board.player1.name} and ${board.player2.name} draws**`)//.then(() => this.close())
+                            board.close()
+                        }
+                    }
+                })
+                this.addEffect({
+                    event: 'game_units_die?',
+                    run: (board) => {
+                        board.players.forEach(player => {
+                            player.units.forEach(unit => {
+                                if(unit.hp <= 0){
+                                    player.removeUnit(unit)
+                                    player.board.emit('player_unit_dies', unit)
+                                }
+                            })
                         })
-                    })
-                }
-            })
-            this.addEffect({
-                event: 'player_unit_dies',
-                run: (unit) => {
-                    unit.owner.enemy.addGold(unit.bounty)
-                    unit.owner.enemy.createNotification(`gets **+${unit.bounty}** <emoji_gold> for kill ${unit.name}`)
-                }
-            })
-            this.addEffect({
-                event: 'game_round_starts',
-                run: (board) => {
-                    board.turn = 0
-                    board.round++
-                    board.players.forEach(player => {
-                        player.passiveGold()
-                        player._mana = 0
-                        player.onEvent('game_round_starts')
-                    })
-                    board.currentPlayerIndex = board.initiativePlayer.playerIndex
-                }
-            })
-            this.addEffect({
-                event: 'game_round_ends',
-                run: (board) => {
-                    board.players.forEach(player => {
-                        player.onEvent('game_round_ends')
-                    })
-                }
-            })
-            this.addEffect({
-                event: 'game_turn_starts',
-                run: (board) => {
-                    board.hand.draw()
-                }
-            })
-            this.addEffect({
-                event: 'game_turn_ends',
-                run: (board) => {
-                }
-            })
-            this.addEffect({
-                event: 'player_card_plays',
-                run: (card, player) => {
-                    player.createNotification(`played **${card.name}** - ${card.description}`)
-                    // return player.board.render()
-                }
-            })
-            this.addEffect({
-                event: 'game_turn_next',
-                run: (board, playerAction) => {
-                    board.emit('game_turn_ends', board)
-                    board.emit('game_players_die?', board)
-                    board.emit('game_units_die?', board)
-
-                    if(playerAction instanceof Card){
-                        board.emit('player_card_plays', playerAction, this.currentPlayer)
                     }
-                    board.emit('game_players_die?', board)
-                    board.emit('game_units_die?', board)
-                    // this.emit('game_pass_turn', this.currentPlayer)
-                    // get Initiative if pass turn or card with effect getInitiative
-                    if (playerAction.getInitiative) { board.initiativePlayer = board.currentPlayer }
-                    // Increment the turn
-                    board.turn++
-                    // Remove card if is on hand
-                    board.hand.remove(playerAction)
-
-                    // Pass the turn
-                    board.currentPlayerIndex = board.currentPlayerIndex === 0 ? 1 : 0
-                    // Pass the round
-                    if (board.turn > 0 && board.turn % 2 === 0) {
-                        // this.emit('before_combat')
-                        // Attack each player
-                        board.players.forEach(player => player.attack(player.enemy))
-                        board.emit('game_players_die?', board)
-                        board.emit('game_units_die?', board)
-                        board.emit('game_round_ends', board)
-                        // this.addHistoryAction({ type: 'game_round_ends', description: `Round ${this.round} ends` })
-                        board.emit('game_players_die?', board)
-                        board.emit('game_units_die?', board)
-                        board.emit('game_round_starts', board)
-                        board.emit('game_players_die?', board)
-                        board.emit('game_units_die?', board)
-                        this.addHistoryAction({type: 'game_round_starts' , description: `-- Round ${this.round} starts --`})
-                        // Check if player hp < 0
-
+                })
+                this.addEffect({
+                    event: 'player_unit_dies',
+                    run: (unit) => {
+                        unit.owner.enemy.addGold(unit.bounty)
+                        unit.owner.enemy.createNotification(`gets **+${unit.bounty}** <emoji_gold> for kill ${unit.name}`)
                     }
-                    board.emit('game_turn_starts', board)
-                }
+                })
+                this.addEffect({
+                    event: 'game_round_starts',
+                    run: (board) => {
+                        board.turn = 0
+                        board.round++
+                        board.players.forEach(player => {
+                            player.passiveGold()
+                            player._mana = 0
+                            player.emit('game_round_starts')
+                        })
+                        board.currentPlayerIndex = board.initiativePlayer.playerIndex
+                    }
+                })
+                this.addEffect({
+                    event: 'game_round_ends',
+                    run: (board) => {
+                        board.players.forEach(player => {
+                            player.emit('game_round_ends')
+                        })
+                    }
+                })
+                this.addEffect({
+                    event: 'game_turn_starts',
+                    run: (board) => {
+                        board.hand.draw()
+                    }
+                })
+                this.addEffect({
+                    event: 'game_turn_ends',
+                    run: (board) => {
+                    }
+                })
+                this.addEffect({
+                    event: 'player_card_plays',
+                    run: (card, player) => {
+                        player.createNotification(`played **${card.name}** - ${card.description}`)
+                        // return player.board.render()
+                    }
+                })
+                this.addEffect({
+                    event: 'game_turn_next',
+                    run: (board, playerAction) => {
+                        board.emit('game_turn_ends', board)
+                        board.emit('game_players_die?', board)
+                        board.emit('game_units_die?', board)
+
+                        if(playerAction instanceof Card){
+                            board.emit('player_card_plays', playerAction, this.currentPlayer)
+                        }
+                        board.emit('game_players_die?', board)
+                        board.emit('game_units_die?', board)
+                        // this.emit('game_pass_turn', this.currentPlayer)
+                        // get Initiative if pass turn or card with effect getInitiative
+                        if (playerAction.getInitiative) { board.initiativePlayer = board.currentPlayer }
+                        // Increment the turn
+                        board.turn++
+                        // Remove card if is on hand
+                        board.hand.remove(playerAction)
+
+                        // Pass the turn
+                        board.currentPlayerIndex = board.currentPlayerIndex === 0 ? 1 : 0
+                        // Pass the round
+                        if (board.turn > 0 && board.turn % 2 === 0) {
+                            // this.emit('before_combat')
+                            // Attack each player
+                            board.players.forEach(player => player.attack(player.enemy))
+                            board.emit('game_players_die?', board)
+                            board.emit('game_units_die?', board)
+                            board.emit('game_round_ends', board)
+                            // this.addHistoryAction({ type: 'game_round_ends', description: `Round ${this.round} ends` })
+                            board.emit('game_players_die?', board)
+                            board.emit('game_units_die?', board)
+                            board.emit('game_round_starts', board)
+                            board.emit('game_players_die?', board)
+                            board.emit('game_units_die?', board)
+                            this.addHistoryAction({type: 'game_round_starts' , description: `-- Round ${this.round} starts --`})
+                            // Check if player hp < 0
+
+                        }
+                        board.emit('game_turn_starts', board)
+                    }
+                })
+                this.ready = true
+                this.addHistoryAction({ type: 'start_game', description: 'Start game', source: this })
+                this.players.forEach(player => player.start())
+                this.log('duel:initgame')
             })
-            this.ready = true
-            this.addHistoryAction({ type: 'start_game', description: 'Start game', source: this })
-            this.players.forEach(player => player.start())
-        })
+        )
     }
     /**
      * 
@@ -195,6 +200,7 @@ module.exports = class Board extends DashboardMessage{
     }
     addEffect(effect){
         effect.destroy = () => this.removeEffect(effect)
+        effect.run = effect.run ? effect.run : (board) => {}
         this.stack.push(effect)
     }
     get currentPlayer() {
@@ -210,14 +216,13 @@ module.exports = class Board extends DashboardMessage{
         return this.createMessage(content, extra, file)
         //.then(m => setTimeout(() => m.delete(), gameconfig.board.timeDeleteMessage))
     }
-    
     close(winner){
         this.closed = true
         this.unregister()
         const content = this.replaceContent({
             embed: {
                 title: this.player1.name + ' vs ' + this.player2.name,
-                description: winner ? `**${winner.name} won!!**` : `**${this.player1.name} and ${this.player2.name} draws**`,
+                description: winner ? `**${winner.name} won!!**${this.conceded ? ` ${winner.enemy.name} conceded` : ""}` : `**${this.player1.name} and ${this.player2.name} draws**`,
                 fields: [
                     this.player1.render(),
                     this.player2.render(),
@@ -229,12 +234,16 @@ module.exports = class Board extends DashboardMessage{
                 }
             }
         })
-        return this.message.edit(content)
+        this.resultMessage = {
+            title: this.player1.name + ' vs ' + this.player2.name,
+            description: winner ? `**${winner.name} won!!**${this.conceded ? ` ${winner.enemy.name} conceded` : ""}` : `**${this.player1.name} and ${this.player2.name} draws**`
+        }
+        this.log('duel:closegame')
+        return this.message.edit(content).then(() => delay(15000)).then(() => this.destroyLobby())
     }
     messageCreateAfter(msg, client) {
-        console.log(msg.author, client.user)
         if(this.ready && msg.channel.id === this.message.channel.id && msg.author.id !== client.user.id){
-            msg.delete()
+            deleteMessageAfterTime(10000)(msg)
         }
     }
     messageReactionAdd(msg, emoji, userID, client) {
@@ -243,9 +252,13 @@ module.exports = class Board extends DashboardMessage{
                 const playerActions = [{ button: gameconfig.board.buttons[0], action: this.currentPlayer.passTurn }, ...this.hand.playerActions, { button: gameconfig.board.buttons[7], action: this.currentPlayer.skill}]
                 let playerAction = playerActions.find(action => action && action.button === emoji.name)
                 playerAction = playerAction && playerAction.action ? playerAction.action : null
-                if (playerAction && playerAction.canPlay(this.currentPlayer, this.opponentPlayer, this)){
-                    playerAction.play(this.currentPlayer, this.opponentPlayer, this)
-                    this.emit('game_turn_next', this, playerAction)
+                if (playerAction){
+                    if(playerAction.type === 'action' && this.currentPlayer.isSilenced){
+                        this.currentPlayer.createNotification(`can't play action card`)
+                    }else if (playerAction && playerAction.canPlay(this.currentPlayer, this.opponentPlayer, this)){
+                        playerAction.play(this.currentPlayer, this.opponentPlayer, this)
+                        this.emit('game_turn_next', this, playerAction)
+                    }
                 }
             }
             if (this.ready && this.players.find(player => player.id === userID)){

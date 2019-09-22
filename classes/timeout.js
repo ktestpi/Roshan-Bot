@@ -1,6 +1,9 @@
 module.exports = class Timeout{
   constructor(func,delay){
-    this._timer = setTimeout(() => {func();this.running = false},delay)
+    this._timer = setTimeout(() => {
+      func()
+      this.running = false
+    },delay)
     this._func = func
     this.start = Date.now()
     this.running = true

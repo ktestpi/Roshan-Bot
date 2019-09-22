@@ -1,5 +1,4 @@
 const RoshanGame = require('../../classes/game.js')
-const Locale = require('../../classes/locale.js')
 const StatusFirebase = require('./classes/status.js')
 
 const dirname = __dirname

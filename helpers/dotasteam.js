@@ -47,10 +47,9 @@ util.steam.idToDotaID = function(id64){
     if(min < sus){carry = 1;min = 10+min}else{carry = 0};
     if(sus == 0){carry = 1};
     result[i] = min - sus;
-    //console.log(min,sus,result[i],carry);
+
   }
   var total = parseInt(result.join('')).toString();
-  //console.log('Total: ' + total)
   return total
   /*for (var i = id64.length - 1 ; i > 0; i--) {
     console.log(i + ':' + id64[i]);

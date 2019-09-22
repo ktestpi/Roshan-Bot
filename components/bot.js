@@ -103,7 +103,6 @@ module.exports = class Bot extends CustomComponent() {
                 })
                 .reduce((promise, player) => {
                     return promise.then(results => new Promise(res => {
-                        console.log(`Update leaderboard to ${player.dota_id}`)
                         setTimeout(() => this.client.components.Opendota.player_steam(player.dota_id).then(dataArray => {
                             const [data] = dataArray;
                             player.data = data; res([...results, player])

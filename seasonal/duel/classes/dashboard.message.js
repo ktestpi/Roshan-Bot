@@ -1,4 +1,5 @@
 const { AwaitMessage } = require('./await-message.js')
+const { deleteMessageAfterTime } = require('../duel.util.js')
 
 module.exports = class DashboardMessage extends AwaitMessage{
     constructor(config){
@@ -62,6 +63,7 @@ module.exports = class DashboardMessage extends AwaitMessage{
         if (this.message && msg.channel.id === this.message.channel.id) {
             const command = this.commands.find(command => msg.content.startsWith(command.name))
             if(command){
+                deleteMessageAfterTime(5000)(msg)
                 return command.run(msg, client, this)
             }
         }

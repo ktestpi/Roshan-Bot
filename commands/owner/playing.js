@@ -5,10 +5,10 @@ module.exports = new Command('playing',{
   ownerOnly : true},
   async function(msg, args, client){
     if(args.length < 2){
-      return client.components.Bot.setStatus(0,null,client.config.playing,null,true).then(() => client.components.Notifier.bot(`Playing to default **${client.config.playing}**`)).catch(err => msg.addReactionFail())
+      return client.components.Bot.setStatus(0,null,client.config.playing,null,true).then(() => client.components.Notifier.bot(`Playing to default **${client.config.playing}**`))
     }else{
       const playing = args.from(1)
-      if(!playing){return};
-      return client.components.Bot.setStatus(0,null,playing,null,true).then(() => client.components.Notifier.bot(`Playing: **${playing}**`)).catch(err => msg.addReactionFail())
+      if(!playing){return}
+      return client.components.Bot.setStatus(0,null,playing,null,true).then(() => client.components.Notifier.bot(`Playing: **${playing}**`))
     }
   })

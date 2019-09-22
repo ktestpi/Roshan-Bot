@@ -1,5 +1,4 @@
 const { Command } = require('aghanim')
-const { UserError, ConsoleError } = require('../../classes/errors')
 const fs = require('fs')
 const path = require('path')
 const { promisifyCallback } = require('../../helpers/functional.js')

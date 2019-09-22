@@ -3,7 +3,6 @@ const { Eris } = require('aghanim')
 const odutil = require('../helpers/opendota-utils')
 const { Datee, Markdown } = require('erisjs-utils')
 const { UserError, ConsoleError } = require('../classes/errors.js')
-const EmbedBuilder = require('../classes/embed-builder.js')
 
 module.exports = class Account extends CustomComponent() {
 	constructor(client, options) {
@@ -114,16 +113,17 @@ module.exports = class Account extends CustomComponent() {
 				msg.addReaction(this.client.config.emojis.default.envelopeIncoming)
 				return this.create(discordID,dotaID,data.profile.steamid,data).then(() => {
 					this.client.components.Notifier.accountnew(`New account: **${msg.author.username}** (${msg.author.id})`)
-					const embed = new EmbedBuilder({
-						title: 'roshan.welcometo',
-						description: 'roshan.infoabout',
-						fields: [
-							{ name: 'register.dataurregistry', value: 'register.dataurregistryaccount', inline: false},
-							{ name: 'register.tyforurregistry', value: 'register.helpregistrydesc', inline: false}
-						],
-						thumbnail: { url: '<_user_avatar>' }
-					})
-					return msg.replyDM(embed, { dotaID: dotaID, steamID: data.profile.steamid, _user_avatar: msg.author.avatarURL})
+					return msg.replyDM({
+						embed: {
+							title: 'roshan.welcometo',
+							description: 'roshan.infoabout',
+							fields: [
+								{ name: 'register.dataurregistry', value: 'register.dataurregistryaccount', inline: false},
+								{ name: 'register.tyforurregistry', value: 'register.helpregistrydesc', inline: false}
+							],
+							thumbnail: { url: '<_user_avatar>' }
+						}
+					}, { dotaID: dotaID, steamID: data.profile.steamid, _user_avatar: msg.author.avatarURL})
 						.then(() => m.addReactionSuccess())
 				})
 			})

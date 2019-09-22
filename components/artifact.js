@@ -3,7 +3,7 @@ const { Component } = require('aghanim')
 const { Request } = require('erisjs-utils')
 const modifiers = require('../containers/artifact_cards_modifiers.json')
 const { encode , decode } = require('artifact-api')
-const Canvas = require('../helpers/apijimp/classes/canvas')
+const Canvas = require('../classes/paintjimp/canvas')
 const jimp = require('jimp')
 const steamprice = require('steam-price-api')
 
@@ -12,7 +12,7 @@ const steamprice = require('steam-price-api')
 class Artifact extends Component {
     constructor(client, options) {
         super(client)
-        this.enable = false
+        this.enable = true
         this.cards = []
         this.sets = []
         this.cardsURL = 'https://raw.githubusercontent.com/ottah/ArtifactDB/master/cards-manifest.json'
@@ -76,7 +76,6 @@ class Artifact extends Component {
                         if (refSignatureCard){
                             const signatureCard = response.card_set.card_list.find(c => c.card_id === refSignatureCard.card_id)
                             if (signatureCard){
-                                // console.log(signatureCard.card_name.english)
                                 signatureCard.references.push({card_id : card.card_id, ref_type : 'references'})
                                 signatureCard.rarity = card.rarity
                             }
@@ -89,7 +88,6 @@ class Artifact extends Component {
                         this.addCard(card)
                         set.summary[Artifact.cardType(cardresponse).toLowerCase()]++
                         set.totalCards++
-                        // console.log(card)
                     })
                     this.addSet(set)
                 })
@@ -196,7 +194,6 @@ class Artifact extends Component {
         },{})
     }
     static clearHTMLTags(text){
-        // console.log('TEXT',text)
         return text.replace(new RegExp(`<span style=\'font-weight:bold;color:#ffffff;\'>`,'g'), '')
             .replace(new RegExp(`<span style='font-weight:bold;color:#c2352d;'>`,'g'),'')
             .replace(new RegExp(`<span style='font-weight:bold;color:#479036;'>`,'g'),'')
@@ -409,7 +406,6 @@ class Artifact extends Component {
                         const cardCost = canvas.write('cardCost', `${el[7]}`, 'w16').place(imageTypeCard, 'rxcy', { x: this.configDeckDecoder.space12}).set(null,'csx')
                         const cardCount = canvas.write('cardCount', `x${el[4]}`, 'w16').set(ref, 'gxrcy', { x: this.configDeckDecoder.space4 })
                         if(el[9]){
-                            // console.log(el[9])
                             const heroSig = canvas.paint(`heroSig${index}`, el[9].resize(this.configDeckDecoder.heroSigSize, jimp.AUTO)).set(cardCount, 'gxlcy', { x: -24 })
     
                         }
@@ -516,10 +512,6 @@ class Artifact extends Component {
                 .on('error', (err) => { rej(err)})
                 .on('finish', (...val) => {
                     file.get().then(([f, r]) => {
-                        // console.log(f)
-                        // console.log('------------------')
-                        // console.log(r)
-                        // console.log('------------------')
                         res(`${this.storareDecksURL}${code}.jpg`)
                         // res(r.mediaLink)
                     })

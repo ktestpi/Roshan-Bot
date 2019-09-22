@@ -5,7 +5,7 @@ module.exports = new Command('feedback',{
   async function (msg, args, client, command){
     if(args.length < 4){return}
     return client.createMessage(client.config.guild.bugs,{embed : {
-      title : client.components.Locale.lang['en']['feedback.title'],
+      title : 'feedback.title',
       description : args.after,
       footer : {text : msg.author.username, icon_url : msg.author.avatarURL},
       color : client.config.color}

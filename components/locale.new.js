@@ -3,7 +3,6 @@ const path = require('path')
 const util = require('erisjs-utils')
 const xlsx = require('xlsx')
 const packageInfo = require('../package.json')
-const EmbedBuilder = require('../classes/embed-builder.js')
 
 module.exports = class Locale extends Component {
     constructor(client, options) {
@@ -36,6 +35,7 @@ module.exports = class Locale extends Component {
                 .then(channel => channel.createMessage(reply(content, replacements, user_discord_id, this), file))
         }
         function reply(content, replacements = {}, user_discord_id, msg, fn){
+            if(!replacements){replacements = {}}
             const user = (user_discord_id && self.client.users.get(user_discord_id)) || msg.author
             const user_name = replacements.user_name || user.username
             const user_id = replacements.user_id || user.id
@@ -103,12 +103,6 @@ module.exports = class Locale extends Component {
         this.lang[lang] = string
     }
     replaceFromMsg( content, replacements, msg){ // FIXME: Deprecated
-        // if (typeof content === 'string') {
-        //     return this.replacer(content, replacements, msg.author.account.lang)
-        // } else if (content instanceof EmbedBuilder) {
-        //     return content.build(msg._client, msg.author.account.lang, replacements)
-        // }
-        // return content
         return this.replaceContent(content, replacements, msg.author.account.lang)
     }
     replacer(string, replacements, lang){ // FIXME: Deprecated
@@ -168,9 +162,9 @@ module.exports = class Locale extends Component {
             // if (this.lang[lang][f]) {
             //     string = string.replace('<' + f + '>', this.lang[lang][f])
             // } else
-            if (this.constants[f]) {
+            if (['string','number'].includes(typeof this.constants[f])) {
                 string = string.replace('<' + f + '>', this.constants[f])
-            }else if (extra[f]) {
+            }else if (['string','number'].includes(typeof extra[f])) {
                 string = string.replace('<' + f + '>', extra[f])
             }
         })

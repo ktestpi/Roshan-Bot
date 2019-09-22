@@ -27,8 +27,6 @@ module.exports = class Notifier{
             message = tag
             tag = null
         }
-        // const date = new Date()
-        // console.log(`<${date}> ${tag ? '[' + tag + '] ' : ''}- ${message}`)
         if(tag === 'INFO'){
             logger.log(`${ tag ? '[' + tag + '] ' : ''} - ${message}`)
         } else if (tag === 'WARN'){

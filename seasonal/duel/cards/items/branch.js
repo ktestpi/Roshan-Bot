@@ -1,10 +1,12 @@
 const { ItemCard } = require('../../core/card')
 
-const name = 'Cuirass'
+const name = 'Branch'
+const attack = 1
 const resistence = 1
-const description = `Your hero and creeps get **+${resistence}** resistence`
+const hitpoints = 1
+const description = `Your hero gets **+${resistence}** `
 module.exports = () => ItemCard({
-    gold: 6,
+    gold: 2,
     name: name,
     description,
     skill: {
@@ -14,7 +16,7 @@ module.exports = () => ItemCard({
         cooldown: 0,
         refresh: 0,
         modifier: {
-            affect: ['hero', 'creep'], rst: resistence,
+            affect: ['hero'], rst: resistence, atk: attack, hp: hitpoints,
             source: name,
             description
         },

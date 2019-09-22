@@ -9,16 +9,16 @@ module.exports = () => ItemCard({
     damage: damage,
     description: `Gets <emoji_skill>: Do ${damage} damage to enemy (CD: ${refresh})`,
     skill: {
-        requirements: function (s, t, b) {
+        requirements: function (sourcePlayer, targetPlayer, board) {
             if (this.cooldown <= 0) {
                 return true
             } else {
-                s.createNotification(`<emoji_skill> ${this.name} is on cooldown (${this.cooldown})`)
+                sourcePlayer.createNotification(`<emoji_skill> ${this.name} is on cooldown (${this.cooldown})`)
                 return false
             }
         },
-        run: function (s, t, b) {
-            t.damaged(this.damage, { name: `${s.name}'s ${this.name}` })
+        run: function (sourcePlayer, targetPlayer, board) {
+            targetPlayer.damaged(this.damage, { name: `${sourcePlayer.name}'s ${this.name}` })
         },
         name: name,
         description: `Do **${damage}** damage to enemy`,

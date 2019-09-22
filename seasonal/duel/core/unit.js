@@ -23,10 +23,15 @@ module.exports = class BasicUnit{
     get isCreep() {
         return this.type === 'creep'
     }
+    get isDisarmed(){
+        return this.modifiers.some(modifier => modifier.disarm) || this.owner.modifiers.some(modifier => modifier.disarm)
+    }
     addModifier(modifier){
         this.modifiers.push(modifier)
     }
     stat(s){
+        if(s === 'atk' && this.isDisarmed){ return 0 }
+        // if(s === 'rst' && this.isDisarmed){ return 0 }
         return this['_' + s] + this.statBonus(s)
     }
     statBonus(s){
@@ -57,7 +62,7 @@ module.exports = class BasicUnit{
         return typeof this._expiration === 'number' ? this.stat('_expiration') : this._expiration
     }
     render(){
-        return `${this.name} (${this.type}) ${this.atk}/${this.rst}/${this.hp}`
+        return `${this.name} (${this.type}) ${this.atk}/${this.rst}/${this.hp}${this.isDisarmed ? ' <emoji_disarm>' : ''}`
     }
     healing(value){
         this._hp += value

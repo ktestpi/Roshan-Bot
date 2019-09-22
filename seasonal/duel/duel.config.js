@@ -7,7 +7,9 @@ module.exports = {
         x: '❌',
         refresh: '🔄',
         mana: '',
-        gold: ':gold:' // 💰
+        gold: ':gold:', // 💰
+        disarm: '🚫',
+        silence: '🤐'
     },
     board: {
         buttons: ['⚡', '1⃣', '2⃣', '3⃣', '4⃣', '🅰', '🅱', '✨'],
@@ -21,7 +23,9 @@ module.exports = {
             x: '❌',
             refresh: '🔄',
             mana: '',
-            gold: ':gold:'
+            gold: ':gold:',
+            disarm: '🚫',
+            silence: '🤐'
         },
         player: {
             hp: 100,

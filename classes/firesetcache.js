@@ -8,7 +8,6 @@ class FireSetCache extends Set{
   save(id,value){
     return new Promise((resolve,reject) => {
       this.db.update({[id] : value ? true : null}).then((data) => {
-        console.log('DATA',data)
         value ? this.add(id) : this.delete(id)
         resolve()
       }).catch(err => reject(err))

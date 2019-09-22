@@ -2,14 +2,6 @@ const { Command } = require('aghanim')
 const { Classes } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
 const enumMedal = require('../../enums/medals')
-const EmbedBuilder = require('../../classes/embed-builder.js')
-
-const embed = new EmbedBuilder({
-  title: 'withfriends.playerinfo',
-  description: '<_description>',
-  thumbnail: {url: '<_player_avatar>'},
-  footer: { text: 'withfriends.footer', icon_url: '<bot_avatar>' }
-})
 
 module.exports = new Command(['withfriends','friends'],{
   category : 'Dota 2', help : 'Estadísticas de partidas jugadas con amig@s', args : '[mención/dotaID/pro]'},
@@ -34,7 +26,14 @@ module.exports = new Command(['withfriends','friends'],{
           })
         }
         const medal = enumMedal({ rank: results[0].rank_tier, leaderboard: results[0].leaderboard_rank })
-        return msg.reply(embed, {
+        return msg.reply({
+          embed: {
+            title: 'withfriends.playerinfo',
+            description: '<_description>',
+            thumbnail: {url: '<_player_avatar>'},
+            footer: { text: 'withfriends.footer', icon_url: '<bot_avatar>' }
+          }
+        }, {
           user: odutil.nameAndNick(results[0].profile),
           flag: typeof results[0].profile.loccountrycode == 'string' ? ':flag_' + results[0].profile.loccountrycode.toLowerCase() + ':' : '',
           medal: client.components.Locale.replacer(medal.emoji),

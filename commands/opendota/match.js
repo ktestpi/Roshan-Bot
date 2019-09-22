@@ -5,16 +5,6 @@ const enumHeroes = require('../../enums/heroes')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
 const { UserError, ConsoleError } = require('../../classes/errors.js')
-const EmbedBuilder = require('../../classes/embed-builder.js')
-
-const embed = new EmbedBuilder({
-  title: 'match.title',
-  description: 'match.description',
-  fields: [
-    {name : '<_match_field0_name>', value: '<_match_field0_value>', inline: false},
-    {name : '<_match_field1_name>', value: '<_match_field1_value>', inline: false},
-  ]
-})
 
 module.exports = new Command(['match','m'],{
   category : 'Dota 2', help : 'Estadísticas de una partida', args : '<id>'},
@@ -37,7 +27,16 @@ module.exports = new Command(['match','m'],{
             player.name ? client.components.Bot.parseText(player.name, 'nf') : client.components.Bot.parseText(player.personaname || msg.author.locale('unknown'), 'nf')]);
           }  
         })
-        return msg.reply(embed,{
+        return msg.reply({
+          embed: {
+            title: 'match.title',
+            description: 'match.description',
+            fields: [
+              {name : '<_match_field0_name>', value: '<_match_field0_value>', inline: false},
+              {name : '<_match_field1_name>', value: '<_match_field1_value>', inline: false},
+            ]
+          }
+        },{
           team: odutil.winnerTeam(results[0]),
           match_type: results[0].league ? ' :trophy: ' + results[0].league.name : enumLobbyType.getValue(results[0].lobby_type),
           match_skill: enumSkill.getValue(results[0].skill) || '',

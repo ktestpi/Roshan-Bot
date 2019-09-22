@@ -23,12 +23,13 @@ class Player {
     /** @prop {number} playerIndex */
     /** @prop {Board} board */
     constructor(player, board) {
-        const { id, name, avatar, rank, color} = player
+        const { id, name, avatar, rank, color, mention} = player
         this.id = id
         this.name = name
         this.avatar = avatar
         this.rank = rank
         this.color = color
+        this.mention = mention
         this.units = []
         this.modifiers = []
         this._hp = gameconfig.board.player.hp
@@ -184,6 +185,9 @@ class Player {
             }
         }
     }
+    get isSilenced(){
+        return this.modifiers.some(modifier => modifier.silence)
+    }
     addUnit(unit){
         unit.setOwner(this)
         this.units.push(unit)
@@ -192,7 +196,11 @@ class Player {
     removeUnit(unit) {
         if(unit === this.hero){
             const expiration = 2
-            this.addEvent({event: 'game_round_starts', source: unit.name, description: `Revive hero ${unit.name} with hp base. When round ${this.board.round + expiration} starts`, expiration: expiration, onExpire: () => {
+            this.addModifier({event: 'game_round_starts', source: unit.name, description: `Revive hero ${unit.name} with hp base. When round ${this.board.round + expiration} starts`, expiration: expiration,
+            run: (board) => {
+
+            },
+            onExpire: () => {
                 this.hero.revive()
                 this.units = [this.hero, ...this.units]
             }})
@@ -201,7 +209,7 @@ class Player {
         unit.onRemovePlayer(this)
     }
     render(){
-        return { name: `${this.name}: ${this.mana} <emoji_mana> ${this.gold} <emoji_gold> ${this.atk}/${this.rst}/${this.hp} ${this.checkLetal(this.enemy) ? '<emoji_skull>' : ''}`, value: this.units.map(unit => unit.render()).join('\n') || 'No army', inline: true}
+        return { name: `${this.name}: ${this.mana} <emoji_mana> ${this.gold} <emoji_gold> ${this.atk}/${this.rst}/${this.hp} ${this.checkLetal(this.enemy) ? '<emoji_skull>' : ''}${this.isSilenced ? ' <emoji_silence>' : ''}`, value: this.units.map(unit => unit.render()).join('\n') || 'No army', inline: true}
     }
     acquireSkill(skill){
         this.skill.onDestroy(this)
@@ -222,7 +230,7 @@ class Player {
             }
         }
     }
-    onEvent(event){
+    emit(event){
         this.modifiers.filter(modifier => modifier.event && modifier.event === event)
             .forEach(modifier => {
                 if (modifier.run) {

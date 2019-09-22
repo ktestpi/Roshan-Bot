@@ -5,14 +5,7 @@ const paintjimp = require('../../paintjimp')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
 const { UserError, ConsoleError } = require('../../classes/errors.js')
-const EmbedBuilder = require('../../classes/embed-builder.js')
 
-const embed = new EmbedBuilder({
-  title: 'match.title',
-  description: 'match.description',
-  image: { url: '<_match_image>'},
-  footer: { text: 'roshan.plus', icon_url: '<bot_avatar>'}
-})
 module.exports = new Command('match+',{
   category : 'Dota 2', help : 'Estadísticas de una partida. R+', args : '<id>', cooldown : 60,
   cooldownMessage: function (msg, args, client, cooldown) { return msg.author.locale('cmd.incooldown')}},
@@ -28,7 +21,14 @@ module.exports = new Command('match+',{
         return paintjimp.match(results[0])
           .then(buffer => client.createMessage(client.config.guild.generated, `**${msg.author.username}** pidió \`${args[1]}\``, { file: buffer, name: args[1] + ".jpg" }))
           .then(m => {
-            return msg.reply(embed, {
+            return msg.reply({
+              embed: {
+                title: 'match.title',
+                description: 'match.description',
+                image: { url: '<_match_image>'},
+                footer: { text: 'roshan.plus', icon_url: '<bot_avatar>'}
+              }
+            }, {
               team: odutil.winnerTeam(results[0]),
               match_type: results[0].league ? ' :trophy: ' + results[0].league.name : enumLobbyType.getValue(results[0].lobby_type),
               match_skill: enumSkill.getValue(results[0].skill) || '',

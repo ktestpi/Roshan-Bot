@@ -24,5 +24,5 @@ module.exports = new Command('roll',{
       if(min > max){return};
       random = Math.round(Math.random()*(max - min) + min);
     }
-    return msg.reply('roll.text', {min,max, username : msg.author.username,random})
+    return msg.reply('roll.text', {username : msg.author.username, min, max, random})
   })

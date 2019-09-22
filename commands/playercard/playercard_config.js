@@ -2,18 +2,6 @@ const { Command } = require('aghanim')
 const enumHeroes = require('../../enums/heroes')
 const enumPlayerPos = require('../../enums/player_positions')
 const enumPlayerCardBg = require('../../enums/card_bg')
-const EmbedBuilder = require('../../classes/embed-builder.js')
-
-const embed = new EmbedBuilder({
-  title: 'playercard.title',
-  description: '<social_links>',
-  fields: [
-    { name: 'playercard.highlightsheroes', value: '<_heroes>', inline: false},
-    { name: 'game.position', value: '<_position>', inline: false},
-    { name: 'playercard.bg', value: '<_bg>', inline: false}
-  ],
-  footer: { text: 'playercard.roshancard',  icon_url: '<bot_avatar>'}
-})
 
 module.exports = new Command('config',{
   subcommandFrom : 'playercard',
@@ -47,7 +35,18 @@ module.exports = new Command('config',{
           if (!Object.keys(update).length) { return }
           return client.cache.profiles.save(msg.author.id, { card: update }).then(() => msg.addReaction(client.config.emojis.default.accept))
         } else {
-          return msg.reply(embed, {
+          return msg.reply({
+            embed: {
+              title: 'playercard.title',
+              description: '<social_links>',
+              fields: [
+                { name: 'playercard.highlightsheroes', value: '<_heroes>', inline: false},
+                { name: 'game.position', value: '<_position>', inline: false},
+                { name: 'playercard.bg', value: '<_bg>', inline: false}
+              ],
+              footer: { text: 'playercard.roshancard',  icon_url: '<bot_avatar>'}
+            }
+          }, {
             username: msg.author.username,
             social_links: client.components.Account.socialLinks(player),
             _player_avatar: msg.author.avatarURL,

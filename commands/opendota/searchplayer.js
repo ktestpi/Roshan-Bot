@@ -2,13 +2,6 @@ const { Command } = require('aghanim')
 const { Markdown, Request } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
 const { UserError, ConsoleError } = require('../../classes/errors.js')
-const EmbedBuilder = require('../../classes/embed-builder.js')
-
-const embed = new EmbedBuilder({
-  title: 'searchplayer.title',
-  description: 'searchplayer.description',
-  footer: {text : 'searchplayer.footer', icon_url : '<bot_avatar>'}
-})
 
 module.exports = new Command('searchplayer',{
   category : 'Dota 2', help : 'Busca a un/a jugador/a', args : '[búsqueda]'},
@@ -34,7 +27,13 @@ module.exports = new Command('searchplayer',{
       const urls = players.map(player => 'https://api.opendota.com/api/players/' + player.account_id);
       return Request.getJSONMulti(urls).then((player_profiles) => {
         const text = player_profiles.map((player) => player.profile).map((player) => `**${client.components.Bot.parseText(odutil.nameOrNick(player),'nf')}** ${Markdown.link(client.config.links.profile.dotabuff+player.account_id,'DB')}/${Markdown.link(player.profileurl,'S')}`).join(', ');
-        return msg.reply(embed,{
+        return msg.reply({
+          embed: {
+            title: 'searchplayer.title',
+            description: 'searchplayer.description',
+            footer: {text : 'searchplayer.footer', icon_url : '<bot_avatar>'}
+          }
+        },{
           query: query,
           text: text,
           match: playersShow !== playersTotal ? playersShow + "/" + playersTotal : playersShow
