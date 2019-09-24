@@ -12,7 +12,7 @@ module.exports = class Scripts extends Component {
         this.update()
     }
     messageCreate(msg) {
-        if (msg.channel.id !== this.replChannel || msg.author.id !== this.client.owner.id || msg.content.startsWith(this.client.defaultPrefix)){return}
+        if (msg.channel.id !== this.replChannel || msg.author.id !== this.client.owner.id || msg.content.startsWith(this.client.prefix)){return}
         const bot = this.client
         const _guild = msg.channel.guild
         const gval = eval

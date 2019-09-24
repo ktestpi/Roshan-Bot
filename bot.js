@@ -47,8 +47,8 @@ bot.addCommand(new Aghanim.Command('help',{}, async function(msg, args, client, 
 	let helpMessage = msg.author.locale('help.message') +'\n\n'
 	if(categories.includes(query)){
 	const cmds = client.getCommandsFromCategories(query).sort((a, b) => a.name > b.name ? 1 : -1)
-	const prefix = client.defaultPrefix
-	if(!cmds){helpMessage += client.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${client.defaultPrefix}help ${c.name.toLowerCase()}\` - ${msg.author.locale('cat_' + c.name.toLowerCase() + '_help')}`).join('\n') + '\n\n' + msg.author.locale('help.messageaftercategories')}
+	const prefix = client.prefix
+	if(!cmds){helpMessage += client.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${client.prefix}help ${c.name.toLowerCase()}\` - ${msg.author.locale('cat_' + c.name.toLowerCase() + '_help')}`).join('\n') + '\n\n' + msg.author.locale('help.messageaftercategories')}
 	else{
 		helpMessage += cmds.filter(c => filterCommands(c,query,owner)).map(c => {
 			const cmd_args = msg.author.locale('cmd_' + c.name + '_args')
@@ -62,7 +62,7 @@ bot.addCommand(new Aghanim.Command('help',{}, async function(msg, args, client, 
 			}).join('\n')
 		}
 	}else{
-		helpMessage += client.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${client.defaultPrefix}help ${c.name.toLowerCase()}\` - ${msg.author.locale('cat_' + c.name.toLowerCase() + '_help')}`).join('\n') + '\n\n' + msg.author.locale('help.messageaftercategories')
+		helpMessage += client.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${client.prefix}help ${c.name.toLowerCase()}\` - ${msg.author.locale('cat_' + c.name.toLowerCase() + '_help')}`).join('\n') + '\n\n' + msg.author.locale('help.messageaftercategories')
 	}
 	return !client.setup.helpDM ? msg.reply(helpMessage) : msg.replyDM(helpMessage)
 

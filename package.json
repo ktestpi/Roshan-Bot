@@ -4,7 +4,10 @@
   "version_date": "22/09/19",
   "description": "Dota 2 and Artifact Discord bot written in ErisJS using Aghanim Command Client",
   "main": "bot.js",
-  "engines": {"node" : "=10.16.3"},
+  "engines": {
+    "node": "=10.16.3",
+    "npm": "=6.10.2"
+  },
   "scripts": {
     "start": "node bot.js",
     "test": "./node_modules/.bin/jest",
@@ -27,7 +30,7 @@
   "author": "Desvelao^^ <iamdesvelao@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "aghanim": "github:desvelao/aghanim#dev",
+    "aghanim": "github:desvelao/aghanim",
     "artifact-api": "github:openartifact/artifact-api",
     "dotaconstants": "^6.18.0",
     "erisjs-utils": "github:desvelao/erisjs-utils#dev",

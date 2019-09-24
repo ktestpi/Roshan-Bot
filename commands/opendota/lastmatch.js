@@ -16,7 +16,7 @@ module.exports = new Command('lastmatch',{
         const [player, results] = data
         const cmd = client.commands.find(c => c.name == 'match')
         if (!cmd) { return }
-        msg.content = client.defaultPrefix + cmd.name + ' ' + results[0][0].match_id;
+        msg.content = client.prefix + cmd.name + ' ' + results[0][0].match_id;
         args[0] = cmd.name;
         args[1] = results[0][0].match_id
         return cmd.process(msg, args, client, cmd)
