@@ -16,7 +16,7 @@ module.exports = class Notifier extends Component{
             this[event] = (message) => {
                 if(this.ignore.includes(event)){return}
                 this.console(event,message)
-                this.log(`${options.events[event] || ''} - ${message}`)
+                this.log(`${this.client.config.notifier.events[event] || ''} - ${message}`)
             }
         })
     }

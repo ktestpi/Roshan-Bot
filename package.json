@@ -30,7 +30,7 @@
   "author": "Desvelao^^ <iamdesvelao@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "aghanim": "github:desvelao/aghanim",
+    "aghanim": "github:desvelao/aghanim#0.1.0",
     "artifact-api": "github:openartifact/artifact-api",
     "dotaconstants": "^6.18.0",
     "erisjs-utils": "github:desvelao/erisjs-utils#dev",

@@ -4,7 +4,7 @@ const Board = require('../core/board.js')
 const gameconfig = require('../duel.config.js')
 
 module.exports = new Command('duel', { category: 'Fun', hide: true,
-    check: (msg, args, client, command) => msg.channel.id !== client.components.DuelGame.channelMatchmakingID},
+    check: (msg, args, client, command) => msg.channel.id === client.components.DuelGame.channelMatchmakingID},
     async function (msg, args, client, command) {
         // const newBoard = new Board(msg.channel)
         msg.delete()
@@ -13,7 +13,7 @@ module.exports = new Command('duel', { category: 'Fun', hide: true,
             initialMessage: {
                 content: {
                     embed: {
-                        description: `${msg.author.username} wants to play a Duel. Reacts with ${gameconfig.emojis.accept} to join the game.`
+                        description: `${msg.author.username} wants to play a Duel. React with ${gameconfig.emojis.accept} to join the game.`
                     }
                 }
             },
@@ -61,7 +61,7 @@ module.exports = new Command('duel', { category: 'Fun', hide: true,
                         if(userID === that.author.id){
                             that.unregister()
                             return that.update({embed: {
-                                description: `${that.author.username} cancels duel game.`
+                                description: `${that.author.username} canceled duel game.`
                             }})
                         }
                     }    

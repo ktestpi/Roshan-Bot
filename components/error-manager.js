@@ -14,7 +14,7 @@ module.exports = class ErrorManager extends CustomComponent() {
         this.config = { userSilent: true }
 
         // Events
-        this.client.on('aghanim:command:error', (error, msg, args, command) => {
+        this.client.on('aghanim:command:error', (error, msg, args, client, command) => {
             if (error instanceof UserError) {
                 msg.reply(error.reply(msg, args))
                 if (this.config.userSilent && !error.err) { return }
@@ -27,15 +27,11 @@ module.exports = class ErrorManager extends CustomComponent() {
             }
         })
 
-        this.client.on('aghanim:component:error', (error, component) => {
+        this.client.on('aghanim:component:error', (error, event, client, component) => {
             this.console(new ComponentError('Component', error).toConsole(component))
         })
 
-        this.client.on('aghanim:error:', (error) => {
-            this.errorToConsole(error)
-        })
-
-        this.client.on('error', (error) => {
+        this.client.on('aghanim:error', (error, client) => {
             this.errorToConsole(error)
         })
     }
