@@ -2,7 +2,6 @@ const CustomComponent = require('../classes/custom-component.js')
 const { Eris } = require('aghanim')
 const odutil = require('../helpers/opendota-utils')
 const { Datee, Markdown } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../classes/errors.js')
 
 module.exports = class Account extends CustomComponent() {
 	constructor(client, options) {
@@ -45,8 +44,50 @@ module.exports = class Account extends CustomComponent() {
 			},
 			enumerable: true
 		})
-	}
-	ready(){
+
+		// Define custom requirements
+		this.client.addCommandRequirement({
+			type: 'account.exist',
+			condition: async (msg, args, client, command, req) => {
+			  const account = await client.components.Account.get(msg.author.id)
+			  if(!account){return false}
+			  args.account = account
+			  return true
+			},
+			response: (msg, args, client, command, req) => msg.author.locale("bot.needregister")
+		  })
+
+		this.client.addCommandRequirement({
+			type: 'account.existany',
+			condition: async (msg, args, client, command, req) => {
+				args.user = msg.mentions.length ? msg.mentions[0] : msg.author
+				args.account = await client.components.Account.get(args.user.id)
+				if(!args.account){	
+					if (args.user.id === msg.author.id) {
+						await msg.reply("bot.needregister")
+						return null
+					}
+					return false
+				}
+				return true
+			},
+			response: "You account don't exist"
+		})
+
+		this.client.addCommandRequirement({
+			type: 'account.registered',
+			condition: async (msg, args, client, command, req) => {
+				return msg.author.registered
+			},
+			response: (msg, args, client, command, req) => msg.author.locale('bot.needregister')
+		})
+		this.client.addCommandRequirement({
+			type: 'account.supporter',
+			condition: async (msg, args, client, command, req) => {
+				return msg.author.supporter
+			},
+			response: (msg, args, client, command, req) => msg.author.locale('roshan.supporter.need')
+		})
 	}
 	schema(){
 		return {
@@ -62,24 +103,6 @@ module.exports = class Account extends CustomComponent() {
 	}
 	get(discordID){
 		return Promise.resolve(this.client.cache.profiles.get(discordID))
-	}
-	exists(discordID){
-		return this.get(discordID).then((account) => {
-			if (!account) { throw new UserError('account', 'bot.needregister')}
-			return Promise.resolve(account)
-		})//.catch(err => Promise.reject(err))
-	}
-	existsAny(msg){
-		return new Promise((res,rej) => {
-			const discordID = msg.mentions.length ? msg.mentions[0].id : msg.author.id
-			this.get(discordID).then((account) => {
-				if( !account ){
-					if (discordID === msg.author.id) { throw new UserError('account', 'bot.needregister')}
-					else { throw new UserError('opendota', 'bot.needregistermentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username })}
-				}
-				res(account)
-			}).catch(err => rej(err))
-		})
 	}
 	create(discordID,dotaID,steamID,odResponse){
 		const data = this.schema()

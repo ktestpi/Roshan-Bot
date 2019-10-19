@@ -1,13 +1,14 @@
-const { Command } = require('aghanim')
 const { Markdown } = require('erisjs-utils')
 const links = require('../../containers/links.json')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 
-module.exports = new Command('links',{
-  category : 'General', help : 'Enlaces interesantes sobre el juego', args : '<categoría>'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'links',
+  category: 'General',
+  help: 'Enlaces interesantes sobre el juego',
+  args: '<categoría>',
+  run: async function (msg, args, client, command){
     const query = args.after
-    if (!links[query]) { throw new UserError('wrongCmdArg', 'wrongCmdArg', { options: Object.keys(links).join(', '), cmd: args.until(1) })}
+    if (!links[query]) { msg.reply('wrongCmdArg', { options: Object.keys(links).join(', '), cmd: args.until(1) })}
     let textLinks = '';
     let textFields = [];
     let arrayFields = links[query].fields.reverse();
@@ -43,4 +44,5 @@ module.exports = new Command('links',{
         color : client.config.color
       }
     })
-  })
+  }
+}

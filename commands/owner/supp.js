@@ -1,9 +1,8 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command(['supp'],{
+module.exports = {
+  name: ['supp'],
   category : 'Owner', help : 'Supports', args : '[<add/remove> <mención>]',
-  ownerOnly : true},
-  async function(msg, args, client){
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     // if(!args[1]){return}
     if(['add','remove'].includes(args[1]) && args.length > 2){
       const cmd = args[1]
@@ -27,4 +26,5 @@ module.exports = new Command(['supp'],{
         color : client.config.color
       }})
     }
-  })
+  }
+}

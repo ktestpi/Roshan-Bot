@@ -1,8 +1,9 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command('roll',{
-  category : 'General', help : 'Rollea entre dos números', args : '[min/max] [max]'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'roll',
+  category: 'General',
+  help: 'Rollea entre dos números',
+  args: '[min/max] [max]',
+  run: async function (msg, args, client, command){
     let min, max, random;
     if(args.length == 1){
       min = 1;
@@ -25,4 +26,5 @@ module.exports = new Command('roll',{
       random = Math.round(Math.random()*(max - min) + min);
     }
     return msg.reply('roll.text', {username : msg.author.username, min, max, random})
-  })
+  }
+}

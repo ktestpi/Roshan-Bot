@@ -1,8 +1,9 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command('errors',{
-  category : 'General', help : 'Corrección de errores', args : ''},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'errors',
+  category: 'General',
+  help: 'Corrección de errores',
+  args: '',
+  run: async function (msg, args, client, command){
     return msg.reply({
       embed: {
         title: 'errors.title',
@@ -13,4 +14,5 @@ module.exports = new Command('errors',{
         footer: { text: 'about.footer', icon_url: '<bot_icon>' }
       }
     })
-  })
+  }
+}

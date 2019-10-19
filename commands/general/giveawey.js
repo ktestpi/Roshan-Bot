@@ -1,9 +1,10 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command('giveaway',{
-  category : 'General', help : 'Realiza un sorteo en Discord', args : '[rol]',
-  rolesCanUse: 'aegis'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'giveaway',
+  category: 'General',
+  help: 'Realiza un sorteo en Discord',
+  args: '[rol]',
+  rolesCanUse: 'aegis',
+  run: async function (msg, args, client, command){
     const guild = msg.channel.guild
     const re = /<@&([\d^>]+)>/g
     let myArray
@@ -24,7 +25,8 @@ module.exports = new Command('giveaway',{
       members = guild.members.filter(m => !m.bot).map(m => m.id)
       return fn(msg, args, members, guild, roles, client)
     }
-  })
+  }
+}
 
 function fn(msg,args,members,guild,roles,bot){
   const winner = guild.members.get(members[Math.floor(Math.random()*members.length)])
@@ -45,5 +47,3 @@ function fn(msg,args,members,guild,roles,bot){
     .then(m => setTimeout(() => m.edit(embed)
       ,waittime))
 }
-
-//TODO: msg.reply with embed

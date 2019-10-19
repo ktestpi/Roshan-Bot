@@ -1,9 +1,11 @@
-const { Command } = require('aghanim')
 const { Datee, Markdown } = require('erisjs-utils')
 
-module.exports = new Command('feeds',{
-  category : 'General', help : 'Últimos feeds', args : '<categoría>'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'feeds',
+  category: 'General',
+  help: 'Últimos feeds',
+  args: '<categoría>',
+  run: async function (msg, args, client, command){
     const feeds = client.cache.feeds.order().slice(0,8)
     return msg.reply({
       embed: {
@@ -16,4 +18,5 @@ module.exports = new Command('feeds',{
     },{
       _feeds_description: feeds.map(feed => `\`${Datee.custom(parseInt(feed._id) * 1000, 'h:m D/M', true)}\` **${feed.title}** ${feed.body}${feed.link ? ' ' + Markdown.link(feed.link, ':link:') : ''}`).join('\n')
     })
-  })
+  }
+}

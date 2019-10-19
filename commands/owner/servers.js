@@ -1,12 +1,10 @@
-const { Command } = require('aghanim')
 const { Classes } = require('erisjs-utils')
 
-//TODO:util.table.new
-
-module.exports = new Command('servers',{
+module.exports = {
+  name: 'servers',
   category : 'Owner', help : 'Información de los servidores', args : '',
-  ownerOnly : true},
-  async function(msg, args, client){
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     let table = new Classes.Table(['ID','N','F','Server','Members','Owner'],['18','1','1','20r','7c','15'],'.');
     const guilds = client.guilds.map(guild => {
       const cache = client.cache.servers.get(guild.id)
@@ -14,4 +12,5 @@ module.exports = new Command('servers',{
     }).filter(guild => guild)
     guilds.forEach(guild => table.addRow([guild.id,guild.notifications ? '+' : '-',guild.feeds ? '+' : '-',guild.name,guild.members,guild.owner]))
     msg.reply({embed : {title : `Notificaciones de los Servidores (${guilds.length})`,description : table.render()}})
-  })
+  }
+}

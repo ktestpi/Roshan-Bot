@@ -1,11 +1,20 @@
-const { Command } = require('aghanim')
 const enumFeeds = require('../../enums/feeds')
 const FirebaseArraySet = require('../../classes/firebasearrayset')
 
-module.exports = new Command(['subscribe','sub'],{subcommandFrom : 'server',
-  category : 'Server', help : 'Subscripción de feeds', args : '<feeds separados por un espacio>',
-  rolesCanUse: 'aegis'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: ['unsubscribe','unsub'],
+  childOf: 'server',
+  category: 'Server',
+  help: 'Desuscribción de feeds',
+  args: '<feeds separados por un espacio>',
+  requirements: [
+    {
+      type: 'member.has.role',
+      role: 'aegis',
+      incaseSensitive: true
+    }
+  ],
+  run: async function (msg, args, client, command){
     const content = args.from(2)
     if(!content){return}
     const subs = content.split(' ')
@@ -16,12 +25,12 @@ module.exports = new Command(['subscribe','sub'],{subcommandFrom : 'server',
     const subsKey = []
     subs.forEach(sub => {
       const s = enumFeeds.getKey(sub)
-      if(s){serversSubs.addVal(s);subsKey.push(s)}
+      if(s){serversSubs.deleteVal(s);subsKey.push(s)}
     })
     if(!subsKey.length){return}
     return client.cache.servers.save(msg.channel.guild.id,{feeds : {subs : serversSubs.tostring}}).then(() => {
       msg.addReactionSuccess()
-      return msg.reply('server.subscription',{subs : subsKey.map(s => `**${enumFeeds.getValue(s)}**`).join(', ')})
-    }
-    )
-  })
+      return msg.reply('server.unsubscription',{subs : subsKey.map(s => `**${enumFeeds.getValue(s)}**`).join(', ')})
+    })
+  }
+}

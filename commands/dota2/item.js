@@ -1,9 +1,11 @@
-const { Command } = require('aghanim')
 const enumItems = require('../../enums/items')
 
-module.exports = new Command('item', {
-    category: 'Dota 2', help: 'Muestra información de un objeto de Dota 2', args: ''},
-    async function (msg, args, client, command) {
+module.exports = {
+    name: 'item', 
+    category: 'Dota 2',
+    help: 'Muestra información de un objeto de Dota 2',
+    args: '',
+    run: async function (msg, args, client, command) {
         const item = enumItems.getValueByName(args.from(1))
         // FIXME: when search sange we get sange and yasha. See enumItems.getValueByName method
         if (!item) { return }
@@ -41,4 +43,5 @@ module.exports = new Command('item', {
                 _item_cd: item.cd || 0,
                 _item_image: `${enumItems.dotaCdnURL}${item.img}`
         })
-    })
+    }
+}

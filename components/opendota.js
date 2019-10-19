@@ -1,6 +1,5 @@
 const { Component } = require('aghanim')
 const { Request, Markdown } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../classes/errors.js')
 
 module.exports = class Opendota extends Component {
     constructor(client, options) {
@@ -16,6 +15,40 @@ module.exports = class Opendota extends Component {
             const date = new Date()
             if (date.getDate() === 1) {
                 this.save(0)
+            }
+        })
+        this.client.addCommandRequirement({
+            type: 'is.dota.player',
+            condition: async (msg, args, client, command, req) => {
+                if (msg.mentions.length > 0) {
+                    args.profile = this.baseProfile(msg.mentions[0].id)
+                    if (this.needRegister(msg, args.profile)) {
+                        args.message = msg.author.locale('bot.Mentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username })
+                        return false
+                    }
+                } else if (args[1]) {
+                    const number = parseInt(args[1])
+                    if (!isNaN(number)) {
+                        args.profile = this.baseProfile(undefined, number)
+                    } else {
+                        try{
+                            args.profile = await this.getProPlayerID(args.from(1)).then(player => this.baseProfile(undefined, player.account_id))
+                        }catch(err){
+                            args.message = msg.author.locale('error.pronotfound', { pro: args.from(1)})
+                            return false
+                        }   
+                    }
+                } else {
+                    args.profile = this.baseProfile(msg.author.id)
+                    if (this.needRegister(msg, args.profile)) {
+                        args.message = msg.author.locale('needRegister')
+                        return false
+                    }
+                }
+                return true
+            },
+            response: (msg, args, client, command, req) => {
+                return args.message
             }
         })
     }
@@ -74,44 +107,39 @@ module.exports = class Opendota extends Component {
     needRegister(msg, account) {
         return !account.data.dota ? true : false
     }
-    existsAuthor(msg){
-        return new Promise((res,rej) => {
-            const profile = this.baseProfile(msg.author.id)
-            if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'bot.needregister') }
-            res(profile)
-        })
-    }
-    userID(msg, args) {
-        return new Promise((res, rej) => {
-            if (msg.mentions.length > 0) {
-                const profile = this.baseProfile(msg.mentions[0].id)
-                if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'bot.Mentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username }) }
-                res(profile)
-            } else if (args[1]) {
-                const number = parseInt(args[1])
-                if (!isNaN(number)) {
-                    res(this.baseProfile(undefined, number))
-                } else {
-                    this.getProPlayerID(args.from(1)).then(player => res(this.baseProfile(undefined, player.account_id))).catch(err => rej(new UserError('opendota', 'error.pronotfound', { pro: args.from(1)})))
-                }
-            } else {
-                const profile = this.baseProfile(msg.author.id)
-                if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'needRegister') }
-                res(profile)
-            }
-        })
-    }
+    // existsAuthor(msg){
+    //     return new Promise((res,rej) => {
+    //         const profile = this.baseProfile(msg.author.id)
+    //         if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'bot.needregister') }
+    //         res(profile)
+    //     })
+    // }
+    // userID(msg, args) {
+    //     return new Promise((res, rej) => {
+    //         if (msg.mentions.length > 0) {
+    //             const profile = this.baseProfile(msg.mentions[0].id)
+    //             if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'bot.Mentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username }) }
+    //             res(profile)
+    //         } else if (args[1]) {
+    //             const number = parseInt(args[1])
+    //             if (!isNaN(number)) {
+    //                 res(this.baseProfile(undefined, number))
+    //             } else {
+    //                 this.getProPlayerID(args.from(1)).then(player => res(this.baseProfile(undefined, player.account_id))).catch(err => rej(new UserError('opendota', 'error.pronotfound', { pro: args.from(1)})))
+    //             }
+    //         } else {
+    //             const profile = this.baseProfile(msg.author.id)
+    //             if (this.needRegister(msg, profile)) { throw new UserError('opendota', 'needRegister') }
+    //             res(profile)
+    //         }
+    //     })
+    // }
     baseProfile(discordID, dotaID) {
         const cache = this.client.cache.profiles.get(discordID)
         const data = cache || this.client.components.Account.schema()
         const profile = this.client.components.Users.getProfile(discordID)
         if (dotaID) { data.dota = dotaID }
         return { discordID, cached: cache ? true : false, data, profile}
-    }
-    userCall(msg, args) {
-        return this.userID(msg, args).then(playerID => new Promise((res, rej) => {
-
-        }))
     }
     getProPlayerID(name) {
         return new Promise((resolve, reject) => {

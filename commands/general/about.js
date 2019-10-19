@@ -1,8 +1,9 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command('about',{
-  category : 'General', help : 'Información sobre el bot', args : ''},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'about',
+  category: 'General',
+  help: 'Información sobre el bot',
+  args: '',
+  run: async function (msg, args, client, command){
     return msg.reply({
       embed: {
         title: 'about.title',
@@ -15,4 +16,5 @@ module.exports = new Command('about',{
         footer : {text : 'about.footer'}
       }
     })
-  })
+  }
+}

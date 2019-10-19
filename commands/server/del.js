@@ -1,9 +1,16 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command('del',
-  {category : 'Server', help : 'Elimina los últimos <mensajes>', args : '<mensajes>',
-    rolesCanUse : 'aegis'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'del',
+  category: 'Server',
+  help: 'Elimina los últimos <mensajes>',
+  args: '<mensajes>',
+  requirements: [
+    {
+      type: 'member.has.role',
+      role: 'aegis',
+      incaseSensitive: true
+    }
+  ],
+  run: async function (msg, args, client, command){
     const limit = 100, min = 10;
     let messages = args[1] ? parseInt(args[1]) : min
     if (isNaN(messages)) { return msg.reply('del.neednumbermessages')}
@@ -16,4 +23,5 @@ module.exports = new Command('del',
       }
       return Promise.all(promises)
     })
-  })
+  }
+}

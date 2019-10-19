@@ -58,8 +58,8 @@ module.exports = class Locale extends Component {
         const localeCommands = {}
         this.client.commands.forEach(command => {
             localeCommands['cmd_' + command.name] = command.name
-            if (command.subcommands.length) {
-                command.subcommands.forEach(subcommand => {
+            if (command.childs.length) {
+                command.childs.forEach(subcommand => {
                     localeCommands['cmd_' + command.name + '_' + subcommand.name] = command.name + ' ' + subcommand.name
                 })
             }

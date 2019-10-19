@@ -1,9 +1,8 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command('usermsg',{
+module.exports = {
+  name: 'usermsg',
   category : 'Owner', help : 'Mensaje a usuari@', args : '<id> [mensaje]',
-  ownerOnly : true},
-  async function(msg, args, client){
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     const id = args[1];
     const user = client.users.find(user => user.id === id)
     if(!user){return}
@@ -20,4 +19,5 @@ module.exports = new Command('usermsg',{
       channel.createMessage({embed})
       client.createMessage(client.config.guild.notifications,{embed})
     })
-  })
+  }
+}

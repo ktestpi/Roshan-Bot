@@ -2,10 +2,14 @@ const { Command } = require('aghanim')
 const util = require('erisjs-utils')
 const { inspect } = require('util')
 
-module.exports = new Command(['evalp','ep'],{
-  category : 'Owner', help : '', args : '', hide : true,
-  ownerOnly : true},
-  async function(msg, args, client){
+module.exports = {
+  name: ['evalp','ep'],
+  category : 'Owner',
+  help : '',
+  args : '',
+  hide : true,
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     if(!args[1]){return}
     let bot = client
     const _guild = msg.channel.guild
@@ -31,4 +35,5 @@ module.exports = new Command(['evalp','ep'],{
       client.components.Notifier.console('Code Error', err.stack)
       return bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
-  })
+  }
+}

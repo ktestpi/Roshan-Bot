@@ -1,6 +1,5 @@
 const { Component } = require('aghanim')
 const { Datee, Guild, Member } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../classes/errors.js')
 
 module.exports = class ServerEvents extends Component {
     constructor(client, options) {

@@ -1,11 +1,20 @@
-const { Command } = require('aghanim')
 const on = 'on'
 const off = 'off'
 
-module.exports = new Command('notifications',{subcommandFrom : 'server',
-  category : 'Server', help : 'Configuración de notificaciones', args : '<on,off,[channel]>',
-  rolesCanUse: 'aegis'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'notifications',
+  childOf: 'server',
+  category: 'Server',
+  help: 'Configuración de notificaciones',
+  args: '<on,off,[channel]>',
+  requirements: [
+    {
+      type: 'member.has.role',
+      role: 'aegis',
+      incaseSensitive: true
+    }
+  ],
+  run: async function (msg, args, client, command){
     if(args[2] === on){
       return client.cache.servers.save(msg.channel.guild.id,{notifications : {enable : true}}).then((newElement) => msg.addReactionSuccess())
     }else if(args[2] === off){
@@ -17,4 +26,5 @@ module.exports = new Command('notifications',{subcommandFrom : 'server',
       if(!channel){return};
       return client.cache.servers.save(msg.channel.guild.id,{notifications : {channel : match[1]}}).then((newElement) => msg.addReactionSuccess())
     }
-  })
+  }
+}

@@ -4,7 +4,7 @@ const { inspect } = require('util')
 module.exports = class Repl extends Component{
     constructor(client, options){
         super(client, options)
-        this.enable = false
+        this.enable = true
         this.replChannel = "571165419977834506"
         this.scriptsChannel = "470189277544841226"
     }
@@ -12,22 +12,39 @@ module.exports = class Repl extends Component{
         this.update()
     }
     messageCreate(msg, client){
-        if(msg.channel.id === this.this.replChannel && !msg.author.bot && msg.author.id === msg.author.id !== this.client.owner.id){ 
+        if(msg.channel.id === this.replChannel && !msg.author.bot && msg.author.id === msg.author.id !== this.client.owner.id){ 
             const response = msg.reply.bind(msg)
             response.table = (head, array) => response(head.join(' | ')+'\n'+array.map(el => el.join(' | ')).join('\n'))
-            response.object = (obj) => response(`\`\`\`js\n${String(obj)}\`\`\``)
+            response.object = (obj) => response(`\`\`\`js\n${inspect(obj)}\`\`\``)
             response.keyval = (obj) => response(Object.keys(obj).map(key => `${key}: ${obj[key]}`).join('\n'))
             response.js = (obj) => response(`\`\`\`js\n${inspect(obj)}\`\`\``)
             
             let input = msg.content.split(' ')
             const { command, ctx } = parse(this.repl.commands, input)
             if(command){
-                return Promise.resolve(command.run(ctx, client, response)).catch(response)
+                return Promise.resolve(command.run(ctx, client, response, command)).catch(response)
+            }else{
+                const client = this.client
+                let result = eval(msg.content)
+                Promise.resolve(result).then(res => {
+                    if (typeof result === 'object') {
+                        result = inspect(result)
+                    }
+                    result = String(result).slice(0, 1000)
+                    this.client.components.Notifier.console('Eval Result', result)
+                    return msg.reply(`**${this.client.config.emojis.default.accept} Result**\n\`\`\`js\n${result}\`\`\``)
+                    // return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.client.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
+                }).catch(err => {
+                    this.client.components.Notifier.console('Eval Error', err)
+                    return msg.reply(`**${this.client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
+                    // return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
+                })
+
             }
         }
     }
     update(){
-        const guild = new CommandRepl('guild')
+        const guild = new CommandRepl('guild', helpfunction)
         guild.register( 
             'list',
             (_, client, response) => response.table(['Name','Members'], client.guilds.map(g => [g.name, g.memberCount]))
@@ -42,13 +59,13 @@ module.exports = class Repl extends Component{
             }
         )
 
-        const user = new CommandRepl('user')
+        const user = new CommandRepl('user', helpfunction)
         user.register('info',
             ([id], client, response) => {
                 const user = client.users.find(user => user.id === id || user.username.toLowerCase().includes(id))
                 if(user){
-                    const {username} = user
-                    return response.keyval({username})
+                    const {username, id, mention} = user
+                    return response.keyval({username, id, mention})
                 }
             }
         )
@@ -57,10 +74,19 @@ module.exports = class Repl extends Component{
                 return response.js(client.cache.profiles.get(id))
             }
         )
+        user.register('opendota', async ([dotaID], client, response) => {
+            const account = await this.client.components.Account.get(dotaID)
+            if(account){
+                return this.client.components.Opendota.request(['https://api.opendota.com/api/players/<id>'], account.dota).then(response.object)
+            }else{
+                return this.client.components.Opendota.request(['https://api.opendota.com/api/players/<id>'], dotaID).then(response.object)
+            }
+        })
         this.repl = new CommandRepl()
         this.repl.register(guild)
         this.repl.register(user)
         this.repl.register('refresh', (_, client, response) => this.update().then(() => response('Done refresh')))
+        this.repl.register('help', (_, client, response) => response.table(["Command", "Description"], this.repl.commands.map(cmd => [cmd.name, ""])))
         return this.client.getMessages(this.scriptsChannel).then(messages => {
             const {exists, notExists } = messages
                 .filter(m => m.content.startsWith('🇷'))
@@ -74,17 +100,15 @@ module.exports = class Repl extends Component{
                     const command = this.repl.commands.find(cmd => cmd.name === c.tag)
                     const src = eval(`const obj = ${c.src};obj`)
                     Object.keys(src).map(key => command.register(key, src[key]))
-                    console.log('Added to', command.name, c.tag)
                 }catch(err){
                     console.error(err)
                 }
             })
             notExists.forEach(c => {
-                const command = new CommandRepl(c.tag)
+                const command = new CommandRepl(c.tag, helpfunction)
                 const src = eval(`const obj = ${c.src};obj`)
                 Object.keys(src).map(key => command.register(key, src[key]))
                 this.repl.register(command)
-                console.log('New to', command.name, c.tag)
             })
             return this.client.components.Notifier.console('Scripts Repl', 'Loaded')
         })
@@ -103,7 +127,7 @@ class CommandRepl{
         }else{
             this.commands.push(new CommandRepl(name, fn))
         }
-        console.log('Added command:', name, ' - ', this.name)
+        // console.log('Added command:', name, ' - ', this.name)
         return this
     }
     run(ctx, client, response){
@@ -121,7 +145,6 @@ function render(cmd, sum = '', lvl){
     return cmd.commands.reduce((c, s) => {
 
     }, '')
-    console.log(cmd.commands.length)
     if(cmd.commands.length){
         return sum + ' '.repeat(lvl) + '\n' + render(cmd.commands, sum, lvl+1) + '\n'
     }else{
@@ -132,8 +155,11 @@ function parse(commands, ctx){
     const command = commands.find(command => command.name === ctx[0])
     const [_, ...restargs] = ctx
     if(command && command.commands.length){
-        return parse(command.commands, restargs)
+        const parsed = parse(command.commands, restargs)
+        return parsed.command ? parsed : { command, ctx : restargs}
     }else{
         return { command, ctx: restargs }
     }
 }
+
+const helpfunction = (_, client, response, command) => response.table(["Command", "Description"], command.commands.map(cmd => [cmd.name, cmd.description]))

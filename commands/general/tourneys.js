@@ -1,10 +1,11 @@
-const { Command } = require('aghanim')
 const util = require('erisjs-utils')
-const { sortTourneys } = require('../../helpers/sort')
 
-module.exports = new Command('tourneys',{
-  category : 'General', help : 'Últimos torneos o muestra info sobre torneo', args : '[nombre torneo]'},
-  async function(msg, args, client, command){
+module.exports = {
+  name: 'tourneys',
+  category: 'General',
+  help: 'Últimos torneos o muestra info sobre torneo',
+  args: '[nombre torneo]',
+  run: async function(msg, args, client, command){
     if(!args[1]){
       let tourneys_playing = client.cache.tourneys.getPlaying()
       let tourneys_next = client.cache.tourneys.getNext()
@@ -48,9 +49,9 @@ module.exports = new Command('tourneys',{
         color : client.config.color
       }})
     }
-  })
+  }
+}
 
-  //TODO: with embed builder
 function sortTourneysNext(a,b){
   if(a.start && b.start){
     return a.start - b.start

@@ -1,10 +1,11 @@
-const { Command } = require('aghanim')
 const { Classes, Markdown } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 
-module.exports = new Command(['competitive','comp'],{
-  category : 'Dota 2', help : 'Últimos resultados de partidas competitivas', args : ''},
-  async function (msg, args, client, command){
+module.exports = {
+  name: ['competitive','comp'],
+  category: 'Dota 2',
+  help: 'Últimos resultados de partidas competitivas',
+  args: '',
+  run: async function (msg, args, client, command){
     msg.channel.sendTyping()
     return client.components.Opendota.competitive()
       .then(results => {
@@ -22,5 +23,6 @@ module.exports = new Command(['competitive','comp'],{
         }, {
           _matches_table: table
         })
-      }).catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
-  })
+      }).catch(err => { msg.reply('error.opendotarequest') })
+  }
+}

@@ -1,12 +1,20 @@
-const { Command } = require('aghanim')
 const enumFeeds = require('../../enums/feeds')
 const on = 'on'
 const off = 'off'
 
-module.exports = new Command('server',{
-  category : 'Server', help : 'Muestra la configuración del servidor', args : '',
-  rolesCanUse: 'aegis'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'server',
+  category: 'Server',
+  help: 'Muestra la configuración del servidor',
+  args: '',
+  requirements: [
+    {
+      type: 'member.has.role',
+      role: 'aegis',
+      incaseSensitive: true
+    }
+  ],
+  run: async function (msg, args, client, command){
     const data = client.cache.servers.data(msg.channel.guild.id)
     const guild = client.guilds.find(guild => guild.id === msg.channel.guild.id);
     if(!data || !guild){return}
@@ -31,7 +39,8 @@ module.exports = new Command('server',{
       channel_feeds: guild.channels.find(c => c.id === data.feeds.channel).name,
       subs: data.feeds.subs.split(',').map(s => enumFeeds.getValue(s)).join(', ')
     })
-  })
+  }
+}
 
   function permissionsMemberInChannel(guild,member_id,channel_id){
     return guild.channels.find(c => c.id === channel_id).permissionsOf(member_id)

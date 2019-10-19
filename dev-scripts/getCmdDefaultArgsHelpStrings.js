@@ -9,8 +9,8 @@ function fn(folders){
     fs.readdirSync(path +'/' + folder).forEach(file => {
       if(file.slice(-3) !== '.js'){return}
       const cmd = require(path +'/' + folder +'/'+file)
-      locale[`cmd_${cmd.subcommandFrom ? cmd.subcommandFrom + '_' : ''}${cmd.name}_args`] = cmd.args
-      locale[`cmd_${cmd.subcommandFrom ? cmd.subcommandFrom + '_' : ''}${cmd.name}_help`] = cmd.help
+      locale[`cmd_${cmd.childOf ? cmd.childOf + '_' : ''}${cmd.name}_args`] = cmd.args
+      locale[`cmd_${cmd.childOf ? cmd.childOf + '_' : ''}${cmd.name}_help`] = cmd.help
     })
   })
 }

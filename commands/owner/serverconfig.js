@@ -1,10 +1,12 @@
-const { Command } = require('aghanim')
 const enumFeeds = require('../../enums/feeds')
 
-module.exports = new Command('serverconfig',{
-  category : 'Owner', help : 'Muestra la configuración del servidor', args : '<id/nombre servidor>',
-  ownerOnly : true},
-  async function(msg, args, client){
+module.exports = {
+  name: 'serverconfig',
+  category : 'Owner',
+  help : 'Muestra la configuración del servidor',
+  args : '<id/nombre servidor>',
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     const serverID = args.from(1)
     const serverID_number = Number(serverID)
     let data, guild
@@ -37,8 +39,9 @@ module.exports = new Command('serverconfig',{
       ],
       color : client.config.color
     }})
-  })
-
-  function permissionsMemberInChannel(guild,member_id,channel_id){
-    return guild.channels.find(c => c.id === channel_id).permissionsOf(member_id)
   }
+}
+
+function permissionsMemberInChannel(guild,member_id,channel_id){
+  return guild.channels.find(c => c.id === channel_id).permissionsOf(member_id)
+}

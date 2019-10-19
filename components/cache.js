@@ -22,7 +22,7 @@ module.exports = class Cache extends Component {
             this.loadLastPatchNotes()
             this.updateTorneysFeeds()
             this.loadDota2Patch()
-            if(this.client.envprod || process.argv.includes('-db')){
+            if(this.client.isProduction || process.argv.includes('-db')){
                 this.client.db.once('value').then(snap => {
                     if (!snap.exists()) { this.client.errors.emit(new ConsoleError('cacheReload', 'Error al recargar')) } else { snap = snap.val() }
                     this.updateWithSnap(snap)

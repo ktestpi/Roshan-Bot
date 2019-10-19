@@ -1,16 +1,24 @@
-const { Command } = require('aghanim')
-const { Datee, Request } = require('erisjs-utils')
-
-module.exports = new Command('register',{
-  category : 'Account', help : 'Registro en el bot', args : '<dotaID>'},
-  async function (msg, args, client, command){
-    if(args.length < 2){
-      return msg.replyDM('register.help')
-    }else{
-      if(!args[1].length){return msg.addReactionFail()} // FIXME: Add error message: Need set a dotaID
-      const dotaID = args[1]
-      return msg.author.registered ?
-        msg.reply('register.alreadyregistered') :
-        client.components.Account.createProcess(msg.author.id, dotaID, msg)
+module.exports = {
+  name: 'register',
+  category : 'Account',
+  help : 'Registro en el bot',
+  args : '<dotaID>',
+  requirements : [
+    {
+      condition: (msg, args, client, command, req) => {
+        args.dotaID = args[1]
+        return args.length > 1
+      },
+      response: (msg, args, client, command, req) => msg.author.locale('register.help')
+    },
+    {
+      condition: (msg, args, client, command, req) => {
+        return msg.author.registered
+      },
+      responseDM: (msg, args, client, command, req) => msg.author.locale('register.alreadyregistered')
     }
-})
+  ],
+  run: async function (msg, args, client, command){
+    return client.components.Account.createProcess(msg.author.id, args.dotaID, msg)
+  }
+}

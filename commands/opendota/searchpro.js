@@ -1,11 +1,12 @@
-const { Command } = require('aghanim')
 const { Markdown } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 
-module.exports = new Command('searchpro',{
-  category : 'Dota 2', help : 'Busca a un/a pro', args : '[búsqueda]'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'searchpro',
+  category: 'Dota 2',
+  help: 'Busca a un/a pro',
+  args: '[búsqueda]',
+  run: async function (msg, args, client, command){
     const query = args.slice(1).join(' ')
     if(query.length < 2){return msg.reply('errorSearchMinChars')}
     return client.components.Opendota.getProPlayersDotaName(query)
@@ -22,5 +23,6 @@ module.exports = new Command('searchpro',{
           text: text,
           match: players.length
         })
-      }).catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
-  })
+      })
+  }
+}

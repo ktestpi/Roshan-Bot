@@ -1,28 +1,29 @@
-const { Command } = require('aghanim')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
-
-module.exports = new Command('lastmatch+',{
-  category : 'Dota 2', help : 'Última partida jugada. R+', args : '[mención/dotaID/pro]', cooldown : 60,
-  cooldownMessage: function (msg, args, command, cooldown) { return msg.author.locale('cmd.incooldown')}},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'lastmatch+',
+  category : 'Dota 2', 
+  help : 'Última partida jugada. R+', 
+  args : '[mención/dotaID/pro]',
+  requirements: [
+    { 
+      type: "user.cooldown",
+      time: 60,
+      response: (msg, args, command, cooldown) => msg.author.locale('cmd.incooldown')
+    },
+    "is.dota.player"
+  ],
+  run: async function (msg, args, client, command){
     msg.channel.sendTyping()
-    return client.components.Opendota.userID(msg, args)
-      .then(player => Promise.all([
-        player,
-        client.components.Opendota.player_lastmatch(player.data.dota)
-          .catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
-        ]
-      ))
-      .then(data => {
-        const [player, results] = data
+    const [player, results] = await Promise.all([
+      args.profile,
+      client.components.Opendota.player_lastmatch(args.profile.data.dota)
+    ])
 
-        const cmd = client.commands.find(c => c.name == 'match+')
-        if (!cmd) { return }
+    const cmd = client.commands.find(c => c.name == 'match+')
+    if (!cmd) { return }
+    msg.content = client.prefix + cmd.name + ' ' + results[0][0].match_id;
 
-        msg.content = client.prefix + cmd.name + ' ' + results[0][0].match_id;
-
-        args[0] = cmd.name;
-        args[1] = results[0][0].match_id
-        return cmd.run(msg, args, client, cmd)
-      })
-  })
+    args[0] = cmd.name;
+    args[1] = results[0][0].match_id
+    return await cmd.run(msg, args, client, cmd)
+  }
+}

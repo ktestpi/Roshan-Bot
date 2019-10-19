@@ -1,12 +1,18 @@
-const { Command } = require('aghanim')
 const { Classes } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 
-module.exports = new Command(['searchworldranking','swr'],{
-  category : 'Dota 2', help : 'Busca a un jugador por nombre en la clasificación mundial', args : '<búsqueda>'},
-  async function (msg, args, client, command){
-    // let self = this
-    if (!args[1]) { return msg.reply('searchworldranking.needquery')}
+module.exports = {
+  name: ['searchworldranking','swr'],
+  category : 'Dota 2',
+  help : 'Busca a un jugador por nombre en la clasificación mundial',
+  args : '<búsqueda>',
+  requirements: [
+    {
+      condition: (msg, args, client, command, req) => args[1] || false,
+      response: (msg, args, client, command, req) => msg.author.locale('searchworldranking.needquery')
+    }
+  ],
+  run: async function (msg, args, client, command){
+    // if (!args[1]) { return msg.reply()}
     const query = args.from(1)
     msg.channel.sendTyping();
     return client.components.WorldRankingApi.searchPlayerInWorld(query).then(r => {
@@ -22,8 +28,9 @@ module.exports = new Command(['searchworldranking','swr'],{
         _results: table.render()
       })
     }).catch(err => {
-      throw new UserError('worldranking', 'searchworldranking.errorfind', { _query: args[1]}, err)
+      return msg.reply('searchworldranking.errorfind', { _query: query})
     })
-  })
+  }
+}
 
 const replace = (text) => text.replace(/`/g,'')

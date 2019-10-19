@@ -5,7 +5,6 @@ const { Message, Guild } = require('erisjs-utils')
 const enumFeeds = require('../enums/feeds')
 const packageInfo = require('../package.json')
 const odutil = require('../helpers/opendota-utils')
-const { UserError, ConsoleError } = require('../classes/errors.js')
 
 module.exports = class Bot extends CustomComponent() {
     constructor(client, options) {
@@ -15,16 +14,16 @@ module.exports = class Bot extends CustomComponent() {
         this.waitOnce('cache:init', () => {
             this.dbOnce('bot').then(snap => {
                 this.client.config.switches = snap.switches
-                if (!this.client.envprod) {
+                if (!this.client.isProduction) {
                     this.client.config.switches.leaderboardUpdate = false;
                     this.client.config.switches.backupdb = false;
                 }
                 //flags DEVMODE
-                if (!this.client.envprod && process.argv.includes('-db') ) {
+                if (!this.client.isProduction && process.argv.includes('-db') ) {
                     this.client.config.switches.backupdb = true;
                     this.client.components.Notifier.console('DEV', 'DB active')
                 }
-                if (!this.client.envprod && process.argv.includes('-ul')) {
+                if (!this.client.isProduction && process.argv.includes('-ul')) {
                     this.client.config.switches.leaderboardUpdate = true;
                     this.client.components.Notifier.console('DEV', 'DB active - UPDATE Leaderboard')
                 }
@@ -58,11 +57,11 @@ module.exports = class Bot extends CustomComponent() {
                         this.client.db.child('public').update(data_public).then(() => this.client.components.Notifier.console('Publicinfo','Updated'))
 
                         // Check guilds config setted
-                        // this.client.guilds.forEach(g => {
-                        //     if (!this.client.cache.servers.get(g.id)) {
-                        //         this.components.Guild.createProcess(g).then(() => this.client.components.Notifier.bot(`${g.name} encontrado. Registrado en el bot.`))
-                        //     }
-                        // })
+                        this.client.guilds.forEach(g => {
+                            if (!this.client.cache.servers.get(g.id)) {
+                                this.components.Guild.createProcess(g).then(() => this.client.components.Notifier.bot(`${g.name} encontrado. Registrado en el bot.`))
+                            }
+                        })
                     })
                 }
             })
@@ -134,7 +133,7 @@ module.exports = class Bot extends CustomComponent() {
         
     }
     sendImageStructure(msg, query, links, cmd) {
-        if (!links[query]) { throw new UserError('cmd.wrongarg', 'cmd.wrongarg', { options: Object.keys(links).join(', '), cmd }) } // TODO wrongCmd
+        if (!links[query]) { msg.reply('cmd.wrongarg', { options: Object.keys(links).join(', '), cmd }) } // TODO wrongCmd
         const match = links[query]
         if (typeof match === 'object') {
             return util.Message.sendImage(match.file).then(buffer => {
@@ -177,27 +176,3 @@ module.exports = class Bot extends CustomComponent() {
         return Array.from(set)
     }
 }
-
-
-
-// module.exports.sendImageStructure = function (msg, query, links, cmd) {
-//     if (!links[query]) { return module.exports.wrongCmd(msg, links, cmd) } // TODO wrongCmd
-//     const match = links[query]
-//     if (typeof match === 'object') {
-//         util.Message.sendImage(match.file).then(buffer => {
-//             msg.reply(match.msg, { file: buffer, name: match.name })
-//         })
-//     } else if (typeof query === 'string') {
-//         msg.reply(match)
-//     }
-//     // if(typeof pics[query] == 'object'){
-//     //   util.msg.sendImage_(url).then(buffer => {
-//     //     msg.reply(util.string.replace(pics[query].msg, {author : msg.author.username},true),{file : buffer, name : pics[query].name});
-//     //   })
-//     //   util.msg.sendImage([pics[query].file],[],{msg : msg, config : config, pics : pics, query : query},function(results,container){
-//     //
-//     //   })
-//     // }else{
-//     //   msg.reply(util.string.replace(pics[query], {author : msg.author.username},true));
-//     // }
-// }

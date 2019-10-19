@@ -1,10 +1,12 @@
-const { Command } = require('aghanim')
 const { Guild } = require('erisjs-utils')
 
-module.exports = new Command('svmsg',{
-  category : 'Owner', help : 'Mensaje a servidor', args : '<id> <mensaje>',
-  ownerOnly : true},
-  async function(msg, args, client){
+module.exports = {
+  name: 'svmsg',
+  category : 'Owner',
+  help : 'Mensaje a servidor',
+  args : '<id> <mensaje>',
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     if(!args[1]){return}
     const id = args[1];
     const guild = client.guilds.get(id);
@@ -20,4 +22,5 @@ module.exports = new Command('svmsg',{
       color : client.config.colors.sendMsg.server
     }
     Guild.getDefaultChannel(guild,client,true).createMessage({embed}).then(() => client.createMessage(client.config.guild.notifications,{embed}))
-  })
+  }
+}

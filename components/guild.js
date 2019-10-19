@@ -3,7 +3,6 @@ const CustomComponent = require('../classes/custom-component')
 const { Datee, Member } = require('erisjs-utils')
 const util = require('erisjs-utils')
 const enumFeeds = require('../enums/feeds')
-const { UserError, ConsoleError } = require('../classes/errors.js')
 
 module.exports = class Guild extends CustomComponent() {
     constructor(client, options) {

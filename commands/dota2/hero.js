@@ -1,9 +1,11 @@
-const { Command } = require('aghanim')
 const enumHeroes = require('../../enums/heroes')
 
-module.exports = new Command('hero', {
-    category: 'Dota 2', help: 'Muestra información de dota', args: ''},
-    async function (msg, args, client, command) {
+module.exports = {
+    name: 'hero',
+    category: 'Dota 2',
+    help: 'Muestra información de dota',
+    args: '',
+    run: async function (msg, args, client, command) {
         const hero = enumHeroes.getValueByAlias(args.from(1))
         if(!hero){ return }
         return msg.reply({
@@ -41,4 +43,5 @@ module.exports = new Command('hero', {
             _hero_basearmor: hero.base_armor + Math.round((hero.primary_attr === "agi" ? 0.2 : 0.16) * hero.base_agi),
             _hero_wikiurl: `${enumHeroes.dotaWikiURL}${hero.localized_name}`
         })
-    })
+    }
+}

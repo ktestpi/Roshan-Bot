@@ -1,9 +1,10 @@
-const { Command } = require('aghanim')
-
 const max = 1024
-module.exports = new Command(['searchcard','scard'],{
-  category : 'Artifact', help : 'Busca cartas según texto', args : '<texto>'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: ['searchcard','scard'],
+  category : 'Artifact',
+  help : 'Busca cartas según texto',
+  args : '<texto>',
+  run: async function (msg, args, client, command){
     const query = args.from(1)
     if(!query){return}
     const filtered = client.components.Artifact.searchCard(query)
@@ -23,14 +24,15 @@ module.exports = new Command(['searchcard','scard'],{
       _cards: reduced.text,
       results: reduced.count === filtered.length ? reduced.count : reduced.count + '/' + filtered.length
     })
-  })
-
-  function reduceWithCount(array,max){
-    let result = {count : 0, text : ''}
-    result.text = array.reduce((acc,cur) => {
-      if((acc + ', ' + cur).length < max){result.count++;return acc + ', ' + cur}
-      else{return acc}
-    })
-    result.count++
-    return result
   }
+}
+
+function reduceWithCount(array,max){
+  let result = {count : 0, text : ''}
+  result.text = array.reduce((acc,cur) => {
+    if((acc + ', ' + cur).length < max){result.count++;return acc + ', ' + cur}
+    else{return acc}
+  })
+  result.count++
+  return result
+}

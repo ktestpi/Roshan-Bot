@@ -1,15 +1,22 @@
-const { Command } = require('aghanim')
-const { Datee, Markdown } = require('erisjs-utils')
+const { Datee } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
 const paintjimp = require('../../paintjimp')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 
-module.exports = new Command('match+',{
-  category : 'Dota 2', help : 'Estadísticas de una partida. R+', args : '<id>', cooldown : 60,
-  cooldownMessage: function (msg, args, client, cooldown) { return msg.author.locale('cmd.incooldown')}},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'match+',
+  category: 'Dota 2',
+  help: 'Estadísticas de una partida. R+',
+  args: '<id>',
+  requirements: [
+    { 
+      type: "user.cooldown",
+      time: 60,
+      response: (msg, args, command, cooldown) => msg.author.locale('cmd.incooldown')
+    }
+  ],
+  run: async function (msg, args, client, command){
     if (!args[1]) { return }
     msg.channel.sendTyping()
     return client.components.Opendota.match(args[1])
@@ -39,5 +46,6 @@ module.exports = new Command('match+',{
               _match_image: m.attachments[0].url
             })
           })
-      }).catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
-  })
+      }).catch(err => { return msg.reply('error.opendotarequest') })
+  }
+}

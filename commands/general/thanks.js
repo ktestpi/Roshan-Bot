@@ -1,8 +1,9 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command('thanks',{
-  category : 'General', help : 'Agradecimientos', args : ''},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'thanks',
+  category: 'General',
+  help: 'Agradecimientos',
+  args: '',
+  run: async function (msg, args, client, command){
     return msg.reply({
       embed: {
         title : 'thanks.title',
@@ -15,4 +16,5 @@ module.exports = new Command('thanks',{
       _betatesters: client.config.others.betatesters.join(', '),
       _complements: client.config.others.complements.map(c => `${c.tag}: ${c.author}`).join('\n')
     })
-  })
+  }
+}

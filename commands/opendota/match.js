@@ -1,14 +1,15 @@
-const { Command } = require('aghanim')
 const util = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
 const enumHeroes = require('../../enums/heroes')
 const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 
-module.exports = new Command(['match','m'],{
-  category : 'Dota 2', help : 'Estadísticas de una partida', args : '<id>'},
-  async function(msg, args, client, command){
+module.exports = {
+  name: ['match','m'],
+  category: 'Dota 2',
+  help: 'Estadísticas de una partida',
+  args: '<id>',
+  run: async function(msg, args, client, command){
     if(!args[1]){return}
     msg.channel.sendTyping()
     return client.components.Opendota.match(args[1])
@@ -49,5 +50,6 @@ module.exports = new Command(['match','m'],{
           _match_field1_name: (results[0].dire_team ? results[0].dire_team.name : msg.author.locale('dota2.dire')) + ' - ' + results[0].dire_score,
           _match_field1_value: dire.render()
         })
-      }).catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
-  })
+      }).catch(err => { return msg.reply('error.opendotarequest') })
+  }
+}

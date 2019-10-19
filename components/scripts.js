@@ -3,6 +3,7 @@ const { inspect } = require('util')
 module.exports = class Scripts extends Component {
     constructor(client, options) {
         super(client)
+        this.enable = false
         this.functions = {}
         this.modules = {}
         this.replChannel = "571165419977834506"

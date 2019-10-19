@@ -1,9 +1,10 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command('svowmsg',{
-  category : 'Owner', help : 'Mensage a propietario del servidor', args : '<guildID>',
-  ownerOnly : true},
-  async function(msg, args, command){
+module.exports = {
+  name: 'svowmsg',
+  category : 'Owner',
+  help : 'Mensage a propietario del servidor',
+  args : '<guildID>',
+  requirements: ['owner.only'],
+  run: async function(msg, args, command){
     if(!args[1]){return msg.replyLocale('errorNoServerID')}
     const id = args[1];
     const guild = client.guilds.get(id);
@@ -22,4 +23,5 @@ module.exports = new Command('svowmsg',{
       channel.createMessage({embed}).then(() => client.createMessage(client.config.guild.notifications,{embed}))
       // courier.send('log',{info : `${owner.username} | ${guild.name} | ${guild.id}`, info_icon : guild.iconURL, reason : `Propietario servidor`, message : message, color : config.colors.sendMsg.owner},{bot})
     })
-  })
+  }
+}

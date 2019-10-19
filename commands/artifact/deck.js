@@ -1,16 +1,28 @@
-const { Command } = require('aghanim')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 const { Markdown } = require('erisjs-utils')
 const { doIfCondition } = require('../../helpers/functional.js')
 
-module.exports = new Command('deck', {
-    category: 'Artifact', help: 'Genera un mazo desde un código', args: '[código/nombre mazo]', cooldown: 30,
-    cooldownMessage: function (msg, args, command, cooldown) { return msg.author.locale('cmd.incooldown') }},
-    async function (msg, args, client, command) {
-        if (!args[1]) { throw new UserError('artifact', 'deck.error.needargorvalidcode'); return}
+module.exports = {
+    name: 'deck',
+    category: 'Artifact',
+    help: 'Genera un mazo desde un código',
+    args: '[código/nombre mazo]',
+    requirements: [
+        {
+            type: 'user.cooldown',
+            time: 30,
+            response: (msg, args, client, command) => msg.author.locale('cmd.incooldown')
+        },
+        {
+            condition: (msg, args, client, commnad) => args[1] || false,
+            response: (msg, args, client, command) => msg.author.locale('deck.error.needargorvalidcode')
+        }
+    ],
+    // cooldown: 30,
+    // cooldownMessage: (msg, args, command, cooldown) => msg.author.locale('cmd.incooldown'),
+    run: async function (msg, args, client, command) {
         const deckCached = client.cache.decks.find(deck => deck.name.toLowerCase() === String(args.from(1)).toLowerCase())
         const code = deckCached ? deckCached._id : client.components.Artifact.isValidDeckCode(args[1])
-        if (!code) { throw new UserError('artifact', 'cmd_deck_error_need_arg_or_valid_code'); return}
+        if (!code) { return msg.reply('cmd_deck_error_need_arg_or_valid_code') }
         // 'ADCJWkTZX05uwGDCRV4XQGy3QGLmqUBg4GQJgGLGgO7AaABR3JlZW4vQmxhY2sgRXhhbXBsZQ__'
         const deck = client.components.Artifact.getCachedDeck(code)
         const embed = { embed : {
@@ -34,19 +46,20 @@ module.exports = new Command('deck', {
                         .then(deck => embedResponse(msg, args, client, deck, embed))
                 })
         }
-    })
-
-    function embedResponse(msg, args, bot, data, embed){
-        const author = bot.users.get(data.author) || {}
-        return doIfCondition(msg.author.supporter,() => bot.components.Artifact.getDeckPrice(data._id))
-            .then(price => msg.reply(embed,{
-                _deck_name: data.name,
-                _deck_url: bot.components.Artifact.deckCodeUrl(data._id),
-                _deck_link: Markdown.link(data.url, 'click to download image'),
-                _deck_id: data._id,
-                _author: author.username || 'Unknown',
-                _price: price ? `- Price ${price}€` : ''
-            }))
     }
+}
 
-    //TODO langstring
+function embedResponse(msg, args, bot, data, embed){
+    const author = bot.users.get(data.author) || {}
+    return doIfCondition(msg.author.supporter,() => bot.components.Artifact.getDeckPrice(data._id))
+        .then(price => msg.reply(embed,{
+            _deck_name: data.name,
+            _deck_url: bot.components.Artifact.deckCodeUrl(data._id),
+            _deck_link: Markdown.link(data.url, 'click to download image'),
+            _deck_id: data._id,
+            _author: author.username || 'Unknown',
+            _price: price ? `- Price ${price}€` : ''
+        }))
+}
+
+//TODO langstring

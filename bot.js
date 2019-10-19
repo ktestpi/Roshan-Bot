@@ -1,8 +1,13 @@
 const Aghanim = require('aghanim')
 const path = require('path')
-
+require('dotenv').config()
 //Initialize Bot with Aghanim Command Client
-const bot = new Aghanim(process.env.BOT_TOKEN || require('./env.json').BOT_TOKEN)
+const bot = new Aghanim(process.env.BOT_TOKEN)
+
+Object.defineProperty(bot, "isProduction", {
+	get: () => process.env.NODE_ENV === "production"
+})
+
 //Define categories for commands
 const categoryCommands = [
 	{ name: 'General', description: 'Ayuda de general'},
@@ -12,12 +17,16 @@ const categoryCommands = [
 	{ name: 'Owner', description: 'Ayuda para comandos de propietario'},
 	{ name: 'Fun', description: 'Ayuda para comandos de emojis y memes'},
 	{ name: 'Artifact', description: 'Ayuda los comandos de Artifact'},
-	{ name: 'Underlords', description: 'Ayuda los comandos de Dota nderlords' },
+	// { name: 'Underlords', description: 'Ayuda los comandos de Dota Underlords' },
 ]
 
 categoryCommands.forEach(category =>
 	bot.addCategory(category.name, category.description)
 )
+
+// Load components
+bot.addComponentDir(path.join(__dirname, 'components'))
+bot.addComponentFile(path.join(__dirname, 'seasonal/duel/duel.component'))
 
 //Load commands
 const commandsDirs = ['commands/opendota', 'commands/account', 'commands/server', 'commands/general',
@@ -27,9 +36,6 @@ commandsDirs.forEach(dir =>
 	bot.addCommandDir(path.join(__dirname, dir))
 )
 
-// Load components
-bot.addComponentDir(path.join(__dirname, 'components'))
-bot.addComponentFile(path.join(__dirname, 'seasonal/duel/duel.component'))
 
 function filterCommands(cmd,query,owner){
 	if(query === 'owner'){
@@ -54,7 +60,7 @@ bot.addCommand(new Aghanim.Command('help',{}, async function(msg, args, client, 
 			const cmd_args = msg.author.locale('cmd_' + c.name + '_args')
 			const cmd_help = msg.author.locale('cmd_' + c.name + '_help')
 			// const langCmd = client.components.Locale.getCmd(c.name,msg)
-			return `\`${prefix}${c.name}${cmd_args ? ' ' + cmd_args : ''}\` - ${cmd_help || c.help}${c.subcommands.length ? '\n' + c.subcommands.filter(s => filterCommands(s,query,owner)).map(s => {
+			return `\`${prefix}${c.name}${cmd_args ? ' ' + cmd_args : ''}\` - ${cmd_help || c.help}${c.childs.length ? '\n' + c.childs.filter(s => filterCommands(s,query,owner)).map(s => {
 				const cmd_args = msg.author.locale('cmd_' + c.name + '_' + s.name + '_args')
 				const cmd_help = msg.author.locale('cmd_' + c.name + '_' + s.name + '_help')
 				// const langCmd = client.components.Locale.getCmd(c.name + '_' + s.name,msg)

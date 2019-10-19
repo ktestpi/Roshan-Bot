@@ -1,12 +1,14 @@
-const { Command } = require('aghanim')
 const { Os, Number } = require('erisjs-utils')
 const util = require('erisjs-utils')
 const os = require('os')
 
-module.exports = new Command('usage',{
-  category : 'Owner', help : 'Uso del bot', args : '',
-  ownerOnly : true},
-  async function(msg, args, client){
+module.exports = {
+  name: 'usage',
+  category : 'Owner',
+  help : 'Uso del bot',
+  args : '',
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     Os.getCPUUsage(cpuusage => {
       msg.reply({embed : {
         title : `Rendimiento - ${os.platform()}`,
@@ -19,7 +21,8 @@ module.exports = new Command('usage',{
         color : client.config.color
       }})
     })
-  })
+  }
+}
 
 
 function secondsTohms(seconds) {

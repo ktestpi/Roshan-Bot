@@ -7,7 +7,10 @@ module.exports = class Init extends Component {
         let CONFIG = require('../config.json')
         CONFIG.color = Color.convert(CONFIG.color, 'hex-int');
         for (let cat in CONFIG.colors) {
-            if (typeof CONFIG.colors[cat] == 'string') { CONFIG.colors[cat] = Color.convert(CONFIG.colors[cat], 'hex-int'); continue }
+            if (typeof CONFIG.colors[cat] == 'string') {
+                CONFIG.colors[cat] = Color.convert(CONFIG.colors[cat], 'hex-int')
+                continue 
+            }
             for (let c in CONFIG.colors[cat]) {
                 CONFIG.colors[cat][c] = Color.convert(CONFIG.colors[cat][c], 'hex-int');
             }

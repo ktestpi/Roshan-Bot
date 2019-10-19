@@ -1,9 +1,10 @@
-const { Command } = require('aghanim')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
-
-module.exports = new Command('underlords',{subcommandFrom: 'reddit',
-  category : 'General', help : 'Información sobre reddit', args : '[idpost,top,hot,new]'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'underlords',
+  childOf: 'reddit',
+  category: 'General',
+  help: 'Información sobre reddit',
+  args: '[idpost,top,hot,new]',
+  run: async function (msg, args, client, command){
     const query = args[2] || 'top'
     if(['top','hot','new'].indexOf(query.toLowerCase()) > -1){
       msg.channel.sendTyping();
@@ -18,7 +19,7 @@ module.exports = new Command('underlords',{subcommandFrom: 'reddit',
           _message: result
         })
       }).catch(err => {
-        throw new UserError('reddit', 'reddit.error.postsrequest', err)
+        return msg.reply('reddit.error.postsrequest')
       })
     }else{
       msg.channel.sendTyping();
@@ -37,7 +38,8 @@ module.exports = new Command('underlords',{subcommandFrom: 'reddit',
           _post_subreddit: result.subreddit
         })
       }).catch(err => {
-        throw new UserError('reddit', 'reddit.error.postrequest', err)
+        return msg.reply('reddit.error.postrequest')
       })
     }
-  })
+  }
+}

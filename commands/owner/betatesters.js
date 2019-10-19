@@ -1,9 +1,10 @@
-const { Command } = require('aghanim')
-
-module.exports = new Command(['beta'],{
-  category : 'Owner', help : 'Betatesters', args : '[<add/remove> <mención>]',
-  ownerOnly : true},
-  async function(msg, args, client){
+module.exports = {
+  name: ['beta'],
+  category : 'Owner',
+  help : 'Betatesters',
+  args : '[<add/remove> <mención>]',
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     if(['add','remove'].includes(args[1]) && args.length > 2){
       const cmd = args[1]
       const members = msg.mentions.map(m => m.id)
@@ -26,4 +27,5 @@ module.exports = new Command(['beta'],{
         color : client.config.color
       }})
     }
-  })
+  }
+}

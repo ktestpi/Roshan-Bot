@@ -1,10 +1,11 @@
-const { Command } = require('aghanim')
-
 const modes = ['e','g','l']
 
-module.exports = new Command('tournament',{
-  category : 'General', help : 'Sorteo inicial para torneos', args : '<modo: e,l,g[número grupos]> <opciones separadas por ,>'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'tournament',
+  category: 'General',
+  help: 'Sorteo inicial para torneos',
+  args: '<modo: e,l,g[número grupos]> <opciones separadas por ,>',
+  run: async function (msg, args, client, command){
     if(!args[1]){return}
     const mode = args[1].slice(0,1);
     if(modes.indexOf(mode) == -1){return msg.reply('tournament.error.modes')}
@@ -74,4 +75,5 @@ module.exports = new Command('tournament',{
     return msg.reply({
       embed: { title: msg.author.locale('tournament.tourney') + ' - (' + (msg.author.nick || msg.author.username) + ')', fields : fields, color : client.config.color}
     })
-  })
+  }
+}

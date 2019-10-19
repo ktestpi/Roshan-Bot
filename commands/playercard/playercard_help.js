@@ -1,10 +1,12 @@
-const { Command } = require('aghanim')
 const enumPlayerPos = require('../../enums/player_positions')
 
-module.exports = new Command('help', {
-  subcommandFrom: 'playercard',
-  category : 'Account', help : 'Ayuda de la tarjeta de jugador@', args : ''},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'help', 
+  childOf: 'playercard',
+  category : 'Account',
+  help : 'Ayuda de la tarjeta de jugador@',
+  args : '',
+  run: async function (msg, args, client, command){
     return msg.replyDM({
       embed: {
         title: 'playercard.help.title',
@@ -19,4 +21,5 @@ module.exports = new Command('help', {
     }, {
       _positions: `\`${enumPlayerPos.toArray().map(k => k.key).join(',')}\``
     })
-  })
+  }
+}

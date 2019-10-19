@@ -1,11 +1,10 @@
-const { Command } = require('aghanim')
-const util = require('erisjs-utils')
 const { inspect } = require('util')
 
-module.exports = new Command(['eval','e'],{
+module.exports = {
+  name: ['eval','e'],
   category : 'Owner', help : '', args : '', hide : true,
-  ownerOnly : true},
-  async function(msg, args, client){
+  ownerOnly : true,
+  run: async function(msg, args, client){
     // let self = this
     if(!args[1]){return}
     const bot = client
@@ -35,4 +34,5 @@ module.exports = new Command(['eval','e'],{
       return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
 
-  })
+  }
+}

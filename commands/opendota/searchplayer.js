@@ -1,15 +1,16 @@
-const { Command } = require('aghanim')
 const { Markdown, Request } = require('erisjs-utils')
 const odutil = require('../../helpers/opendota-utils')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 
-module.exports = new Command('searchplayer',{
-  category : 'Dota 2', help : 'Busca a un/a jugador/a', args : '[búsqueda]'},
-  async function(msg, args, client, command){
+module.exports = {
+  name: 'searchplayer',
+  category: 'Dota 2',
+  help: 'Busca a un/a jugador/a',
+  args: '[búsqueda]',
+  run: async function(msg, args, client, command){
     const query = args.slice(1).join(' ')
     if(query.length < 2){return msg.reply('searchplayer.mincharsrequired')}
     msg.channel.sendTyping()
-    client.components.Opendota.getPlayersDotaName(query).then((players) => {
+    return client.components.Opendota.getPlayersDotaName(query).then((players) => {
       if(players.length < 1){return};
       const playersTotal = players.length;
       const limit = 10;
@@ -38,6 +39,7 @@ module.exports = new Command('searchplayer',{
           text: text,
           match: playersShow !== playersTotal ? playersShow + "/" + playersTotal : playersShow
         })
-      }).catch(err => { throw new UserError('opendota', 'error.opendotarequest', err) })
+      })
     })
-  })
+  }
+}

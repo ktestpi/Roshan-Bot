@@ -1,10 +1,11 @@
-const { Command } = require('aghanim')
 const { Datee, Classes } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../../classes/errors.js')
 
-module.exports = new Command('worldranking',{
-  category : 'Dota 2', help : 'Clasificación mundial según zona', args : '<división>'},
-  async function (msg, args, client, command){
+module.exports = {
+  name: 'worldranking',
+  category : 'Dota 2',
+  help : 'Clasificación mundial según zona',
+  args : '<división>',
+  run: async function (msg, args, client, command){
     const div = args[1] ? args[1].toLowerCase() : client.components.WorldRankingApi.defaultDivision
     const division = client.components.WorldRankingApi.divisions.indexOf(div) > -1 ? div : client.components.WorldRankingApi.defaultDivision
     msg.channel.sendTyping()
@@ -26,9 +27,10 @@ module.exports = new Command('worldranking',{
         _icon: client.config.images.dota2
       })
     }).catch(err => {
-      throw new UserError('worldranking', 'worldranking.error.request', err)
+      return msg.reply('worldranking.error.request')
     })
-  })
+  }
+}
 
 
 const replace = (text) => text.replace(/`/g,'')

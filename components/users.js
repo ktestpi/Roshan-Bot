@@ -2,7 +2,6 @@ const { Component } = require('aghanim')
 const CustomComponent = require('../classes/custom-component')
 const util = require('erisjs-utils')
 const { Message, Guild } = require('erisjs-utils')
-const { UserError, ConsoleError } = require('../classes/errors.js')
 
 module.exports = class Users extends CustomComponent() {
     constructor(client, options) {

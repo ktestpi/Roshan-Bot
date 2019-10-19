@@ -1,7 +1,7 @@
 {
   "name": "roshan-discord-bot",
   "version": "0.3.7",
-  "version_date": "22/09/19",
+  "version_date": "19/10/19",
   "description": "Dota 2 and Artifact Discord bot written in ErisJS using Aghanim Command Client",
   "main": "bot.js",
   "engines": {
@@ -11,9 +11,9 @@
   "scripts": {
     "start": "node bot.js",
     "test": "./node_modules/.bin/jest",
-    "dev": "./node_modules/.bin/nodemon bot.js",
+    "dev": "NODE_ENV=development ./node_modules/.bin/nodemon bot.js",
     "eslint": "./node_modules/.bin/eslint bot.js",
-    "heroku-postbuild": "npm i Desvelao/aghanim",
+    "heroku-postbuild": "npm i Desvelao/aghanim#dev",
     "test-heroku-postbuild": "npm install",
     "pngtojpg": "node dev-scripts/pngtojpg.js pngtojpg pngtojpg/dest",
     "update-assets": "node dev-scripts/od-assets.js img",
@@ -30,9 +30,10 @@
   "author": "Desvelao^^ <iamdesvelao@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "aghanim": "github:desvelao/aghanim#0.1.0",
+    "aghanim": "github:Desvelao/aghanim#dev",
     "artifact-api": "github:openartifact/artifact-api",
     "dotaconstants": "^6.18.0",
+    "dotenv": "^8.1.0",
     "erisjs-utils": "github:desvelao/erisjs-utils#dev",
     "firebase-admin": "^5.11.0",
     "glob": "^7.1.2",

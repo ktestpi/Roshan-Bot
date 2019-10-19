@@ -1,9 +1,12 @@
-const { Command } = require('aghanim')
 const { Datee } = require('erisjs-utils')
 
-module.exports = new Command('deleteacc',{
-  category : 'Owner', help : 'Elimina cuenta de Roshan', args : '<discordID>'},
-  async function(msg, args, client){
+module.exports = {
+  name: 'deleteacc',
+  category : 'Owner',
+  help : 'Elimina cuenta de Roshan',
+  args : '<discordID>',
+  requirements: ['owner.only'],
+  run: async function(msg, args, client){
     const user = client.users.get(args[1])
     if(!user){return msg.addReaction(client.config.emojis.default.error)}
     if(!client.cache.profiles.get(user.id)){return msg.addReaction(client.config.emojis.default.error)}
@@ -25,4 +28,5 @@ module.exports = new Command('deleteacc',{
         m.addReaction(client.config.emojis.default.accept)
       })
     })
-  })
+  }
+}
