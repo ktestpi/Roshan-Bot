@@ -124,7 +124,7 @@ module.exports = class Account extends CustomComponent() {
 		const guildName = msg.channel.guild ? msg.channel.guild.name : 'DM'
 		const guildID = msg.channel.guild ? msg.channel.guild.id : msg.channel.id
 		return this.client.components.Opendota.account(dotaID).then(([data]) => {
-			if(!data.profile){return/*TODO error*/}
+			if(!data.profile){throw new Error('Profile not found')}
 			return this.client.createMessage(this.client.config.guild.accounts,{
 				embed :{
 					title: this.client.components.Locale.replacer('registerAccountTitle', { id: msg.author.id }),

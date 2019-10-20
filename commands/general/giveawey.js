@@ -42,8 +42,8 @@ function fn(msg,args,members,guild,roles,bot){
       color : bot.config.color
     }
   }
-  if(roles.length){embed.embed.fields = [{name : 'Roles', value : roles.join(', '), inline : false}]}
-  return msg.reply(`${title}...${roles.length ? `\nRoles: ${roles.join(', ')}` : ''}`)
+  if(roles.length){embed.embed.fields = [{name : msg.author.locale('giveaway.roles'), value : roles.join(', '), inline : false}]}
+  return msg.reply(`${title}...${roles.length ? `\n%%giveaway.roles%%: ${roles.join(', ')}` : ''}`)
     .then(m => setTimeout(() => m.edit(embed)
       ,waittime))
 }

@@ -133,7 +133,7 @@ module.exports = class Bot extends CustomComponent() {
         
     }
     sendImageStructure(msg, query, links, cmd) {
-        if (!links[query]) { msg.reply('cmd.wrongarg', { options: Object.keys(links).join(', '), cmd }) } // TODO wrongCmd
+        if (!links[query]) { return msg.reply('cmd.wrongarg', { options: Object.keys(links).join(', '), cmd }) } // TODO wrongCmd
         const match = links[query]
         if (typeof match === 'object') {
             return util.Message.sendImage(match.file).then(buffer => {
