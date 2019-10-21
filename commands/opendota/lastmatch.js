@@ -8,7 +8,7 @@ module.exports = {
     msg.channel.sendTyping()
     const [ player, results ] = await Promise.all([
       args.profile,
-      client.components.Opendota.player_lastmatch(args.profileplayer.data.dota)
+      client.components.Opendota.player_lastmatch(args.profile.data.dota)
     ])
     const cmd = client.commandForName('match')
     if (!cmd) { return }
