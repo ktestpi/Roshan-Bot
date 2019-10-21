@@ -10,7 +10,7 @@ module.exports = {
       args.profile,
       client.components.Opendota.player_lastmatch(args.profile.data.dota)
     ])
-    const cmd = client.commandForName('match')
+    const cmd = client.getCommandByName('match')
     if (!cmd) { return }
     msg.content = client.prefix + cmd.name + ' ' + results[0][0].match_id;
     args[0] = cmd.name;
