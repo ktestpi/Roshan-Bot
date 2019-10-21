@@ -52,7 +52,7 @@ bot.addCommand(new Aghanim.Command('help',{}, async function(msg, args, client, 
 	if(query === 'owner' && !owner){return}
 	let helpMessage = msg.author.locale('help.message') +'\n\n'
 	if(categories.includes(query)){
-	const cmds = client.getCommandsFromCategories(query).sort((a, b) => a.name > b.name ? 1 : -1)
+	const cmds = client.getCommandsOfCategories(query).sort((a, b) => a.name > b.name ? 1 : -1)
 	const prefix = client.prefix
 	if(!cmds){helpMessage += client.categories.filter(c => !c.hide).map(c => `**${c.name}** \`${client.prefix}help ${c.name.toLowerCase()}\` - ${msg.author.locale('cat_' + c.name.toLowerCase() + '_help')}`).join('\n') + '\n\n' + msg.author.locale('help.messageaftercategories')}
 	else{
