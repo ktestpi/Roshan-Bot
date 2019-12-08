@@ -41,7 +41,7 @@ module.exports = {
             _hero_name: hero.localized_name,
             _hero_basemana: hero.base_mana + ((hero.primary_attr === "int" ? 15 : 12) * hero.base_int),
             _hero_basearmor: hero.base_armor + Math.round((hero.primary_attr === "agi" ? 0.2 : 0.16) * hero.base_agi),
-            _hero_wikiurl: `${enumHeroes.dotaWikiURL}${hero.localized_name}`
+            _hero_wikiurl: `${enumHeroes.dotaWikiURL}${hero.localized_name}`.replace(' ', '%20')
         })
     }
 }

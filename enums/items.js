@@ -6,7 +6,7 @@ const Items = {}
 Object.keys(items).forEach(k => {
     const item = items[k]
     item.name_id = k
-    item.components = Array.isArray(item.components) ? item.components.map(component_id => {
+    item.components = Array.isArray(item.components) && item.components.length ? item.components.filter(component_id => component_id).map(component_id => {
         const { dname, cost } = items[component_id]
         return {dname , cost}
     }) : []

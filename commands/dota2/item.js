@@ -36,7 +36,7 @@ module.exports = {
                 _item_wikiurl: enumItems.dotaWikiURL + item.dname.replace(/ /g, "_"),
                 _item_description: item.notes,
                 _item_lore: item.lore,
-                _item_attrib: item.attrib && item.attrib.length ? item.attrib.map(attr => `*${attr.header}${attr.value} ${attr.footer}*`).join('\n') : '',
+                _item_attrib: item.attrib && item.attrib.length ? item.attrib.map(attr => `*${attr.header}* ${attr.value} ${attr.footer || ''}`).join('\n') : '',
                 _item_components: item.components && item.components.length ? item.components.map(component => `**${component.dname}** ${component.cost}`).join(', ') : '',
                 _item_cost: item.cost,
                 _item_actives: item.active && item.active.length ? item.active.map(active => `**${active.name}**: ${active.desc}`).join('\n') : '',
