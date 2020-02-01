@@ -174,7 +174,6 @@ class Artifact extends Component {
     static getCardRarityUrl({rarity, setID}){
         rarity = rarity || 'common'
         return `https://raw.githubusercontent.com/Open-Artifact/artifactdb-set-${setID}/master/assets/sets/set-${setID}/symbol/${rarity.toLowerCase()}.png`
-        // return `https://github.com/Open-Artifact/artifactdb-set-${setID}/blob/master/assets/sets/set-${setID}/symbol/${rarity.toLowerCase()}.png?raw=true`
     }
     static getAlias(data, dataset, modifiers){
         const re = /['!`\.]/g
