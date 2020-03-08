@@ -7,7 +7,7 @@ module.exports = {
   help: 'Configura el fondo de la tarjeta de jugador',
   args: '',
   requirements: [{
-    condition: (msg, args, client, command, req) => args[2] || false,
+    validate: (msg, args, client, command, req) => args[2] || false,
     response: (msg, args, client, command, req) => msg.author.locale('playercard.setbg.gallery')
   },"account.exist", "account.registered", "account.supporter"],
   run: async function (msg, args, client, command){

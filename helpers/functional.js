@@ -4,6 +4,6 @@ module.exports.promisifyCallback = fn => (...args) => new Promise((res,rej) => {
   })
 })
 
-module.exports.doIfCondition = (condition, cond_fn) => new Promise((res,rej) => {
-  condition ? Promise.resolve(cond_fn()).then(res) : res()
+module.exports.doIfCondition = (validate, cond_fn) => new Promise((res,rej) => {
+  validate ? Promise.resolve(cond_fn()).then(res) : res()
 })

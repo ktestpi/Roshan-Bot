@@ -7,7 +7,7 @@ module.exports = {
   args : '<búsqueda>',
   requirements: [
     {
-      condition: (msg, args, client, command, req) => args[1] || false,
+      validate: (msg, args, client, command, req) => args[1] || false,
       response: (msg, args, client, command, req) => msg.author.locale('searchworldranking.needquery')
     }
   ],

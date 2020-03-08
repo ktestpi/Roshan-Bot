@@ -13,7 +13,7 @@ module.exports = {
             response: (msg, args, client, command) => msg.author.locale('cmd.incooldown')
         },
         {
-            condition: (msg, args, client, commnad) => args[1] || false,
+            validate: (msg, args, client, commnad) => args[1] || false,
             response: (msg, args, client, command) => msg.author.locale('deck.error.needargorvalidcode')
         }
     ],

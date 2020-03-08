@@ -19,7 +19,7 @@ module.exports = class Opendota extends Component {
         })
         this.client.addCommandRequirement({
             type: 'is.dota.player',
-            condition: async (msg, args, client, command, req) => {
+            validate: async (msg, args, client, command, req) => {
                 if (msg.mentions.length > 0) {
                     args.profile = this.baseProfile(msg.mentions[0].id)
                     if (this.needRegister(msg, args.profile)) {

@@ -48,7 +48,7 @@ module.exports = class Account extends CustomComponent() {
 		// Define custom requirements
 		this.client.addCommandRequirement({
 			type: 'account.exist',
-			condition: async (msg, args, client, command, req) => {
+			validate: async (msg, args, client, command, req) => {
 			  const account = await client.components.Account.get(msg.author.id)
 			  if(!account){return false}
 			  args.account = account
@@ -59,7 +59,7 @@ module.exports = class Account extends CustomComponent() {
 
 		this.client.addCommandRequirement({
 			type: 'account.existany',
-			condition: async (msg, args, client, command, req) => {
+			validate: async (msg, args, client, command, req) => {
 				args.user = msg.mentions.length ? msg.mentions[0] : msg.author
 				args.account = await client.components.Account.get(args.user.id)
 				if(!args.account){	
@@ -76,14 +76,14 @@ module.exports = class Account extends CustomComponent() {
 
 		this.client.addCommandRequirement({
 			type: 'account.registered',
-			condition: async (msg, args, client, command, req) => {
+			validate: async (msg, args, client, command, req) => {
 				return msg.author.registered
 			},
 			response: (msg, args, client, command, req) => msg.author.locale('bot.needregister')
 		})
 		this.client.addCommandRequirement({
 			type: 'account.supporter',
-			condition: async (msg, args, client, command, req) => {
+			validate: async (msg, args, client, command, req) => {
 				return msg.author.supporter
 			},
 			response: (msg, args, client, command, req) => msg.author.locale('roshan.supporter.need')

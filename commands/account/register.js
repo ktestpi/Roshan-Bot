@@ -5,14 +5,14 @@ module.exports = {
   args : '<dotaID>',
   requirements : [
     {
-      condition: (msg, args, client, command, req) => {
+      validate: (msg, args, client, command, req) => {
         args.dotaID = args[1]
         return args.length > 1
       },
       response: (msg, args, client, command, req) => msg.author.locale('register.help')
     },
     {
-      condition: (msg, args, client, command, req) => {
+      validate: (msg, args, client, command, req) => {
         return msg.author.registered
       },
       responseDM: (msg, args, client, command, req) => msg.author.locale('register.alreadyregistered')
