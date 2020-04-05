@@ -23,7 +23,7 @@ module.exports = class Opendota extends Component {
                 if (msg.mentions.length > 0) {
                     args.profile = this.baseProfile(msg.mentions[0].id)
                     if (this.needRegister(msg, args.profile)) {
-                        args.message = msg.author.locale('bot.Mentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username })
+                        args.message = msg.author.locale('bot.needregistermentioned', { username: msg.channel.guild.members.get(msg.mentions[0].id).username })
                         return false
                     }
                 } else if (args[1]) {

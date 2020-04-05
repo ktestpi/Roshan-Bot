@@ -71,7 +71,7 @@ module.exports = class Account extends CustomComponent() {
 				}
 				return true
 			},
-			response: "You account don't exist"
+			response: "Your account doesn't exist"
 		})
 
 		this.client.addCommandRequirement({

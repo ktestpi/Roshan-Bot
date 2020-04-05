@@ -13,7 +13,7 @@ module.exports = {
     },
     {
       validate: (msg, args, client, command, req) => {
-        return msg.author.registered
+        return !msg.author.registered
       },
       responseDM: (msg, args, client, command, req) => msg.author.locale('register.alreadyregistered')
     }
