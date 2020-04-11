@@ -77,9 +77,6 @@ module.exports = {
                 }
             })
         })
-    },
-    messageCreate(msg, client){
-        client.logger.info('message: ' + msg.content)
     }
 }
 
