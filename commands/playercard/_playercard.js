@@ -10,7 +10,7 @@ module.exports = {
     {
       type: 'user.cooldown',
       time: 10,
-      response: (msg, args, client, command, req) => msg.author.locale('warningInCooldown')
+      response: (msg, args, client, command, req) => msg.author.locale('cmd.incooldown', {cd : args.reqUserCooldown.cooldown, username: args.reqUserCooldown.user})
     }
   ],
   run: async function (msg, args, client, command){

@@ -3,7 +3,7 @@ const { Datee , Request} = require('erisjs-utils')
 
 module.exports = new Command('roshan',{
   category : 'Diretide', help : 'See Roshan status', args : ''},
-  function(msg, args, command){
+  function(msg, args, client, command){
     const game = command.game
     const embed = {
       title : 'Roshan status',
@@ -23,7 +23,7 @@ module.exports = new Command('roshan',{
         embed.fields.push({name : 'Time remaining' , value : `${timeRemainingTimeout(game.status.timeouts.active,game.actions.secondsToHms)}`, inline : true })
       }
     }catch(err){
-      console.log('ERROR Roshan command',err);
+      client.error('ERROR Roshan command');
     }
     return game.reply(msg,game.status.embed(embed))
   })

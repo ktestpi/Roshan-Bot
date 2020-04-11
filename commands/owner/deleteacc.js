@@ -24,7 +24,6 @@ module.exports = {
     }).then((m) => {
       msg.addReaction(client.config.emojis.default.envelopeIncoming);
       return client.cache.profiles.remove(user.id).then(() => {
-        client.components.Notifier.accountdelete(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
         m.addReaction(client.config.emojis.default.accept)
       })
     })

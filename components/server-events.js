@@ -44,11 +44,11 @@ module.exports = class ServerEvents extends Component {
                 // this.createMessage(guild.id, this.replace.do('roshanguild.welcomenewmember', { member: member.mention }, true));
             }
         }
-        this.client.components.Notifier.memberin(`**${member.username}**`)
+        this.client.logger.info(`Member in: **${member.username}**`)
     }
     guildMemberRemove(guild, member){
         if (guild.id !== this.client.config.guildID) { return }
-        this.client.components.Notifier.memberout(`**${member.username}**`)
+        this.client.logger.info(`Member out: **${member.username}**`)
     }
 }
 

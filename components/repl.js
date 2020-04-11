@@ -31,11 +31,11 @@ module.exports = class Repl extends Component{
                         result = inspect(result)
                     }
                     result = String(result).slice(0, 1000)
-                    this.client.components.Notifier.console('Eval Result', result)
+                    this.client.logger.eval('Eval Result: ' + result)
                     return msg.reply(`**${this.client.config.emojis.default.accept} Result**\n\`\`\`js\n${result}\`\`\``)
                     // return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.client.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
                 }).catch(err => {
-                    this.client.components.Notifier.console('Eval Error', err)
+                    this.client.logger.eval('Eval Error: ' + err)
                     return msg.reply(`**${this.client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
                     // return msg.reply(`**Expresión**\n\`\`\`js\n${toEval}\`\`\`\n\n**${this.client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
                 })
@@ -110,7 +110,7 @@ module.exports = class Repl extends Component{
                 Object.keys(src).map(key => command.register(key, src[key]))
                 this.repl.register(command)
             })
-            return this.client.components.Notifier.console('Scripts Repl', 'Loaded')
+            return this.client.logger.ready('Scripts Repl loaded')
         })
     }
 }

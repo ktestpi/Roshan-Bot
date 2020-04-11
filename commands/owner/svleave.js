@@ -9,6 +9,6 @@ module.exports = {
     if(!guild){return}
     client.leaveGuild(guild.id)
     msg.addReaction(client.config.emojis.default.accept)
-    client.components.Notifier.controlMessage('svleave',`Guild abandonado: ${guild.id}`)
+    client.logger.info('svleave: ' + `Guild abandonado: ${guild.id}`)
   }
 }

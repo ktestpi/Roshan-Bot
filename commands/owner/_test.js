@@ -9,6 +9,8 @@ module.exports = {
   requirements: ['owner.only'],
   run: async function(msg, args, client){
     // return msg.reply('<bot_name> es el bot. <roshan> <flag>', {flag: 'esta es la flag'})
+    // client.emit('aghanim:error', new Error('HOLA'), client)
+    // throw new Error('dasdsa')
     return msg.reply({embed : {
       title: '<bot_name> es el bot. <roshan> <flag>',
       description: '<author_name> es el autor',

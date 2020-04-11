@@ -110,7 +110,7 @@ module.exports = class Account extends CustomComponent() {
 		data.steam = steamID || data.steam
 		return this.client.cache.profiles.save(discordID, data)
 			.then(() => this.updateAccountLeaderboard(discordID, data.dota,odResponse))
-			.then(() => this.client.components.Notifier.console('userToLeaderboard', `${discordID}`))
+			.then(() => this.client.logger.info('userToLeaderboard: ' + `${discordID}`))
 	}
 	modify(discordID,data){
 		return this.client.cache.profiles.save(discordID, data)
@@ -118,7 +118,7 @@ module.exports = class Account extends CustomComponent() {
 	delete(discordID){
 		return this.client.cache.profiles.remove(discordID)
 			.then(() => this.deleteAccountLeaderboard(discordID))
-			.then(() => this.client.components.Notifier.console('userDelLeaderboard', `${discordID}`))
+			.then(() => this.client.logger.info('userDelLeaderboard: ' + `${discordID}`))
 	}
 	createProcess(discordID, dotaID, msg){
 		const guildName = msg.channel.guild ? msg.channel.guild.name : 'DM'
@@ -135,7 +135,7 @@ module.exports = class Account extends CustomComponent() {
 			}}).then((m) => {
 				msg.addReaction(this.client.config.emojis.default.envelopeIncoming)
 				return this.create(discordID,dotaID,data.profile.steamid,data).then(() => {
-					this.client.components.Notifier.accountnew(`New account: **${msg.author.username}** (${msg.author.id})`)
+					this.client.logger.info(`New account: **${msg.author.username}** (${msg.author.id})`)
 					return msg.replyDM({
 						embed: {
 							title: 'roshan.welcometo',
@@ -167,7 +167,7 @@ module.exports = class Account extends CustomComponent() {
 			msg.addReaction(this.client.config.emojis.default.envelopeIncoming)
 			return this.delete(discordID).then(() => {
 				// TODO: Remove Leaderboard
-				this.client.components.Notifier.accountremove(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
+				this.client.logger.info(`Account deleted: **${msg.author.username}** (${msg.author.id})`)
 				return msg.reply('account.deleted')
 					.then(() => m.addReactionSuccess())
 			})

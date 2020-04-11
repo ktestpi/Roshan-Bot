@@ -7,7 +7,7 @@ module.exports = {
     { 
       type: "user.cooldown",
       time: 60,
-      response: (msg, args, command, cooldown) => msg.author.locale('cmd.incooldown')
+      response: (msg, args, client, command, req) => msg.author.locale('cmd.incooldown', {cd : args.reqUserCooldown.cooldown, username: args.reqUserCooldown.user})
     },
     "is.dota.player"
   ],

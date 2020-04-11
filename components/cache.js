@@ -24,7 +24,7 @@ module.exports = class Cache extends Component {
             this.loadDota2Patch()
             if(this.client.isProduction || process.argv.includes('-db')){
                 this.client.db.once('value').then(snap => {
-                    if (!snap.exists()) { this.client.errors.emit(new ConsoleError('cacheReload', 'Error al recargar')) } else { snap = snap.val() }
+                    if (!snap.exists()) { this.client.logger.error('cacheReload: error reloading') } else { snap = snap.val() }
                     this.updateWithSnap(snap)
                     res()
                 })
@@ -40,7 +40,7 @@ module.exports = class Cache extends Component {
         this.client.cache.decks = new FirebaseCollection(snap.decks, this.client.db.child('decks'))
         this.client.cache.betatesters = new FireSetCache(this.client.db.child('betatesters'), [...(snap.betatesters ? Object.keys(snap.betatesters) : [])])
         this.client.cache.supporters = new FireSetCache(this.client.db.child('supporters'), [...(snap.supporters ? Object.keys(snap.supporters) : [])])
-        this.client.components.Notifier.console('Cache from DB')
+        this.client.logger.info('Cache from DB')
     }
     updateFake(){
         this.client.cache.profiles = new FirebaseCollection({ "189996884322942976": { lang: 'es', card: { bg: '1', pos: 'carry-es', heroes: '1,2,3' }, dota: '112840925', steam: '76561198073106653' }, "314083101129310208": { lang: 'en', card: { bg: '1', pos: 'all', heroes: '1,2,3' }, dota: '112840925', steam: '76561198073106653' } }, this.client.db.child('profiles'));
@@ -51,7 +51,7 @@ module.exports = class Cache extends Component {
         this.client.cache.decks = new FirebaseCollection(this.client.db.child('decks'))
         this.client.cache.betatesters = new FireSetCache(this.client.db.child('betatesters'))
         this.client.cache.supporters = new FireSetCache(this.client.db.child('supporters'))
-        this.client.components.Notifier.console('Cache','Faked')
+        this.client.logger.dev('Fake cache')
     }
     updateTorneysFeeds(){
         this.client.cache.feeds = new FirebaseCollection(this.client.db.child('feeds'))
@@ -89,12 +89,12 @@ module.exports = class Cache extends Component {
             const now = util.Date.now()
             return this.filter(t => (t.until && now < t.until) || (t.start && now < t.start))
         }
-        this.client.components.Notifier.console('Cache','Tournaments and Feeds loaded')
+        this.client.logger.ready('Cache: Tournaments and Feeds loaded')
     }
     loadLastPatchNotes(){
         return this.client.getMessage(this.client.config.guild.changelog, this.client.server.channels.get(this.client.config.guild.changelog).lastMessageID).then(m => {
             this.client.cache.botPatchNotes = m.content
-            this.client.components.Notifier.console('Patch notes','Loaded')
+            this.client.logger.ready('Patch notes loaded')
         })
     }
     loadDota2Patch(){

@@ -40,14 +40,14 @@
   "console" : {
     "channel" : "509559847436419103"
   },
-  "update" : "11/01/2019",
+  "update" : "11/04/2020",
   "server" : "https://discord.gg/SxsYkgX",
   "invite" : "https://discordapp.com/oauth2/authorize?client_id=324833828302749697&scope=bot&permissions=519232",
   "color" : "#9862E9",
   "colors" : {"account" : {"register" : "#41ad49", "modify" : "#800080", "delete" : "#ff4723"}, "nextLvl" : "#ffbf00", "sendMsg" : {"owner" : "#003333", "server" : "#915300"}},
   "_othercolors" : {"lightblue" : "#2BC6CC", "darkred" : "#840000", "greenti8" : "#007a00"},
   "playing" : "r!help",
-  "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan", "betatester" : "Betatester", "supporter" : "Supporter"},
+  "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan", "betatester" : "Betatester", "supporter" : "Supporter", "dev_errors": "<@&698554515825229890>"},
   "switches" : {"welcome" : true, "wrongCmd" : true, "msgGuilds" : false, "feeds" : false, "leaderboardUpdate" : false, "backupdb" : false},
   "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10, "worldBoardTop" : 10, "heroes" : 120, "hoursLeaderboardUpdate" : 168},
   "links" : {

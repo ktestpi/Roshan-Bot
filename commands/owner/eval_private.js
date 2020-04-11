@@ -19,20 +19,20 @@ module.exports = {
     if(toEval.includes('return')){toEval=`(function(){${toEval}})()`}
     try{
       let result = eval(toEval)
-      client.components.Notifier.console('EvalPrivate',toEval)
+      client.logger.eval('EvalPrivate: ' + toEval)
       Promise.resolve(result).then(res => {
         if(typeof result === 'object'){
           result = inspect(result)
         }
         result = String(result).slice(0,1000)
-        client.components.Notifier.console('EvalP Result', result)
+        client.logger.eval('EvalP Result: ' + result)
         return bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.accept} Resultado**\n\`\`\`js\n${result}\`\`\``)
       }).catch(err => {
-        client.components.Notifier.console('EvalP Error', err)
+        client.logger.eval('EvalP Error: ' + err)
         return bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.error} Error**\`\`\`js\n${err}\`\`\``)
       })
     }catch(err){
-      client.components.Notifier.console('Code Error', err.stack)
+      client.logger.eval('Code Error: ' + err.stack)
       return bot.owner.send(`**Expression**\n\`\`\`js\n${toEval}\`\`\`\n\n**${client.config.emojis.default.error} Code Error**\`\`\`js\n${err.stack}\`\`\``)
     }
   }

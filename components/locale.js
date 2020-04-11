@@ -94,7 +94,7 @@ module.exports = class Locale extends Component {
             image_reddit_dotaunderlords: this.client.config.images.reddit,
             image_reddit_dota_underlords: this.client.config.images.reddit_underlords,
         })
-        this.client.components.Notifier.console('Locale', 'Ready')
+        this.client.logger.ready('Locale: Ready')
     }
     addConstants(constants){
         this.constants = Object.assign(this.constants, constants)
