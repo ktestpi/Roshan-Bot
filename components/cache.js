@@ -2,6 +2,7 @@ const { Component } = require('aghanim')
 const util = require('erisjs-utils')
 const FirebaseCollection = require('../classes/firebasecollection.js')
 const FireSetCache = require('../classes/firesetcache')
+const { sortTourneys } = require('../helpers/sort.js')
 
 module.exports = class Cache extends Component {
     constructor(client, options) {
@@ -24,8 +25,12 @@ module.exports = class Cache extends Component {
             this.loadDota2Patch()
             if(this.client.isProduction || process.argv.includes('-db')){
                 this.client.db.once('value').then(snap => {
-                    if (!snap.exists()) { this.client.logger.error('cacheReload: error reloading') } else { snap = snap.val() }
-                    this.updateWithSnap(snap)
+                    if (!snap.exists()) {
+                        this.client.logger.error('cacheReload: error reloading')
+                        this.updateFake()
+                    } else { 
+                        this.updateWithSnap(snap.val())
+                    }
                     res()
                 })
             }else{

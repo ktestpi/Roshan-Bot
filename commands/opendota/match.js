@@ -5,7 +5,7 @@ const enumLobbyType = require('../../enums/lobby')
 const enumSkill = require('../../enums/skill')
 
 module.exports = {
-  name: ['match','m'],
+  name: ['match','game'],
   category: 'Dota 2',
   help: 'Estadísticas de una partida',
   args: '<id>',

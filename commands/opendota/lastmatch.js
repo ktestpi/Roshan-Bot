@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'lastmatch',
+  name: ['lastmatch','lastgame'],
   category: 'Dota 2',
   help: 'Última partida jugada',
   args: '[mención/dotaID/pro]',

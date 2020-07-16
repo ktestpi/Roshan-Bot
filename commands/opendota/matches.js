@@ -4,7 +4,7 @@ const enumHeroes = require('../../enums/heroes')
 const enumMedal = require('../../enums/medals')
 
 module.exports = {
-  name: 'matches',
+  name: ['matches','games'],
   category: 'Dota 2',
   help: 'Últimas partidas jugadas',
   args: '[mención/dotaID/pro]',

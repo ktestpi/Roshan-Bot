@@ -57,7 +57,6 @@ module.exports = {
                         { name: 'Error Message', value: toCode(error.message), inline: false },
                         { name: 'Error Stack', value: toCode(error.stack), inline: false }
                     ],
-                    footer: { text: `Error: ${component.constructor.name || 'ND'}` },
                     color: this.colors.red
                 }
              })
@@ -72,7 +71,6 @@ module.exports = {
                         { name: 'Error Message', value: toCode(error.message), inline: false },
                         { name: 'Error Stack', value: toCode(error.stack), inline: false }
                     ],
-                    footer: { text: `Error` },
                     color: this.colors.red
                 }
             })

@@ -60,11 +60,11 @@ bot.addCommand(new Aghanim.Command('help',{}, async function(msg, args, client, 
 			const cmd_args = msg.author.locale('cmd_' + c.name + '_args')
 			const cmd_help = msg.author.locale('cmd_' + c.name + '_help')
 			// const langCmd = client.components.Locale.getCmd(c.name,msg)
-			return `\`${prefix}${c.name}${cmd_args ? ' ' + cmd_args : ''}\` - ${cmd_help || c.help}${c.childs.length ? '\n' + c.childs.filter(s => filterCommands(s,query,owner)).map(s => {
+			return `\`${prefix}${c.name}${cmd_args ? ' ' + cmd_args : ''}\` - ${cmd_help || c.help}${c.aliases && c.aliases.length ? `. Alias: ${c.aliases.map(alias => `\`${alias}\``).join(', ' )}` : ''}${c.childs.length ? '\n' + c.childs.filter(s => filterCommands(s,query,owner)).map(s => {
 				const cmd_args = msg.author.locale('cmd_' + c.name + '_' + s.name + '_args')
 				const cmd_help = msg.author.locale('cmd_' + c.name + '_' + s.name + '_help')
 				// const langCmd = client.components.Locale.getCmd(c.name + '_' + s.name,msg)
-				return `  · \`${s.name}${cmd_args ? ' ' + cmd_args : ''}\` - ${cmd_help}`}).join('\n') : ''}`
+				return `  · \`${s.name}${cmd_args ? ' ' + cmd_args : ''}\` - ${cmd_help}${s.aliases && s.aliases.length ? `. Alias: ${s.aliases.map(alias => `\`${alias}\``).join(', ' )}` : ''}`}).join('\n') : ''}`
 			}).join('\n')
 		}
 	}else{

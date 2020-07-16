@@ -1,7 +1,7 @@
 const paintjimp = require('../../paintjimp')
 
 module.exports = {
-  name: 'matches+',
+  name: ['matches+','games+'],
   category : 'Dota 2',
   help : 'Últimas partidas jugadas. R+',
   args : '',

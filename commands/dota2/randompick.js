@@ -8,8 +8,9 @@ module.exports = {
   run: async function (msg, args, client, command, command){
     let hero
     do {
-      hero = enumHeroes.getValue(Math.floor(Math.random()*client.config.constants.heroes)).localized_name;
-    } while (hero.length < 1);
-    return msg.reply('randompick.message',{hero})
+      const heroRandom = Math.floor(Math.random()*client.config.constants.heroes)
+      hero = enumHeroes.getValue(heroRandom)
+    } while (!hero || hero.name.length < 1);
+    return msg.reply('randompick.message',{hero: hero.localized_name})
   }
 }
