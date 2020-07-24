@@ -7,7 +7,7 @@ module.exports = {
     args: '',
     run: async function (msg, args, client, command) {
         const hero = enumHeroes.getValueByAlias(args.from(1))
-        if(!hero){ return }
+        if(!hero){ return msg.reply('hero.notfound')}
         return msg.reply({
             embed: {
                 author: { name: '<_hero_name>', icon_url: '<_hero_icon>', url: '<_hero_wikiurl>'},

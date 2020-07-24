@@ -32,7 +32,7 @@
   "dependencies": {
     "aghanim": "github:Desvelao/aghanim#dev",
     "artifact-api": "github:openartifact/artifact-api",
-    "dotaconstants": "^6.30.0",
+    "dotaconstants": "^6.37.0",
     "dotenv": "^8.2.0",
     "erisjs-utils": "github:desvelao/erisjs-utils#dev",
     "firebase-admin": "^5.11.0",

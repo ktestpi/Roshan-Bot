@@ -8,7 +8,7 @@ module.exports = {
     run: async function (msg, args, client, command) {
         const item = enumItems.getValueByName(args.from(1))
         // FIXME: when search sange we get sange and yasha. See enumItems.getValueByName method
-        if (!item) { return }
+        if (!item) {return msg.reply('item.notfound')}
         const embed = {
             embed: {
                 author: {name: '<_item_name>', url: '<_item_wikiurl>'},

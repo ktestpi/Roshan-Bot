@@ -7,7 +7,7 @@ module.exports = {
     args: '',
     run: async function (msg, args, client, command) {
         const ability = enumAbilities.getValueByName(args.from(1))
-        if (!ability) { return }
+        if (!ability) { return msg.reply('ability.notfound')}
         const attributes = ability.attrib.map(attribute => {
             return attribute.header + ' ' + (Array.isArray(attribute.value) ? attribute.value.join(', ') : attribute.value)
         }).join('\n')
