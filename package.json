@@ -1,7 +1,7 @@
 {
   "name": "roshan-discord-bot",
   "version": "0.3.7",
-  "version_date": "19/10/19",
+  "version_date": "08/05/20",
   "description": "Dota 2 and Artifact Discord bot written in ErisJS using Aghanim Command Client",
   "main": "bot.js",
   "engines": {

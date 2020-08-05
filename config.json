@@ -40,14 +40,14 @@
   "console" : {
     "channel" : "509559847436419103"
   },
-  "update" : "11/04/2020",
+  "update" : "08/05/2020",
   "server" : "https://discord.gg/SxsYkgX",
   "invite" : "https://discordapp.com/oauth2/authorize?client_id=324833828302749697&scope=bot&permissions=519232",
   "color" : "#9862E9",
   "colors" : {"account" : {"register" : "#41ad49", "modify" : "#800080", "delete" : "#ff4723"}, "nextLvl" : "#ffbf00", "sendMsg" : {"owner" : "#003333", "server" : "#915300"}},
   "_othercolors" : {"lightblue" : "#2BC6CC", "darkred" : "#840000", "greenti8" : "#007a00"},
   "playing" : "r!help",
-  "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan", "betatester" : "Betatester", "supporter" : "Supporter", "dev_errors": "<@&698554515825229890>"},
+  "roles" : {"admin" : "admin", "aegis" : "aegis" , "roshan" : "roshan", "betatester" : "Betatester", "supporter" : "Supporter", "dev_errors": "<@&698554515825229890>", "pit_updates": "Pit's updates"},
   "switches" : {"welcome" : true, "wrongCmd" : true, "msgGuilds" : false, "feeds" : false, "leaderboardUpdate" : false, "backupdb" : false},
   "constants" : {"playersMMRTable" : 20, "descriptionChars" : 1000, "msgdel" : 10, "worldBoardTop" : 10, "heroes" : 120, "hoursLeaderboardUpdate" : 168},
   "links" : {
@@ -80,7 +80,7 @@
     "supporter" : "<cheesed2>",
     "betatester" : "<roshan>"
   },
-  "guild" : {"id" : "327603106257043456", "changelog": "327603215325462539", "feeds" : "342031271679098880", "feedsHidden" : "491295737251102733", "biblioteca" : "335100706975514635", "sendmessages" : "330646027965300736", "botadmin": "338316246686892032", "accounts" : "330949705389441024", "notifications" : "331547028826095617", "console" : "509559847436419103", "bugs" : "327605187663364098", "alphatest" : "327603261085581312", "backup" : "398485131003822080", "generated" : "441307771510456331"},
+  "guild" : {"id" : "327603106257043456", "changelog": "327603215325462539", "feeds" : "342031271679098880", "feedsHidden" : "491295737251102733", "biblioteca" : "335100706975514635", "sendmessages" : "330646027965300736", "botadmin": "338316246686892032", "accounts" : "330949705389441024", "notifications" : "331547028826095617", "console" : "509559847436419103", "bugs" : "327605187663364098", "alphatest" : "327603261085581312", "backup" : "398485131003822080", "generated" : "441307771510456331", "commands": "539844893863051289"},
   "webhooks" : {"feedsNotification" : "342031720155054080", "feeds" : "342055276536659969", "feedsHidden" : "491296306619482114", "feedsfromapp" : "446306133984935937", "fromapp" : "446303544245747732"},
   "guildID" : "327603106257043456",
   "communityTips" : {

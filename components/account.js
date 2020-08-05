@@ -88,6 +88,18 @@ module.exports = class Account extends CustomComponent() {
 			},
 			response: (msg, args, client, command, req) => msg.author.locale('roshan.supporter.need')
 		})
+		this.client.addCommandRequirement({
+			type: 'pit.user',
+			validate: async (msg, args, client, command, req) => {
+				return msg.channel.guild && msg.channel.guild.id === client.server.id
+			}
+		})
+		this.client.addCommandRequirement({
+			type: 'pit.channel.commands',
+			validate: async (msg, args, client, command, req) => {
+				return msg.channel.id === client.config.guild.commands
+			}
+		})
 	}
 	schema(){
 		return {

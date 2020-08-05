@@ -14,6 +14,7 @@ module.exports = {
             timestamps: true,
             levels: {
                 ready: {style: 'cyan'},
+                cmd: {style: 'cyan'},
                 dev: { style: 'magenta' },
                 eval: { style: 'cyan' }
             },
@@ -21,14 +22,14 @@ module.exports = {
         })
         this.client.logger = this.logger
         this.client.on('aghanim:command:prereq', (msg, args, client, command) => {
-            this.logger.info(`cmd: ${command.name} - ${msg.author.username} (${msg.author.id})`)
+            this.logger.cmd(`${command.name} - ${msg.author.username} (${msg.author.id})`)
             client.createMessage(this.channelID, {
                 embed: {
                     title: `cmd: ${command.name}`,
                     author: { name: `${msg.author.username} - ${msg.author.id}`, icon_url: msg.author.avatarURL },
                     description: `${msg.channel.guild ? `**guild**: \`${msg.channel.guild.name}\` (\`${msg.channel.guild.id}\`)\n` : ''}**channel**: \`${msg.channel.name}\` (\`${msg.channel.id}\`)\n**content**: \`${args.content}\``
                 }
-            })
+            }).catch(this.logger.error)
         })
         this.client.on('aghanim:command:error', (error, msg, args, client, command) => {
             this.logger.error(`cmd: ${command.name} - ${msg.author.username} (${msg.author.id})\n${error.message || error}`)
@@ -44,12 +45,12 @@ module.exports = {
                     ],
                     color: this.colors.red
                 }
-            })
+            }).catch(this.logger.error)
             msg.reply('error.unknown')
         })
         this.client.on('aghanim:component:error', (error, event, client, component) => {
             this.logger.error(`component: ${component.name} - ${msg.author.username} (${msg.author.id})\n${error.message || error}`)
-            client.createMessage({
+            client.createMessage(this.channelID, {
                 content: client.config.roles.dev_errors,
                 embed: {
                     title: `component: ${component.constructor.name}`,
@@ -59,21 +60,21 @@ module.exports = {
                     ],
                     color: this.colors.red
                 }
-             })
+             }).catch(this.logger.error)
         })
         this.client.on('aghanim:error', (error, client) => {
             this.logger.error(`error: ${error.message || error}`)
-            client.createMessage({
+            client.createMessage(this.channelID, {
                 content: client.config.roles.dev_errors,
                 embed: {
                     title: `:x: Bot Error: ${error.message}`,
                     fields: [
                         { name: 'Error Message', value: toCode(error.message), inline: false },
-                        { name: 'Error Stack', value: toCode(error.stack), inline: false }
+                        ...(error.stack ? [{ name: 'Error Stack', value: toCode(error.stack), inline: false }] :  [])
                     ],
                     color: this.colors.red
                 }
-            })
+            }).catch(this.logger.error)
         })
     }
 }

@@ -17,6 +17,7 @@ const categoryCommands = [
 	{ name: 'Owner', description: 'Ayuda para comandos de propietario'},
 	{ name: 'Fun', description: 'Ayuda para comandos de emojis y memes'},
 	{ name: 'Artifact', description: 'Ayuda los comandos de Artifact'},
+	{ name: 'DevServer', description: 'Ayuda los comandos del servidor de desarrollo'},
 	// { name: 'Underlords', description: 'Ayuda los comandos de Dota Underlords' },
 ]
 
