@@ -3,7 +3,7 @@ const path = require('path')
 const jimp = require('jimp')
 const { hero_names, items } = require('dotaconstants')
 const cwd = process.cwd()
-// const entry = process.argv[2]
+
 const APIURL = 'https://api.opendota.com'
 const folderHeroes = 'heroes'
 const foldeMiniHeroes = 'miniheroes'
@@ -22,20 +22,19 @@ function main(){
     const heroesOwned = assestsOwned(path.join(destination, folderHeroes))
     const miniHeroresOwned = assestsOwned(path.join(destination, foldeMiniHeroes))
     const itemsOwned = assestsOwned(path.join(destination, folderItems))
-    // console.log(heroesOwned)
-    // console.log(itemsOwned)
+
     assets.push(...Object.keys(hero_names).map(heroName => {
-        const url = `${APIURL}${hero_names[heroName].img}`
-        return { filename: path.basename(url).replace(/\?/g, '').replace('_full', ''), url, dest: path.join(destination, folderHeroes) }
+        const url = `${APIURL}${hero_names[heroName].img}`.replace(/(\?t=.*)/,'')
+        return { t: hero_names[heroName].img, filename: path.basename(url).replace(/\?/g, '').replace('_full', ''), url, dest: path.join(destination, folderHeroes) }
     }).filter(filterDownload(heroesOwned)))
 
     assets.push(...Object.keys(hero_names).map(heroName => {
-        const url = `${APIURL}${hero_names[heroName].icon}`
+        const url = `${APIURL}${hero_names[heroName].icon}`.replace(/(\?t=.*)/,'')
         return { filename: path.basename(url).replace('_icon', ''), url, dest: path.join(destination, foldeMiniHeroes) }
     }).filter(filterDownload(miniHeroresOwned)))
     
     assets.push(...Object.keys(items).map(item => {
-        const url = `${APIURL}${items[item].img}`
+        const url = `${APIURL}${items[item].img}`.replace(/(\?t=.*)/,'')
         return { filename: path.basename(url).replace(/\?3/g, '').replace('_lg', ''), url, dest: path.join(destination, folderItems) }
     }).filter(filterDownload(itemsOwned)))
     
@@ -69,7 +68,6 @@ function downloadAsset(dest){
 function reducePromiseTemp(time){
     return function(array){
         return array.reduce((promise, { filename, url , dest }) => {
-            console.log('Promise',typeof promise,promise)
             return promise.then(results => 
                 new Promise(res => {
                     setTimeout(() => {

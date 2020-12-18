@@ -123,6 +123,7 @@ const HEROES = {
   "119" : {"name" : "Dark Willow", "name_id" : "dark_willow", alias : ["willow","dw"]},
   "120" : {"name" : "Pangolier", "name_id" : "pangolier", alias : ["pango"]},
   "121" : {"name" : "Grimstroke", "name_id" : "grimstroke", alias : ["gs"]},
+  "123" : {"name" : "Hoodwink", "name_id" : "hoodwink", alias : ["hw"]},
   "126" : {"name" : "Void Spirit", "name_id" : "void_spirit", alias : []},
   "128" : {"name" : "Snapfire", "name_id" : "snapfire", alias : ["snapfire"]},
   "129" : {"name" : "Mars", "name_id" : "mars", alias : ["mars"]},
